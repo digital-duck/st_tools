@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Markdown Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --border-color: #e5e7eb;
+            --background-color: #f9fafb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: var(--background-color);
+            color: #1f2937;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-label {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #editor {
+            width: 100%;
+            height: 250px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        #editor:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        #preview {
+            padding: 20px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            min-height: 200px;
+        }
+
+        #preview img {
+            max-width: 100%;
+        }
+
+        #preview code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        #preview pre code {
+            display: block;
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        #preview h1, #preview h2, #preview h3 {
+            color: #111827;
+        }
+
+        #preview a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        #preview a:hover {
+            text-decoration: underline;
+        }
+
+        #preview blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 0;
+            padding-left: 20px;
+            color: #4b5563;
+        }
+
+        /* Table styles */
+        #preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        #preview th, #preview td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+        }
+
+        #preview th {
+            background: #f3f4f6;
+        }
+
+        #preview tr:nth-child(even) {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Markdown Viewer</h1>
+        
+        <div class="section">
+            <div class="section-label">
+                📝 Markdown Editor
+            </div>
+            <textarea id="editor" placeholder="Enter your Markdown here..."></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-label">
+                👁️ Preview
+            </div>
+            <div id="preview"></div>
+        </div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+
+        // Set up marked options
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: true,
+            mangle: false
+        });
+
+        // Initial sample content
+        editor.value = `# Welcome to the Enhanced Markdown Viewer
+
+This is a beautifully styled Markdown viewer. Try out these features:
+
+## Text Formatting
+
+* **Bold text** and *italic text*
+* ~~Strikethrough~~ and \`inline code\`
+* [Links](https://example.com)
+
+## Code Blocks
+
+\`\`\`python
+def hello_markdown():
+    print("Hello, Enhanced Markdown!")
+\`\`\`
+
+## Tables
+
+| Feature | Status |
+|---------|--------|
+| Tables | ✅ |
+| Code | ✅ |
+| Lists | ✅ |
+
+> This preview updates in real-time as you type.
+> The styling has been enhanced for better readability!`;
+
+        // Update preview function
+        function updatePreview() {
+            const markdownText = editor.value;
+            const htmlContent = marked.parse(markdownText);
+            preview.innerHTML = htmlContent;
+        }
+
+        // Listen for input changes
+        editor.addEventListener('input', updatePreview);
+
+        // Initial preview
+        updatePreview();
+    </script>
+</body>
+</html>
