@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "utils_u8hi"
+version = "0.1.0"
+description = "Helper package to get API key securely, log Agno agent message"
+authors = [
+    {name = "Digital Duck", email = "p2p2learn@outlook.com"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    # List your dependencies here
+    # "requests>=2.25.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/digital-duck/st_tools"
