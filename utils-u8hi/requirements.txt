@@ -1,0 +1,17 @@
+# create a virtual env
+# conda create -n ag python=3.11
+# conda activate ag
+
+# API Key store
+api_key_store
+
+# Phidata agents 
+agno 
+
+# Magnetic-one/autogen agents
+autogen-agentchat
+autogen-ext[magentic-one,openai]
+autogen_ext
+tiktoken
+
+

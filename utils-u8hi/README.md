@@ -111,3 +111,7 @@ print(my_package.some_function())
 ## References
 
 - https://claude.ai/chat/95e40f6a-9053-4c45-acfa-90f856dc633a
+
+
+- chats on LLM abstractions
+    - see `docs/readme.md`

@@ -7,4 +7,4 @@ def get_api_key(key_name="OPENAI/Yiwen"):
 os.environ["OPENAI_API_KEY"] = get_api_key()
 
 # use this less costly model
-model_id = "gpt-4o-mini"
+MODEL_ID = "gpt-4o-mini"
