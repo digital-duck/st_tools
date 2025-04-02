@@ -1,0 +1,1 @@
+Place your SQLite database files (.db, .sqlite, .sqlite3) in this directory to test the application.
