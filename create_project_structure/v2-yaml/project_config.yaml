@@ -1,0 +1,101 @@
+project_name: st_rag_demo
+directories:
+  - path: ""
+    description: "Project root directory"
+  - path: "examples"
+    description: "Example files for testing"
+  - path: "examples/csv"
+    description: "CSV example files"
+  - path: "examples/pdf"
+    description: "PDF example files"
+  - path: "examples/sqlite"
+    description: "SQLite example files"
+  - path: "static"
+    description: "Static assets for README/documentation"
+  - path: "static/screenshots"
+    description: "Application screenshots"
+
+files:
+  - path: "app.py"
+    description: "Main Streamlit application"
+    content_type: "dynamic"
+  - path: "requirements.txt"
+    description: "Project dependencies"
+    content_type: "dynamic"
+  - path: ".env.example"
+    description: "Example environment variables file"
+    content: |
+      OPENAI_API_KEY=your_openai_api_key_here
+
+      # AWS Bedrock Settings (Optional)
+      # AWS_ACCESS_KEY_ID=your_aws_access_key_id
+      # AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+      # AWS_REGION=us-east-1
+
+      # AWS Bedrock Guardrail Settings (Optional)
+      # BEDROCK_GUARDRAIL_ID=your_guardrail_id
+      # BEDROCK_GUARDRAIL_VERSION=LATEST
+  - path: ".gitignore"
+    description: "Git ignore file" 
+    content_type: "dynamic"
+  - path: "LICENSE"
+    description: "MIT License file"
+    content: |
+      MIT License
+
+      Copyright (c) 2023 Your Name
+
+      Permission is hereby granted, free of charge, to any person obtaining a copy
+      of this software and associated documentation files (the "Software"), to deal
+      in the Software without restriction, including without limitation the rights
+      to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+      copies of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions:
+
+      The above copyright notice and this permission notice shall be included in all
+      copies or substantial portions of the Software.
+
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+      SOFTWARE.
+  - path: "README.md"
+    description: "Project documentation"
+    content_type: "dynamic"
+  - path: "examples/sample_data.csv"
+    description: "Sample CSV data file"
+    content: |
+      id,name,age,city,sales
+      1,John Smith,34,New York,1200
+      2,Maria Garcia,29,Los Angeles,950
+      3,Robert Johnson,45,Chicago,1450
+      4,Sarah Lee,37,Houston,1100
+      5,Michael Brown,52,Phoenix,1300
+      6,Jennifer Davis,31,Philadelphia,1050
+      7,David Miller,44,San Antonio,1250
+      8,Lisa Wilson,39,San Diego,1150
+      9,William Taylor,48,Dallas,1350
+      10,Patricia Moore,33,San Jose,1000
+  - path: "examples/sample_doc.pdf"
+    description: "Sample PDF document"
+    content_type: "binary"
+    source: "" # You can specify a source path to copy from
+  - path: "examples/sample.db"
+    description: "Sample SQLite database"
+    content_type: "binary"
+    source: "" # You can specify a source path to copy from
+  - path: "static/screenshots/rag_mode.png"
+    description: "Screenshot of RAG mode"
+    content_type: "binary"
+    source: ""
+  - path: "static/screenshots/sql_mode.png" 
+    description: "Screenshot of SQL mode"
+    content_type: "binary"
+    source: ""
+  - path: "static/screenshots/viz_mode.png"
+    description: "Screenshot of visualization mode"
+    content_type: "binary"
+    source: ""
