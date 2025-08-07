@@ -1,3 +1,27 @@
+
+# Basic Image Viewer
+
+see `gold-miner/img_viewer_ai.html`
+
+🖼️ Image Viewer with Portable Storage
+=====================================
+
+📁 HOW IT WORKS:
+• Edit captions by clicking on them
+• Auto-saves to "image-metadata.json" every 5 seconds
+• Include the metadata file when sharing your image folder
+
+🤝 SHARING WITH FRIENDS:
+1. Let auto-save create the metadata file
+2. Zip your entire image folder (including metadata file)
+3. Share the zip - friends see exactly what you see!
+
+💡 TIP: The metadata file is portable and works across all devices
+
+## Demo: Stock Charts
+
+
+
 Great analysis on the cup-and-handle pattern and your 5-10 year timeline! That's exactly the right approach for a structural gold bull market. The cup-and-handle is one of the most reliable continuation patterns, especially when it develops over multiple years like Barrick's chart shows.
 
 Your 5-10 year horizon is perfect for this cycle because:
@@ -42,3 +66,14 @@ Here are the **Top 5 Gold Miners by Market Cap** for your analysis:
 - **Income Focus**: Franco-Nevada (consistent dividends)
 
 Your Barrick position fits well - they're transforming into a more focused, higher-quality operation. The 5-10 year timeframe should capture the full cycle you're anticipating!
+
+# AI-powered Image Viewer
+
+see `AI-Image-Viewer/ai_image_viewer.html`
+
+A more advanced HTML app that demonstrates true AI-powered image search using WebML/TensorFlow.js? This would allow searching images by visual content (e.g., "sunset over water", "person wearing red", "vintage car") regardless of filenames.
+
+1. Vision Models like CLIP or ImageBind for real visual embeddings
+2. Vector similarity search for finding semantically similar images
+3. Natural language understanding for complex queries
+

@@ -1,0 +1,594 @@
+{
+  "version": "2.0",
+  "timestamp": "2025-08-07T07:27:57.906Z",
+  "appName": "AI Image Viewer",
+  "totalImages": 18,
+  "aiEnabled": true,
+  "captions": {
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT",
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": "2024-EQE350-4M-SEDAN-AVP-DR",
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79",
+    "african-american-family-1200x675-1.jpg": "african-american-family-1200x675-1",
+    "bright-daylight-environment-forest-240040-1.webp": "bright-daylight-environment-forest-240040-1",
+    "Coyote-animal-sentience-research.jpg": "Coyote-animal-sentience-research",
+    "do-babies-grow-in-their-sleep-scaled.jpeg": "do-babies-grow-in-their-sleep-scaled",
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": "DRRR202208_DroughtResponse_004_370218_reduced",
+    "Giant_Panda_2004-03-2.jpg": "Giant_Panda_2004-03-2",
+    "images.jpeg": "images",
+    "maxresdefault.jpg": "maxresdefault",
+    "maxresdefault (1).jpg": "maxresdefault (1)",
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d",
+    "pexels-mali-maeder-110820-1280x720.png": "pexels-mali-maeder-110820-1280x720",
+    "photo-1608365151231-7dbed3034787.jpeg": "photo-1608365151231-7dbed3034787",
+    "red-chevy-sedan.webp": "red-chevy-sedan",
+    "Tiger-600x380.jpg": "Tiger-600x380",
+    "water-plant-growth_800x.webp": "water-plant-growth_800x"
+  },
+  "aiData": {
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": {
+      "tags": [
+        {
+          "label": "mortarboard",
+          "confidence": 0.19871029257774353
+        },
+        {
+          "label": "sweatshirt",
+          "confidence": 0.17479702830314636
+        },
+        {
+          "label": "academic gown, academic robe, judge's robe",
+          "confidence": 0.07046584784984589
+        }
+      ],
+      "objects": [
+        {
+          "class": "car",
+          "confidence": 0.6696190237998962,
+          "bbox": [
+            0.7288715243339539,
+            217.89736032485962,
+            108.8192930817604,
+            111.83717250823975
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.6472532749176025,
+          "bbox": [
+            321.09450459480286,
+            34.79302525520325,
+            132.24425554275513,
+            265.9396827220917
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.5663504600524902,
+          "bbox": [
+            51.148754954338074,
+            12.748432159423828,
+            410.04219353199005,
+            344.65351581573486
+          ]
+        }
+      ],
+      "description": "Contains: car, person, person | Scene: mortarboard",
+      "analysisDate": "2025-08-07T07:26:00.195Z"
+    },
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": {
+      "tags": [
+        {
+          "label": "sports car, sport car",
+          "confidence": 0.4276551604270935
+        },
+        {
+          "label": "grille, radiator grille",
+          "confidence": 0.1812002956867218
+        },
+        {
+          "label": "racer, race car, racing car",
+          "confidence": 0.1676165908575058
+        }
+      ],
+      "objects": [
+        {
+          "class": "car",
+          "confidence": 0.9651510119438171,
+          "bbox": [
+            114.99843716621399,
+            101.14006876945496,
+            695.0255525112152,
+            276.3370954990387
+          ]
+        }
+      ],
+      "description": "Contains: car | Scene: sports car",
+      "analysisDate": "2025-08-07T07:26:01.362Z"
+    },
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": {
+      "tags": [
+        {
+          "label": "stone wall",
+          "confidence": 0.47872263193130493
+        },
+        {
+          "label": "megalith, megalithic structure",
+          "confidence": 0.23221197724342346
+        },
+        {
+          "label": "rapeseed",
+          "confidence": 0.0653412938117981
+        }
+      ],
+      "objects": [],
+      "description": "Scene: stone wall",
+      "analysisDate": "2025-08-07T07:26:02.567Z"
+    },
+    "african-american-family-1200x675-1.jpg": {
+      "tags": [
+        {
+          "label": "wig",
+          "confidence": 0.4906759560108185
+        },
+        {
+          "label": "Band Aid",
+          "confidence": 0.08407462388277054
+        },
+        {
+          "label": "academic gown, academic robe, judge's robe",
+          "confidence": 0.059797368943691254
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.9445536136627197,
+          "bbox": [
+            508.1979990005493,
+            267.0519210398197,
+            379.40940856933594,
+            405.18092438578606
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.9231353998184204,
+          "bbox": [
+            634.6920490264893,
+            2.584214508533478,
+            565.0906562805176,
+            670.0188964605331
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.8117722868919373,
+          "bbox": [
+            532.5885057449341,
+            68.90554055571556,
+            452.9740333557129,
+            587.384844571352
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.8100032806396484,
+          "bbox": [
+            93.62368583679199,
+            32.75938779115677,
+            492.94703006744385,
+            637.2904479503632
+          ]
+        }
+      ],
+      "description": "Contains: person, person, person | Scene: wig",
+      "analysisDate": "2025-08-07T07:26:03.751Z"
+    },
+    "bright-daylight-environment-forest-240040-1.webp": {
+      "tags": [
+        {
+          "label": "rapeseed",
+          "confidence": 0.39297744631767273
+        },
+        {
+          "label": "greenhouse, nursery, glasshouse",
+          "confidence": 0.0817505419254303
+        },
+        {
+          "label": "lakeside, lakeshore",
+          "confidence": 0.04383787512779236
+        }
+      ],
+      "objects": [],
+      "description": "Scene: rapeseed",
+      "analysisDate": "2025-08-07T07:26:04.952Z"
+    },
+    "Coyote-animal-sentience-research.jpg": {
+      "tags": [
+        {
+          "label": "coyote, prairie wolf, brush wolf, Canis latrans",
+          "confidence": 0.7397660613059998
+        },
+        {
+          "label": "timber wolf, grey wolf, gray wolf, Canis lupus",
+          "confidence": 0.12492817640304565
+        },
+        {
+          "label": "red wolf, maned wolf, Canis rufus, Canis niger",
+          "confidence": 0.07862547785043716
+        }
+      ],
+      "objects": [],
+      "description": "Scene: coyote",
+      "analysisDate": "2025-08-07T07:26:06.104Z"
+    },
+    "do-babies-grow-in-their-sleep-scaled.jpeg": {
+      "tags": [
+        {
+          "label": "diaper, nappy, napkin",
+          "confidence": 0.9491829872131348
+        },
+        {
+          "label": "nipple",
+          "confidence": 0.029899440705776215
+        },
+        {
+          "label": "stethoscope",
+          "confidence": 0.005495560355484486
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.960240364074707,
+          "bbox": [
+            97.23892211914062,
+            324.36153692007065,
+            2351.6859436035156,
+            1266.596210718155
+          ]
+        }
+      ],
+      "description": "Contains: person | Scene: diaper",
+      "analysisDate": "2025-08-07T07:26:07.271Z"
+    },
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": {
+      "tags": [
+        {
+          "label": "zebra",
+          "confidence": 0.9981911778450012
+        },
+        {
+          "label": "tiger, Panthera tigris",
+          "confidence": 0.00040162663208320737
+        },
+        {
+          "label": "Arabian camel, dromedary, Camelus dromedarius",
+          "confidence": 0.00034586573019623756
+        }
+      ],
+      "objects": [
+        {
+          "class": "zebra",
+          "confidence": 0.9277575016021729,
+          "bbox": [
+            511.0287780761719,
+            50.23934984207153,
+            247.1513671875,
+            236.02099084854126
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.9216057062149048,
+          "bbox": [
+            135.68255996704102,
+            76.42512184381485,
+            91.86260604858398,
+            157.80356115102768
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.8981984853744507,
+          "bbox": [
+            303.9070587158203,
+            27.44123411178589,
+            220.07363891601562,
+            435.9780764579773
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.6325540542602539,
+          "bbox": [
+            7.996410369873047,
+            99.00958299636841,
+            99.52720642089844,
+            146.69088006019592
+          ]
+        }
+      ],
+      "description": "Contains: zebra, zebra, zebra | Scene: zebra",
+      "analysisDate": "2025-08-07T07:26:08.443Z"
+    },
+    "Giant_Panda_2004-03-2.jpg": {
+      "tags": [
+        {
+          "label": "giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca",
+          "confidence": 0.9998108148574829
+        },
+        {
+          "label": "brown bear, bruin, Ursus arctos",
+          "confidence": 0.00003954368003178388
+        },
+        {
+          "label": "Arctic fox, white fox, Alopex lagopus",
+          "confidence": 0.000034350105124758556
+        }
+      ],
+      "objects": [
+        {
+          "class": "bear",
+          "confidence": 0.9937044978141785,
+          "bbox": [
+            211.06432914733887,
+            49.189264476299286,
+            591.8231678009033,
+            516.6728577017784
+          ]
+        }
+      ],
+      "description": "Contains: bear | Scene: giant panda",
+      "analysisDate": "2025-08-07T07:26:09.614Z"
+    },
+    "images.jpeg": {
+      "tags": [
+        {
+          "label": "cup",
+          "confidence": 0.3045973479747772
+        },
+        {
+          "label": "tray",
+          "confidence": 0.11874206364154816
+        },
+        {
+          "label": "pot, flowerpot",
+          "confidence": 0.035962220281362534
+        }
+      ],
+      "objects": [],
+      "description": "Scene: cup",
+      "analysisDate": "2025-08-07T07:26:10.797Z"
+    },
+    "maxresdefault.jpg": {
+      "tags": [
+        {
+          "label": "castle",
+          "confidence": 0.08910471200942993
+        },
+        {
+          "label": "stone wall",
+          "confidence": 0.08819393813610077
+        },
+        {
+          "label": "fountain",
+          "confidence": 0.07395470887422562
+        }
+      ],
+      "objects": [],
+      "description": "Scene: castle",
+      "analysisDate": "2025-08-07T07:26:11.967Z"
+    },
+    "maxresdefault (1).jpg": {
+      "tags": [
+        {
+          "label": "steam locomotive",
+          "confidence": 0.9932541251182556
+        },
+        {
+          "label": "castle",
+          "confidence": 0.002459399402141571
+        },
+        {
+          "label": "lumbermill, sawmill",
+          "confidence": 0.0009744167909957469
+        }
+      ],
+      "objects": [
+        {
+          "class": "train",
+          "confidence": 0.9880717992782593,
+          "bbox": [
+            55.70537567138672,
+            146.38288736343384,
+            1062.8851699829102,
+            526.1280226707458
+          ]
+        }
+      ],
+      "description": "Contains: train | Scene: steam locomotive",
+      "analysisDate": "2025-08-07T07:26:12.985Z"
+    },
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": {
+      "tags": [
+        {
+          "label": "chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour",
+          "confidence": 0.1529436707496643
+        },
+        {
+          "label": "cardigan",
+          "confidence": 0.07129436731338501
+        },
+        {
+          "label": "neck brace",
+          "confidence": 0.06510859727859497
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.9578655362129211,
+          "bbox": [
+            3.3759212493896484,
+            18.887661695480347,
+            947.4459028244019,
+            989.5897150039673
+          ]
+        }
+      ],
+      "description": "Contains: person | Scene: chain mail",
+      "analysisDate": "2025-08-07T07:26:14.169Z"
+    },
+    "pexels-mali-maeder-110820-1280x720.png": {
+      "tags": [
+        {
+          "label": "hog, pig, grunter, squealer, Sus scrofa",
+          "confidence": 0.9965119957923889
+        },
+        {
+          "label": "wild boar, boar, Sus scrofa",
+          "confidence": 0.0024311153683811426
+        },
+        {
+          "label": "wallaby, brush kangaroo",
+          "confidence": 0.0003293949703220278
+        }
+      ],
+      "objects": [
+        {
+          "class": "horse",
+          "confidence": 0.9204402565956116,
+          "bbox": [
+            350.60779571533203,
+            3.4898757934570312,
+            809.8897933959961,
+            715.1677322387695
+          ]
+        }
+      ],
+      "description": "Contains: horse | Scene: hog",
+      "analysisDate": "2025-08-07T07:26:15.137Z"
+    },
+    "photo-1608365151231-7dbed3034787.jpeg": {
+      "tags": [
+        {
+          "label": "bath towel",
+          "confidence": 0.6594746708869934
+        },
+        {
+          "label": "diaper, nappy, napkin",
+          "confidence": 0.07759007066488266
+        },
+        {
+          "label": "pajama, pyjama, pj's, jammies",
+          "confidence": 0.07701753824949265
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.8728947043418884,
+          "bbox": [
+            -11.060357093811035,
+            23.289918899536133,
+            2959.340214729309,
+            1778.571605682373
+          ]
+        }
+      ],
+      "description": "Contains: person | Scene: bath towel",
+      "analysisDate": "2025-08-07T07:26:16.373Z"
+    },
+    "red-chevy-sedan.webp": {
+      "tags": [
+        {
+          "label": "sports car, sport car",
+          "confidence": 0.6606719493865967
+        },
+        {
+          "label": "racer, race car, racing car",
+          "confidence": 0.22117121517658234
+        },
+        {
+          "label": "grille, radiator grille",
+          "confidence": 0.10229228436946869
+        }
+      ],
+      "objects": [
+        {
+          "class": "truck",
+          "confidence": 0.6051232814788818,
+          "bbox": [
+            62.656672954559326,
+            20.416394352912903,
+            748.577108502388,
+            394.15080213546753
+          ]
+        }
+      ],
+      "description": "Contains: truck | Scene: sports car",
+      "analysisDate": "2025-08-07T07:26:17.526Z"
+    },
+    "Tiger-600x380.jpg": {
+      "tags": [
+        {
+          "label": "tiger, Panthera tigris",
+          "confidence": 0.6290829181671143
+        },
+        {
+          "label": "tiger cat",
+          "confidence": 0.37065982818603516
+        },
+        {
+          "label": "jaguar, panther, Panthera onca, Felis onca",
+          "confidence": 0.0001770972303347662
+        }
+      ],
+      "objects": [
+        {
+          "class": "zebra",
+          "confidence": 0.8399292230606079,
+          "bbox": [
+            49.665552377700806,
+            10.493500232696533,
+            525.7848680019379,
+            364.1190266609192
+          ]
+        }
+      ],
+      "description": "Contains: zebra | Scene: tiger",
+      "analysisDate": "2025-08-07T07:26:18.679Z"
+    },
+    "water-plant-growth_800x.webp": {
+      "tags": [
+        {
+          "label": "acorn",
+          "confidence": 0.15431547164916992
+        },
+        {
+          "label": "rapeseed",
+          "confidence": 0.15047475695610046
+        },
+        {
+          "label": "ant, emmet, pismire",
+          "confidence": 0.12095633149147034
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.6942140460014343,
+          "bbox": [
+            1.2601971626281738,
+            43.91058740019798,
+            206.47143125534058,
+            355.3016223013401
+          ]
+        }
+      ],
+      "description": "Contains: person | Scene: acorn",
+      "analysisDate": "2025-08-07T07:26:19.864Z"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-08-07T05:50:45.608Z",
+  "captions": {
+    "1-max-B-2025-08-05 232955.png": "1-max-B-2025-08-05",
+    "1-max-NEM-2025-08-05 232955.png": "1-max-NEM-2025-08-05",
+    "2-monthly-B-2025-08-05 232955.png": "2-monthly-B-2025-08-05",
+    "2-monthly-NEM-2025-08-05 232955.png": "2-monthly-NEM-2025-08-05",
+    "3-weekly-B-2025-08-05 232955.png": "3-weekly-B-2025-08-05",
+    "3-weekly-NEM-2025-08-05 232955.png": "3-weekly-NEM-2025-08-05",
+    "4-daily-B-2025-08-05 232955.png": "4-daily-B-2025-08-05",
+    "4-daily-NEM-2025-08-05 232955.png": "4-daily-NEM-2025-08-05 "
+  },
+  "embeddings": {
+    "1-max-B-2025-08-05 232955.png": {
+      "caption": "1-max-b-2025-08-05",
+      "filename": "1-max-b-2025-08-05 232955.png",
+      "index": 0
+    },
+    "1-max-NEM-2025-08-05 232955.png": {
+      "caption": "1-max-nem-2025-08-05",
+      "filename": "1-max-nem-2025-08-05 232955.png",
+      "index": 1
+    },
+    "2-monthly-B-2025-08-05 232955.png": {
+      "caption": "2-monthly-b-2025-08-05",
+      "filename": "2-monthly-b-2025-08-05 232955.png",
+      "index": 2
+    },
+    "2-monthly-NEM-2025-08-05 232955.png": {
+      "caption": "2-monthly-nem-2025-08-05",
+      "filename": "2-monthly-nem-2025-08-05 232955.png",
+      "index": 3
+    },
+    "3-weekly-B-2025-08-05 232955.png": {
+      "caption": "3-weekly-b-2025-08-05",
+      "filename": "3-weekly-b-2025-08-05 232955.png",
+      "index": 4
+    },
+    "3-weekly-NEM-2025-08-05 232955.png": {
+      "caption": "3-weekly-nem-2025-08-05",
+      "filename": "3-weekly-nem-2025-08-05 232955.png",
+      "index": 5
+    },
+    "4-daily-B-2025-08-05 232955.png": {
+      "caption": "4-daily-b-2025-08-05",
+      "filename": "4-daily-b-2025-08-05 232955.png",
+      "index": 6
+    },
+    "4-daily-NEM-2025-08-05 232955.png": {
+      "caption": "4-daily-nem-2025-08-05 ",
+      "filename": "4-daily-nem-2025-08-05 232955.png",
+      "index": 7
+    }
+  }
+}
