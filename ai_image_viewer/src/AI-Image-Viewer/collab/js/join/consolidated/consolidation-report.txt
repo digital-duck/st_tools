@@ -1,0 +1,17 @@
+🧠 AI Image Viewer - Consolidation Report
+NaN
+
+Consolidation Date: 2025-08-09T16:11:51.950Z
+Packages Merged: 2
+Source Files: 2
+Total Images: 18
+Analyzed Images: 4
+Analysis Coverage: 22.2%
+
+AI Models Used:
+  - MobileNet
+  - EfficientNet
+
+Source Metadata Files:
+  - ai-image-mobilenet-metadata.json
+  - ai-image-efficientnet-metadata.json

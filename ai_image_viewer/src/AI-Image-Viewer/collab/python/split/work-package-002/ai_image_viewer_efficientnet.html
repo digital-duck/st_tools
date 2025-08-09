@@ -981,7 +981,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'efficientnet-image-metadata.json';
+            a.download = 'ai-image-efficientnet-metadata.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -994,7 +994,7 @@
             const metadata = {
                 version: '2.0-EfficientNet',
                 timestamp: new Date().toISOString(),
-                appName: 'AI Image Viewer - EfficientNet',
+                appName: 'AI Image - EfficientNet',
                 modelType: 'EfficientNet',
                 totalImages: images.length,
                 aiEnabled: isModelsLoaded,

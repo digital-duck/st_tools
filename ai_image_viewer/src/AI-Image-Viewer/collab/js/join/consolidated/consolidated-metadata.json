@@ -1,0 +1,69 @@
+{
+  "version": "2.0-Consolidated",
+  "timestamp": "2025-08-09T16:11:51.949Z",
+  "appName": "AI Image Viewer - Consolidated Results",
+  "consolidation_info": {
+    "source_files": [
+      "ai-image-mobilenet-metadata.json",
+      "ai-image-efficientnet-metadata.json"
+    ],
+    "packages_merged": 2,
+    "merge_date": "2025-08-09T16:11:51.950Z",
+    "models_used": [
+      "MobileNet",
+      "EfficientNet"
+    ],
+    "total_analyzed_images": 4
+  },
+  "totalImages": 18,
+  "aiEnabled": true,
+  "captions": {
+    "Giant_Panda_2004-03-2.jpg": "A cute panda sitting on bamboo",
+    "Tiger-600x380.jpg": "A tiger in the wild",
+    "red-chevy-sedan.webp": "A red sedan car",
+    "maxresdefault.jpg": "A person smiling"
+  },
+  "aiData": {
+    "Giant_Panda_2004-03-2.jpg": {
+      "modelUsed": "MobileNet",
+      "confidence": 0.85,
+      "tags": [
+        "panda",
+        "bamboo",
+        "animal"
+      ],
+      "description": "A panda eating bamboo"
+    },
+    "Tiger-600x380.jpg": {
+      "modelUsed": "MobileNet",
+      "confidence": 0.9,
+      "tags": [
+        "tiger",
+        "wildlife",
+        "animal"
+      ],
+      "description": "A tiger in natural habitat"
+    },
+    "red-chevy-sedan.webp": {
+      "modelUsed": "EfficientNet",
+      "confidence": 0.92,
+      "tags": [
+        "car",
+        "sedan",
+        "red",
+        "vehicle"
+      ],
+      "description": "A red Chevrolet sedan"
+    },
+    "maxresdefault.jpg": {
+      "modelUsed": "EfficientNet",
+      "confidence": 0.88,
+      "tags": [
+        "person",
+        "smile",
+        "portrait"
+      ],
+      "description": "A smiling person portrait"
+    }
+  }
+}

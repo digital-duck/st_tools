@@ -1,16 +1,726 @@
 {
   "version": "2.0-Consolidated",
-  "timestamp": "2025-08-09T07:59:50.179345",
+  "timestamp": "2025-08-09T14:44:41.545019",
   "appName": "AI Image Viewer - Consolidated Results",
   "consolidation_info": {
-    "source_files": [],
+    "source_files": [
+      "ai-image-mediapipe-metadata.json",
+      "ai-image-mediapipe-metadata.json",
+      "ai-image-efficientnet-metadata.json",
+      "ai-image-mediapipe-metadata.json",
+      "ai-image-efficientnet-metadata.json",
+      "ai-image-mediapipe-metadata.json",
+      "ai-image-mobilenet-metadata.json"
+    ],
     "packages_merged": 3,
-    "merge_date": "2025-08-09T07:59:50.179351",
-    "models_used": [],
-    "total_analyzed_images": 0
+    "merge_date": "2025-08-09T14:44:41.545035",
+    "models_used": [
+      "EfficientNet",
+      "MediaPipe"
+    ],
+    "total_analyzed_images": 18
   },
-  "totalImages": 18,
-  "aiEnabled": false,
-  "captions": {},
-  "aiData": {}
+  "totalImages": 42,
+  "aiEnabled": true,
+  "captions": {
+    "maxresdefault.jpg": "beautiful tree blossom in spring",
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": "people-headshot-lindsay-kimble  beautiful lady",
+    "pexels-mali-maeder-110820-1280x720.png": "hungry pig animal",
+    "photo-1608365151231-7dbed3034787.jpeg": "baby smiling happy",
+    "red-chevy-sedan.webp": "red-chevy-sedan car",
+    "water-plant-growth_800x.webp": "water-plant-growth_800x",
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": "giant tree on green landscape",
+    "african-american-family-1200x675-1.jpg": "african-american-family-1200x675-1 happy family of 3",
+    "bright-daylight-environment-forest-240040-1.webp": "bright-daylight-environment-forest-240040-1 woods trees sunshine",
+    "do-babies-grow-in-their-sleep-scaled.jpeg": "do-babies-grow-in-their-sleep-scaled cute baby",
+    "images.jpeg": "lotus flower great Buddha",
+    "maxresdefault (1).jpg": "train old style",
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT",
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": "2024-EQE350-4M-SEDAN-AVP-DR",
+    "Coyote-animal-sentience-research.jpg": "Coyote-animal-sentience-research wolf",
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": "DRRR202208_DroughtResponse_004_370218_reduced",
+    "Giant_Panda_2004-03-2.jpg": "Giant_Panda_2004-03-2 cute and loveable animal",
+    "Tiger-600x380.jpg": "Tiger-600x380 cruel animal"
+  },
+  "aiData": {
+    "maxresdefault.jpg": {
+      "tags": [
+        {
+          "label": "culinary presentation",
+          "confidence": 0.8255369281599114
+        },
+        {
+          "label": "recreational activity",
+          "confidence": 0.5941302131964974
+        },
+        {
+          "label": "natural landscape capture",
+          "confidence": 0.8513348324384926
+        },
+        {
+          "label": "architectural composition",
+          "confidence": 0.4960251808029841
+        },
+        {
+          "label": "sports action shot",
+          "confidence": 0.7988460158688109
+        }
+      ],
+      "objects": [],
+      "description": "Semantic understanding: culinary presentation",
+      "analysisDate": "2025-08-09T16:37:48.169Z",
+      "modelUsed": "MediaPipe"
+    },
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": {
+      "tags": [
+        {
+          "label": "professional portrait session",
+          "confidence": 0.8213245190816274
+        },
+        {
+          "label": "mountain landscape",
+          "confidence": 0.3750973149573027
+        },
+        {
+          "label": "botanical photography",
+          "confidence": 0.32499578674905544
+        },
+        {
+          "label": "automotive photography",
+          "confidence": 0.6842804926652137
+        },
+        {
+          "label": "travel documentation",
+          "confidence": 0.8231845262667481
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.9578655362129211,
+          "bbox": [
+            3.3759212493896484,
+            18.887661695480347,
+            947.4459028244019,
+            989.5897150039673
+          ]
+        }
+      ],
+      "description": "Contextual objects: person | Semantic understanding: professional portrait session",
+      "analysisDate": "2025-08-09T16:37:48.459Z",
+      "modelUsed": "MediaPipe"
+    },
+    "pexels-mali-maeder-110820-1280x720.png": {
+      "tags": [
+        {
+          "label": "marine environment",
+          "confidence": 0.8366402905245396
+        },
+        {
+          "label": "sports action shot",
+          "confidence": 0.46069893193470157
+        },
+        {
+          "label": "fashion photography",
+          "confidence": 0.47082676843528615
+        },
+        {
+          "label": "summer activity",
+          "confidence": 0.5530516832923708
+        },
+        {
+          "label": "wildlife documentation",
+          "confidence": 0.7000611212523998
+        }
+      ],
+      "objects": [
+        {
+          "class": "horse",
+          "confidence": 0.9204402565956116,
+          "bbox": [
+            350.60779571533203,
+            3.4898757934570312,
+            809.8897933959961,
+            715.1677322387695
+          ]
+        }
+      ],
+      "description": "Contextual objects: horse | Semantic understanding: marine environment",
+      "analysisDate": "2025-08-09T16:37:48.575Z",
+      "modelUsed": "MediaPipe"
+    },
+    "photo-1608365151231-7dbed3034787.jpeg": {
+      "tags": [
+        {
+          "label": "childhood moment",
+          "confidence": 0.46222253263635016
+        },
+        {
+          "label": "travel documentation",
+          "confidence": 0.629440311130243
+        },
+        {
+          "label": "sports action shot",
+          "confidence": 0.40607971594897674
+        },
+        {
+          "label": "musical performance",
+          "confidence": 0.5318146692916431
+        },
+        {
+          "label": "realistic outdoor photography",
+          "confidence": 0.865912025520039
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.8728947043418884,
+          "bbox": [
+            -11.060357093811035,
+            23.289918899536133,
+            2959.340214729309,
+            1778.571605682373
+          ]
+        }
+      ],
+      "description": "Contextual objects: person | Semantic understanding: childhood moment",
+      "analysisDate": "2025-08-09T16:37:48.909Z",
+      "modelUsed": "MediaPipe"
+    },
+    "red-chevy-sedan.webp": {
+      "tags": [
+        {
+          "label": "technology showcase",
+          "confidence": 0.7276326712249701
+        },
+        {
+          "label": "realistic outdoor photography",
+          "confidence": 0.6839606584497152
+        },
+        {
+          "label": "urban street scene",
+          "confidence": 0.7405350539521036
+        },
+        {
+          "label": "interior design",
+          "confidence": 0.8918727229728718
+        },
+        {
+          "label": "fashion photography",
+          "confidence": 0.5475681750568199
+        }
+      ],
+      "objects": [
+        {
+          "class": "truck",
+          "confidence": 0.6051232814788818,
+          "bbox": [
+            62.656672954559326,
+            20.416394352912903,
+            748.577108502388,
+            394.15080213546753
+          ]
+        }
+      ],
+      "description": "Contextual objects: truck | Semantic understanding: technology showcase",
+      "analysisDate": "2025-08-09T16:37:49.175Z",
+      "modelUsed": "MediaPipe"
+    },
+    "water-plant-growth_800x.webp": {
+      "tags": [
+        {
+          "label": "evening ambiance",
+          "confidence": 0.42811211084467926
+        },
+        {
+          "label": "recreational activity",
+          "confidence": 0.685733083369459
+        },
+        {
+          "label": "culinary presentation",
+          "confidence": 0.31890825467588513
+        },
+        {
+          "label": "travel documentation",
+          "confidence": 0.8969222774527275
+        },
+        {
+          "label": "metropolitan area",
+          "confidence": 0.7743332089420885
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.6942140460014343,
+          "bbox": [
+            1.2601971626281738,
+            43.91058740019798,
+            206.47143125534058,
+            355.3016223013401
+          ]
+        }
+      ],
+      "description": "Contextual objects: person | Semantic understanding: evening ambiance",
+      "analysisDate": "2025-08-09T16:37:49.442Z",
+      "modelUsed": "MediaPipe"
+    },
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [],
+      "description": "Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:31.979Z",
+      "modelUsed": "EfficientNet"
+    },
+    "african-american-family-1200x675-1.jpg": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.9445536136627197,
+          "bbox": [
+            508.1979990005493,
+            267.0519210398197,
+            379.40940856933594,
+            405.18092438578606
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.9231353998184204,
+          "bbox": [
+            634.6920490264893,
+            2.584214508533478,
+            565.0906562805176,
+            670.0188964605331
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.8117722868919373,
+          "bbox": [
+            532.5885057449341,
+            68.90554055571556,
+            452.9740333557129,
+            587.384844571352
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.8100032806396484,
+          "bbox": [
+            93.62368583679199,
+            32.75938779115677,
+            492.94703006744385,
+            637.2904479503632
+          ]
+        }
+      ],
+      "description": "Detected objects: person, person, person | Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:32.212Z",
+      "modelUsed": "EfficientNet"
+    },
+    "bright-daylight-environment-forest-240040-1.webp": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [],
+      "description": "Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:32.448Z",
+      "modelUsed": "EfficientNet"
+    },
+    "do-babies-grow-in-their-sleep-scaled.jpeg": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [
+        {
+          "class": "person",
+          "confidence": 0.960240364074707,
+          "bbox": [
+            97.23892211914062,
+            324.36153692007065,
+            2351.6859436035156,
+            1266.596210718155
+          ]
+        }
+      ],
+      "description": "Detected objects: person | Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:32.678Z",
+      "modelUsed": "EfficientNet"
+    },
+    "images.jpeg": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [],
+      "description": "Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:32.878Z",
+      "modelUsed": "EfficientNet"
+    },
+    "maxresdefault (1).jpg": {
+      "tags": [
+        {
+          "label": "enhanced scene analysis",
+          "confidence": 0.85
+        },
+        {
+          "label": "improved object recognition",
+          "confidence": 0.78
+        },
+        {
+          "label": "better context understanding",
+          "confidence": 0.72
+        }
+      ],
+      "objects": [
+        {
+          "class": "train",
+          "confidence": 0.9880717992782593,
+          "bbox": [
+            55.70537567138672,
+            146.38288736343384,
+            1062.8851699829102,
+            526.1280226707458
+          ]
+        }
+      ],
+      "description": "Detected objects: train | Enhanced classification: enhanced scene analysis",
+      "analysisDate": "2025-08-09T16:33:33.095Z",
+      "modelUsed": "EfficientNet"
+    },
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": {
+      "tags": [
+        {
+          "label": "workplace environment",
+          "confidence": 0.5498359370205645
+        },
+        {
+          "label": "automotive photography",
+          "confidence": 0.4907067871045291
+        },
+        {
+          "label": "winter landscape",
+          "confidence": 0.4780230653333315
+        },
+        {
+          "label": "coastal environment",
+          "confidence": 0.7251329557310771
+        },
+        {
+          "label": "spring blooming",
+          "confidence": 0.7554724019124923
+        }
+      ],
+      "objects": [
+        {
+          "class": "car",
+          "confidence": 0.6696190237998962,
+          "bbox": [
+            0.7288715243339539,
+            217.89736032485962,
+            108.8192930817604,
+            111.83717250823975
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.6472532749176025,
+          "bbox": [
+            321.09450459480286,
+            34.79302525520325,
+            132.24425554275513,
+            265.9396827220917
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.5663504600524902,
+          "bbox": [
+            51.148754954338074,
+            12.748432159423828,
+            410.04219353199005,
+            344.65351581573486
+          ]
+        }
+      ],
+      "description": "Contextual objects: car, person, person | Semantic understanding: workplace environment",
+      "analysisDate": "2025-08-09T16:29:17.580Z",
+      "modelUsed": "MediaPipe"
+    },
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": {
+      "tags": [
+        {
+          "label": "celebration event",
+          "confidence": 0.48528614602062203
+        },
+        {
+          "label": "wildlife documentation",
+          "confidence": 0.45733767057404695
+        },
+        {
+          "label": "marine environment",
+          "confidence": 0.5132449244054997
+        },
+        {
+          "label": "travel documentation",
+          "confidence": 0.8543560351586055
+        },
+        {
+          "label": "fashion photography",
+          "confidence": 0.8755461555972397
+        }
+      ],
+      "objects": [
+        {
+          "class": "car",
+          "confidence": 0.9651510119438171,
+          "bbox": [
+            114.99843716621399,
+            101.14006876945496,
+            695.0255525112152,
+            276.3370954990387
+          ]
+        }
+      ],
+      "description": "Contextual objects: car | Semantic understanding: celebration event",
+      "analysisDate": "2025-08-09T16:29:17.831Z",
+      "modelUsed": "MediaPipe"
+    },
+    "Coyote-animal-sentience-research.jpg": {
+      "tags": [
+        {
+          "label": "coastal environment",
+          "confidence": 0.5779140469989219
+        },
+        {
+          "label": "literary scene",
+          "confidence": 0.7436277472640689
+        },
+        {
+          "label": "artistic expression",
+          "confidence": 0.6074117194338934
+        },
+        {
+          "label": "metropolitan area",
+          "confidence": 0.4233106847497575
+        },
+        {
+          "label": "coastal environment",
+          "confidence": 0.5699014830193496
+        }
+      ],
+      "objects": [],
+      "description": "Semantic understanding: coastal environment",
+      "analysisDate": "2025-08-09T16:29:18.099Z",
+      "modelUsed": "MediaPipe"
+    },
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": {
+      "tags": [
+        {
+          "label": "evening ambiance",
+          "confidence": 0.43828581281911505
+        },
+        {
+          "label": "home lifestyle",
+          "confidence": 0.5371189378280696
+        },
+        {
+          "label": "urban street scene",
+          "confidence": 0.7013899059406259
+        },
+        {
+          "label": "botanical photography",
+          "confidence": 0.7755066736017271
+        },
+        {
+          "label": "travel documentation",
+          "confidence": 0.6283180386463579
+        }
+      ],
+      "objects": [
+        {
+          "class": "zebra",
+          "confidence": 0.9277575016021729,
+          "bbox": [
+            511.0287780761719,
+            50.23934984207153,
+            247.1513671875,
+            236.02099084854126
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.9216057062149048,
+          "bbox": [
+            135.68255996704102,
+            76.42512184381485,
+            91.86260604858398,
+            157.80356115102768
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.8981984853744507,
+          "bbox": [
+            303.9070587158203,
+            27.44123411178589,
+            220.07363891601562,
+            435.9780764579773
+          ]
+        },
+        {
+          "class": "zebra",
+          "confidence": 0.6325540542602539,
+          "bbox": [
+            7.996410369873047,
+            99.00958299636841,
+            99.52720642089844,
+            146.69088006019592
+          ]
+        }
+      ],
+      "description": "Contextual objects: zebra, zebra, zebra | Semantic understanding: evening ambiance",
+      "analysisDate": "2025-08-09T16:29:18.381Z",
+      "modelUsed": "MediaPipe"
+    },
+    "Giant_Panda_2004-03-2.jpg": {
+      "tags": [
+        {
+          "label": "culinary presentation",
+          "confidence": 0.35315299408736656
+        },
+        {
+          "label": "botanical photography",
+          "confidence": 0.5727260931709598
+        },
+        {
+          "label": "celebration event",
+          "confidence": 0.6135716509753015
+        },
+        {
+          "label": "childhood moment",
+          "confidence": 0.4393080855834391
+        },
+        {
+          "label": "interior design",
+          "confidence": 0.3998927744342725
+        }
+      ],
+      "objects": [
+        {
+          "class": "bear",
+          "confidence": 0.9937044978141785,
+          "bbox": [
+            211.06432914733887,
+            49.189264476299286,
+            591.8231678009033,
+            516.6728577017784
+          ]
+        }
+      ],
+      "description": "Contextual objects: bear | Semantic understanding: culinary presentation",
+      "analysisDate": "2025-08-09T16:29:18.648Z",
+      "modelUsed": "MediaPipe"
+    },
+    "Tiger-600x380.jpg": {
+      "tags": [
+        {
+          "label": "botanical photography",
+          "confidence": 0.4062418882891937
+        },
+        {
+          "label": "professional headshot",
+          "confidence": 0.4535938673060417
+        },
+        {
+          "label": "coastal environment",
+          "confidence": 0.6637786841202513
+        },
+        {
+          "label": "workplace environment",
+          "confidence": 0.7433428678182974
+        },
+        {
+          "label": "rural setting",
+          "confidence": 0.503751971550615
+        }
+      ],
+      "objects": [
+        {
+          "class": "zebra",
+          "confidence": 0.8399292230606079,
+          "bbox": [
+            49.665552377700806,
+            10.493500232696533,
+            525.7848680019379,
+            364.1190266609192
+          ]
+        }
+      ],
+      "description": "Contextual objects: zebra | Semantic understanding: botanical photography",
+      "analysisDate": "2025-08-09T16:29:18.898Z",
+      "modelUsed": "MediaPipe"
+    }
+  }
 }

@@ -17,6 +17,9 @@ import fs from 'fs-extra';
 import path from 'path';
 import { glob } from 'glob';
 import chalk from 'chalk';
+import tar from 'tar';
+import { tmpdir } from 'os';
+import { mkdtemp } from 'fs/promises';
 
 class WorkJoiner {
     constructor(packagePaths, outputPath) {
@@ -24,19 +27,11 @@ class WorkJoiner {
         this.outputPath = path.resolve(outputPath);
         this.supportedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
         this.htmlFiles = [
-            'ai_image_viewer.html',
-            'ai_image_viewer_efficientnet.html',
-            'ai_image_viewer_mediapipe.html'
+            'ai_image.html'
         ];
-        this.metadataPatterns = [
-            'ai-image-metadata.json',
-            '*-image-metadata.json',
-            'efficientnet-image-metadata.json',
-            'mediapipe-image-metadata.json',
-            '*-analysis.json',
-            'metadata.json'
-        ];
+        // Removed metadataPatterns - now using flexible filename detection
         this.projectRoot = this.findProjectRoot();
+        this.tempDir = null; // For extracted .tar.gz files
     }
 
     findProjectRoot() {
@@ -51,6 +46,76 @@ class WorkJoiner {
             current = path.dirname(current);
         }
         throw new Error('Could not find project root with HTML files');
+    }
+
+    async detectAndExtractArchives() {
+        const extractedPaths = [];
+        const archiveFiles = [];
+        
+        for (const inputPath of this.packagePaths) {
+            const stats = await fs.stat(inputPath).catch(() => null);
+            
+            if (stats && stats.isFile() && inputPath.endsWith('.tar.gz')) {
+                // This is a .tar.gz file
+                archiveFiles.push(inputPath);
+            } else if (stats && stats.isDirectory()) {
+                // Check if directory contains .tar.gz files
+                const gzFiles = await glob(path.join(inputPath, '*.tar.gz'));
+                archiveFiles.push(...gzFiles);
+                
+                // Also check for existing work-package directories
+                const workDirs = await glob(path.join(inputPath, 'work-package-*'));
+                for (const workDir of workDirs) {
+                    if ((await fs.stat(workDir)).isDirectory()) {
+                        extractedPaths.push(workDir);
+                    }
+                }
+            } else if (stats && stats.isDirectory()) {
+                // Regular directory
+                extractedPaths.push(inputPath);
+            }
+        }
+        
+        // Extract .tar.gz files if any found
+        if (archiveFiles.length > 0) {
+            console.log(chalk.cyan(`🗜️  Found ${archiveFiles.length} compressed packages to extract...`));
+            
+            // Create temporary directory for extraction
+            this.tempDir = await mkdtemp(path.join(tmpdir(), 'ai-image-join-'));
+            
+            for (const archiveFile of archiveFiles) {
+                console.log(chalk.blue(`📦 Extracting ${path.basename(archiveFile)}...`));
+                
+                try {
+                    await tar.x({
+                        file: archiveFile,
+                        cwd: this.tempDir
+                    });
+                    console.log(chalk.green(`  ✓ Extracted ${path.basename(archiveFile)}`));
+                    
+                    // Find extracted work-package directories
+                    const extractedDirs = await glob(path.join(this.tempDir, 'work-package-*'));
+                    for (const extractedDir of extractedDirs) {
+                        if ((await fs.stat(extractedDir)).isDirectory()) {
+                            extractedPaths.push(extractedDir);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.log(chalk.red(`  ❌ Failed to extract ${path.basename(archiveFile)}: ${error.message}`));
+                    continue;
+                }
+            }
+        }
+        
+        return extractedPaths;
+    }
+
+    async cleanupTempFiles() {
+        if (this.tempDir && await fs.pathExists(this.tempDir)) {
+            await fs.remove(this.tempDir);
+            console.log(chalk.green('🧹 Cleaned up temporary files'));
+        }
     }
 
     async validatePackages() {
@@ -114,13 +179,9 @@ class WorkJoiner {
             for (const imgPath of packageImages) {
                 const originalName = path.basename(imgPath);
                 if (seenNames.has(originalName)) {
-                    const newName = `${path.basename(packagePath)}_${originalName}`;
-                    console.log(chalk.yellow(`  ⚠️  Renaming duplicate: ${originalName} → ${newName}`));
-                    // Create a temporary renamed copy
-                    const tempPath = path.join(path.dirname(imgPath), newName);
-                    await fs.copy(imgPath, tempPath);
-                    allImages.push(tempPath);
-                    seenNames.add(newName);
+                    // Skip duplicates - first survives
+                    console.log(chalk.yellow(`  ⚠️  Skipping duplicate image: ${originalName} (first survives)`));
+                    continue;
                 } else {
                     allImages.push(imgPath);
                     seenNames.add(originalName);
@@ -137,21 +198,26 @@ class WorkJoiner {
         for (const packagePath of packages) {
             const foundInPackage = [];
 
-            // Search for metadata files using patterns
-            for (const pattern of this.metadataPatterns) {
-                const matches = await glob(path.join(packagePath, pattern));
-                foundInPackage.push(...matches);
+            // Find all .json files in the package
+            const jsonFiles = await glob(path.join(packagePath, '*.json'));
+
+            // Filter for files containing "metadata" (case-insensitive)
+            for (const jsonFile of jsonFiles) {
+                const filename = path.basename(jsonFile).toLowerCase();
+                if (filename.includes('metadata')) {
+                    // Exclude package-manifest.json (not analysis data)
+                    if (path.basename(jsonFile) !== 'package-manifest.json') {
+                        foundInPackage.push(jsonFile);
+                    }
+                }
             }
 
-            // Remove duplicates
-            const uniqueFiles = [...new Set(foundInPackage)];
-
-            if (uniqueFiles.length > 0) {
-                console.log(chalk.blue(`📊 Package ${path.basename(packagePath)}: ${uniqueFiles.length} metadata files`));
-                for (const metaFile of uniqueFiles) {
+            if (foundInPackage.length > 0) {
+                console.log(chalk.blue(`📊 Package ${path.basename(packagePath)}: ${foundInPackage.length} metadata files`));
+                for (const metaFile of foundInPackage) {
                     console.log(chalk.white(`  - ${path.basename(metaFile)}`));
                 }
-                metadataFiles.push(...uniqueFiles);
+                metadataFiles.push(...foundInPackage);
             } else {
                 console.log(chalk.yellow(`⚠️  Package ${path.basename(packagePath)}: No metadata files found`));
             }
@@ -188,25 +254,23 @@ class WorkJoiner {
                 
                 console.log(chalk.blue(`📋 Processing: ${path.basename(metaFile)}`));
 
-                // Merge captions
+                // Merge captions - first survives for duplicates
                 if (data.captions) {
                     for (const [imgName, caption] of Object.entries(data.captions)) {
-                        let key = imgName;
-                        if (merged.captions[key]) {
-                            key = `${packageName}_${imgName}`;
+                        if (!merged.captions[imgName]) {
+                            merged.captions[imgName] = caption;
                         }
-                        merged.captions[key] = caption;
+                        // Skip if duplicate - first survives
                     }
                 }
 
-                // Merge AI data
+                // Merge AI data - first survives for duplicates
                 if (data.aiData) {
                     for (const [imgName, aiData] of Object.entries(data.aiData)) {
-                        let key = imgName;
-                        if (merged.aiData[key]) {
-                            key = `${packageName}_${imgName}`;
+                        if (!merged.aiData[imgName]) {
+                            merged.aiData[imgName] = aiData;
                         }
-                        merged.aiData[key] = aiData;
+                        // Skip if duplicate - first survives
 
                         // Track models used
                         if (aiData.modelUsed) {
@@ -290,7 +354,7 @@ class WorkJoiner {
         
         const reportLines = [
             '🧠 AI Image Viewer - Consolidation Report',
-            '=' * 50,
+            '='.repeat(50),
             '',
             `Consolidation Date: ${metadata.consolidation_info.merge_date}`,
             `Packages Merged: ${metadata.consolidation_info.packages_merged}`,
@@ -319,53 +383,66 @@ class WorkJoiner {
     }
 
     async join() {
-        console.log(chalk.cyan(`🔍 Validating ${this.packagePaths.length} packages...`));
+        try {
+            console.log(chalk.cyan(`🔍 Processing ${this.packagePaths.length} input paths...`));
 
-        // Validate packages
-        const validPackages = await this.validatePackages();
-        if (validPackages.length === 0) {
-            throw new Error('No valid packages found to merge');
+            // Detect and extract .tar.gz files
+            const extractedPaths = await this.detectAndExtractArchives();
+            
+            // Update package paths with extracted directories
+            this.packagePaths = extractedPaths;
+
+            console.log(chalk.cyan(`🔍 Validating ${this.packagePaths.length} packages...`));
+
+            // Validate packages
+            const validPackages = await this.validatePackages();
+            if (validPackages.length === 0) {
+                throw new Error('No valid packages found to merge');
+            }
+
+            console.log(chalk.green(`✓ Found ${validPackages.length} valid packages`));
+
+            // Collect all images
+            console.log(chalk.cyan('\n📸 Collecting images from packages...'));
+            const allImages = await this.collectImages(validPackages);
+            console.log(chalk.green(`✓ Collected ${allImages.length} total images`));
+
+            // Find and merge metadata
+            console.log(chalk.cyan('\n📊 Processing metadata files...'));
+            const metadataFiles = await this.findMetadataFiles(validPackages);
+
+            let mergedMetadata;
+            if (metadataFiles.length === 0) {
+                console.log(chalk.yellow('⚠️  No metadata files found. Creating package with images only.'));
+                mergedMetadata = {
+                    version: '2.0-Consolidated',
+                    timestamp: new Date().toISOString(),
+                    appName: 'AI Image Viewer - Consolidated Results',
+                    consolidation_info: {
+                        source_files: [],
+                        packages_merged: validPackages.length,
+                        merge_date: new Date().toISOString(),
+                        models_used: [],
+                        total_analyzed_images: 0
+                    },
+                    totalImages: allImages.length,
+                    aiEnabled: false,
+                    captions: {},
+                    aiData: {}
+                };
+            } else {
+                mergedMetadata = await this.mergeMetadata(metadataFiles);
+            }
+
+            // Create consolidated package
+            console.log(chalk.cyan('\n📦 Creating consolidated package...'));
+            const outputPath = await this.createConsolidatedPackage(allImages, mergedMetadata);
+
+            return outputPath;
+        } finally {
+            // Clean up temporary files
+            await this.cleanupTempFiles();
         }
-
-        console.log(chalk.green(`✓ Found ${validPackages.length} valid packages`));
-
-        // Collect all images
-        console.log(chalk.cyan('\n📸 Collecting images from packages...'));
-        const allImages = await this.collectImages(validPackages);
-        console.log(chalk.green(`✓ Collected ${allImages.length} total images`));
-
-        // Find and merge metadata
-        console.log(chalk.cyan('\n📊 Processing metadata files...'));
-        const metadataFiles = await this.findMetadataFiles(validPackages);
-
-        let mergedMetadata;
-        if (metadataFiles.length === 0) {
-            console.log(chalk.yellow('⚠️  No metadata files found. Creating package with images only.'));
-            mergedMetadata = {
-                version: '2.0-Consolidated',
-                timestamp: new Date().toISOString(),
-                appName: 'AI Image Viewer - Consolidated Results',
-                consolidation_info: {
-                    source_files: [],
-                    packages_merged: validPackages.length,
-                    merge_date: new Date().toISOString(),
-                    models_used: [],
-                    total_analyzed_images: 0
-                },
-                totalImages: allImages.length,
-                aiEnabled: false,
-                captions: {},
-                aiData: {}
-            };
-        } else {
-            mergedMetadata = await this.mergeMetadata(metadataFiles);
-        }
-
-        // Create consolidated package
-        console.log(chalk.cyan('\n📦 Creating consolidated package...'));
-        const outputPath = await this.createConsolidatedPackage(allImages, mergedMetadata);
-
-        return outputPath;
     }
 }
 
@@ -414,7 +491,7 @@ async function main() {
         }
 
         console.log(chalk.bold.blue('🧠 AI Image Viewer - Work Joiner Tool'));
-        console.log(chalk.blue('=' * 43));
+        console.log(chalk.blue('='.repeat(43)));
 
         // Initialize joiner
         const joiner = new WorkJoiner(packages, outputPath);

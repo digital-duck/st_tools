@@ -26,13 +26,13 @@ pip install click
 **Split Work:**
 ```bash
 cd python/
-python3 split_work.py -s /path/to/images -n 5
+python3 split_work.py -s ../../images -n 3
 ```
 
 **Join Work:**
 ```bash
 cd python/
-python3 join_work.py ../split/work-package-*
+python3 join_work.py ./split/work-package-*
 ```
 
 ### **📦 JavaScript Tools**
@@ -238,12 +238,15 @@ join/consolidated/              # Merged results output
 
 ## 📊 Metadata Handling
 
-The tools automatically detect and merge these metadata formats:
+The tools automatically detect and merge **any .json file containing "metadata"** in the filename (case-insensitive):
 - `ai-image-metadata.json` (MobileNet baseline)
 - `efficientnet-image-metadata.json` (EfficientNet)
 - `mediapipe-image-metadata.json` (MediaPipe)
-- `*-analysis.json` (custom exports)
-- `metadata.json` (generic)
+- `my-custom-metadata.json` (custom exports)
+- `analysis-metadata.json` (flexible naming)
+- **Any filename with "metadata" + ".json"**
+
+**Excluded:** `package-manifest.json` (organizational file, not analysis data)
 
 ## 🔍 Advanced Features
 

@@ -1,11 +1,22 @@
 🧠 AI Image Viewer - Consolidation Report
 ==================================================
 
-Consolidation Date: 2025-08-09T07:59:50.179351
+Consolidation Date: 2025-08-09T14:44:41.545035
 Packages Merged: 3
-Source Files: 0
-Total Images: 18
-Analyzed Images: 0
-Analysis Coverage: 0.0%
+Source Files: 7
+Total Images: 42
+Analyzed Images: 18
+Analysis Coverage: 42.9%
+
+AI Models Used:
+  - EfficientNet
+  - MediaPipe
 
 Source Metadata Files:
+  - ai-image-mediapipe-metadata.json
+  - ai-image-mediapipe-metadata.json
+  - ai-image-efficientnet-metadata.json
+  - ai-image-mediapipe-metadata.json
+  - ai-image-efficientnet-metadata.json
+  - ai-image-mediapipe-metadata.json
+  - ai-image-mobilenet-metadata.json

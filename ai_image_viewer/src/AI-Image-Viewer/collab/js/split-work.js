@@ -25,9 +25,7 @@ class WorkSplitter {
         this.numSplits = numSplits;
         this.supportedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
         this.htmlFiles = [
-            'ai_image_viewer.html',
-            'ai_image_viewer_efficientnet.html',
-            'ai_image_viewer_mediapipe.html'
+            'ai_image.html'
         ];
         this.projectRoot = this.findProjectRoot();
     }
@@ -106,6 +104,16 @@ class WorkSplitter {
             console.log(chalk.green('  ✓ Copied docs folder'));
         }
 
+        // Copy compression script for team members
+        const compressScript = path.join(this.projectRoot, 'collab', 'compress-packages.sh');
+        if (await fs.pathExists(compressScript)) {
+            const dstScript = path.join(packagePath, 'compress-package.sh');
+            await fs.copy(compressScript, dstScript);
+            // Make executable
+            await fs.chmod(dstScript, 0o755);
+            console.log(chalk.green('  ✓ Copied compression script'));
+        }
+
         // Create images subfolder and copy images
         const imagesPath = path.join(packagePath, 'images');
         await fs.ensureDir(imagesPath);
@@ -120,6 +128,9 @@ class WorkSplitter {
 
         // Create package manifest
         await this.createManifest(packagePath, chunkId, imageChunk);
+
+        // Create README for team members
+        await this.createPackageReadme(packagePath, chunkId, imageChunk);
 
         return packagePath;
     }
@@ -147,6 +158,87 @@ class WorkSplitter {
         const manifestPath = path.join(packagePath, 'package-manifest.json');
         await fs.writeJSON(manifestPath, manifest, { spaces: 2 });
         console.log(chalk.green('  ✓ Created package manifest'));
+    }
+
+    async createPackageReadme(packagePath, chunkId, imageChunk) {
+        const packageName = `work-package-${chunkId.toString().padStart(3, '0')}`;
+        const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        
+        const readmeContent = `# AI Image Analysis Work Package
+
+📦 **Package:** ${packageName}  
+🖼️ **Images to analyze:** ${imageChunk.length}  
+📅 **Created:** ${currentDate}
+
+## 🚀 Quick Start
+
+### 1. Open the AI Image Viewer
+Open the HTML file in your web browser:
+- \`ai_image.html\` - Unified viewer with all AI models (MobileNet, EfficientNet, MediaPipe)
+
+### 2. Load Images
+- Click **"📂 Select Folder"** and choose the \`images/\` folder
+- Or click **"📁 Select Images"** to load individual files
+- You should see ${imageChunk.length} images loaded
+
+### 3. Choose AI Model and Analyze
+- Select your preferred AI model from the dropdown (MobileNet, EfficientNet, or MediaPipe)
+- Click the **AI Analyze** button 🤖
+- Wait for analysis to complete (progress bar will show status)
+- All images will get AI-generated tags and descriptions
+
+### 4. Export Results
+- Click **"💾 Export Metadata"** button
+- This saves a \`.json\` file with all analysis results
+- The filename will be based on your selected model: \`ai-image-mobilenet-metadata.json\`, \`ai-image-efficientnet-metadata.json\`, or \`ai-image-mediapipe-metadata.json\`
+
+### 5. Send Back to Team Lead
+- **Compress this entire folder** (including the new metadata file):
+  \`\`\`bash
+  # Easy way: Use the included script
+  ./compress-package.sh
+  
+  # Manual way: 
+  cd ..
+  tar -czf ${packageName}-completed.tar.gz ${packageName}/
+  \`\`\`
+- **Send the compressed file** back to your team lead
+- Team lead will merge all results using the join tool
+
+## 📝 Tips
+
+- **Edit captions**: Click on any image caption to edit it manually
+- **Search**: Use the search feature to find specific images
+- **Grid layout**: Adjust how many images per row (1-6)
+- **Model comparison**: Try different models to compare accuracy
+
+## 🔍 File Structure
+
+\`\`\`
+${packageName}/
+├── README.md                              # This file
+├── compress-package.sh                    # Script to compress your completed work
+├── ai_image.html                          # Unified AI viewer (all models)
+├── docs/                                  # Documentation assets
+├── images/                                # Your ${imageChunk.length} images to analyze
+├── package-manifest.json                 # Package info
+└── [exported-metadata].json              # Your analysis results (after export)
+\`\`\`
+
+## ❓ Questions?
+
+If you run into issues:
+1. Make sure you're using a modern web browser (Chrome, Firefox, Safari, Edge)
+2. Check the browser console for any error messages
+3. Try a different AI model if one isn't working
+4. Contact your team lead for help
+
+**Happy analyzing! 🚀**
+`;
+
+        const readmePath = path.join(packagePath, 'README.md');
+        await fs.writeFile(readmePath, readmeContent, 'utf8');
+        console.log(chalk.green('  ✓ Created README.md for team members'));
     }
 
     async split() {

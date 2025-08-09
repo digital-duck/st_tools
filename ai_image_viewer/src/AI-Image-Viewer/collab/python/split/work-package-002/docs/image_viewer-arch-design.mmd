@@ -1,0 +1,98 @@
+graph TB
+    subgraph "Browser Environment"
+        subgraph "User Interface Layer"
+            UI[HTML/CSS Interface]
+            Gallery[Image Gallery Grid]
+            Search[Search Modal]
+            Controls[Control Panel]
+        end
+        
+        subgraph "Application Logic"
+            FileHandler[File Handler]
+            ImageLoader[Image Loader]
+            AIProcessor[AI Processor]
+            SearchEngine[Search Engine]
+            MetadataManager[Metadata Manager]
+        end
+        
+        subgraph "TensorFlow.js Runtime"
+            TFJS[TensorFlow.js Core]
+            WebGL[WebGL Backend]
+            CPU[CPU Backend]
+        end
+        
+        subgraph "AI Models"
+            MobileNet[MobileNet v2<br/>Image Classification]
+            COCOSSD[COCO-SSD<br/>Object Detection]
+            ModelCache[Model Cache]
+        end
+        
+        subgraph "Data Storage"
+            LocalImages[Local Image Files]
+            BlobURLs[Blob URLs]
+            AIResults[AI Analysis Results]
+            UserMetadata[User Captions & Tags]
+        end
+    end
+    
+    subgraph "External Resources"
+        CDN[TensorFlow.js CDN]
+        ModelFiles[Pre-trained Models]
+    end
+    
+    %% User Interactions
+    User([User]) --> UI
+    User --> FileHandler
+    
+    %% File Processing Flow
+    FileHandler --> ImageLoader
+    ImageLoader --> BlobURLs
+    BlobURLs --> Gallery
+    
+    %% AI Processing Flow
+    AIProcessor --> TFJS
+    TFJS --> WebGL
+    TFJS --> CPU
+    TFJS --> MobileNet
+    TFJS --> COCOSSD
+    
+    %% Model Loading
+    CDN --> ModelFiles
+    ModelFiles --> ModelCache
+    ModelCache --> MobileNet
+    ModelCache --> COCOSSD
+    
+    %% Data Flow
+    ImageLoader --> AIProcessor
+    AIProcessor --> AIResults
+    AIResults --> Gallery
+    AIResults --> SearchEngine
+    SearchEngine --> Search
+    
+    %% Metadata Management
+    MetadataManager --> UserMetadata
+    MetadataManager --> AIResults
+    UserMetadata --> Gallery
+    
+    %% Search Flow
+    Search --> SearchEngine
+    SearchEngine --> AIResults
+    SearchEngine --> UserMetadata
+    
+    %% Control Flow
+    Controls --> AIProcessor
+    Controls --> SearchEngine
+    Controls --> MetadataManager
+    
+    %% Styling
+    classDef userLayer fill:#e1f5fe
+    classDef logicLayer fill:#f3e5f5
+    classDef aiLayer fill:#e8f5e8
+    classDef dataLayer fill:#fff3e0
+    classDef external fill:#ffebee
+    
+    class UI,Gallery,Search,Controls userLayer
+    class FileHandler,ImageLoader,AIProcessor,SearchEngine,MetadataManager logicLayer
+    class TFJS,WebGL,CPU,MobileNet,COCOSSD,ModelCache aiLayer
+    class LocalImages,BlobURLs,AIResults,UserMetadata dataLayer
+    class CDN,ModelFiles external

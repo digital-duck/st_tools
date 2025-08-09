@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Viewer - Unified</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .ai-badge {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .model-selector label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .model-selector select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        .model-selector select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            font-size: 16px;
+            padding: 14px 24px;
+        }
+
+        .ai-button:hover {
+            background: linear-gradient(45deg, #218838, #1aa179);
+        }
+
+        .model-mobilenet { color: #007bff; }
+        .model-efficientnet { color: #28a745; }
+        .model-mediapipe { color: #fd7e14; }
+
+        .search-container {
+            margin: 20px 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .suggestion {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion:hover {
+            background: #e9ecef;
+        }
+
+        .grid-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .grid-slider {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .image-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ai-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .ai-indicator.analyzed {
+            display: block;
+        }
+
+        .image-content {
+            padding: 16px;
+        }
+
+        .image-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .image-caption {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            min-height: 20px;
+        }
+
+        .image-caption:hover {
+            background-color: #f8f9fa;
+        }
+
+        .image-caption[contenteditable="true"] {
+            border: 2px solid #007bff;
+            background-color: #fff;
+        }
+
+        .image-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tag.high-confidence {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .confidence-score {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .search-result-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-score {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* Grid size adjustments */
+        .grid-1 { grid-template-columns: 1fr; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        @media (max-width: 1200px) {
+            .grid-5, .grid-6 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .grid-4, .grid-5, .grid-6 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 400px) {
+            .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .model-loading {
+            background: #ffc107 !important;
+            color: #212529 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>AI Image Viewer</h1>
+                <span class="ai-badge">🤖 UNIFIED</span>
+            </div>
+            
+            <div class="controls">
+                <div class="model-selector">
+                    <label for="aiModel">🧠 AI Model:</label>
+                    <select id="aiModel" onchange="handleModelChange()">
+                        <option value="mobilenet">MobileNet v2 (Fast, Basic)</option>
+                        <option value="efficientnet">EfficientNet (Balanced)</option>
+                        <option value="mediapipe">MediaPipe (Best Accuracy)</option>
+                    </select>
+                </div>
+                
+                <button onclick="selectFiles()">📁 Select Images</button>
+                <button onclick="selectFolder()">📂 Select Folder</button>
+                <button id="aiAnalyzeBtn" onclick="analyzeImages()" disabled class="ai-button">
+                    <span id="aiAnalyzeIcon">🧠</span>
+                    <span id="aiAnalyzeText">AI Analyze</span>
+                </button>
+                <button onclick="exportMetadata()">💾 Export Metadata</button>
+                <button onclick="importMetadata()">📂 Import Metadata</button>
+                <button onclick="openSearch()">🔍 AI Search</button>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Initializing AI model...</div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <span class="stat-value" id="totalImages">0</span>
+                <span class="stat-label">Images</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="analyzedImages">0</span>
+                <span class="stat-label">Analyzed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="currentModel">MobileNet</span>
+                <span class="stat-label">AI Model</span>
+            </div>
+        </div>
+
+        <div class="grid-controls">
+            <label>Grid Layout:</label>
+            <input type="range" min="1" max="6" value="3" class="grid-slider" id="gridSlider" onchange="updateGridSize(this.value)">
+            <span id="gridValue">3 per row</span>
+        </div>
+
+        <div class="image-grid" id="imageGrid">
+            <!-- Images will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal" id="searchModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSearch()">&times;</span>
+            <h3>🔍 AI Search</h3>
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search images by content..." onkeydown="handleSearchKeydown(event)">
+                <div class="search-suggestions">
+                    <span class="suggestion" onclick="searchImages('person smiling')">person smiling</span>
+                    <span class="suggestion" onclick="searchImages('outdoor scene')">outdoor scene</span>
+                    <span class="suggestion" onclick="searchImages('food and drinks')">food and drinks</span>
+                    <span class="suggestion" onclick="searchImages('vehicle')">vehicle</span>
+                    <span class="suggestion" onclick="searchImages('animals')">animals</span>
+                    <span class="suggestion" onclick="searchImages('architecture')">architecture</span>
+                </div>
+                <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Images</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <!-- TensorFlow.js and Models -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+
+    <script>
+        // Global variables
+        let images = [];
+        let currentModel = null;
+        let modelType = 'mobilenet';
+        let modelLoaded = false;
+        let isAnalyzing = false;
+        let aiData = {};
+        let captions = {};
+
+        // Model configurations
+        const modelConfigs = {
+            mobilenet: {
+                name: 'MobileNet v2',
+                icon: '🧠',
+                color: 'model-mobilenet',
+                url: 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json',
+                size: '14MB',
+                loadFunc: loadMobileNet
+            },
+            efficientnet: {
+                name: 'EfficientNet',
+                icon: '🎯',
+                color: 'model-efficientnet', 
+                url: 'https://tfhub.dev/tensorflow/tfjs-model/efficientnet/tfjs_b0_classification/1/default/1',
+                size: '20MB',
+                loadFunc: loadEfficientNet
+            },
+            mediapipe: {
+                name: 'MediaPipe',
+                icon: '🚀',
+                color: 'model-mediapipe',
+                url: 'https://tfhub.dev/google/tfjs-model/imagenet/mediapipe_image_classifier/1/default/1',
+                size: '25MB', 
+                loadFunc: loadMediaPipe
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateModelDisplay();
+            loadSelectedModel();
+        });
+
+        function handleModelChange() {
+            const select = document.getElementById('aiModel');
+            modelType = select.value;
+            modelLoaded = false;
+            currentModel = null;
+            
+            updateModelDisplay();
+            loadSelectedModel();
+            
+            // Reset analyzed state for all images
+            resetAnalyzedState();
+        }
+
+        function updateModelDisplay() {
+            const config = modelConfigs[modelType];
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeIcon = document.getElementById('aiAnalyzeIcon');
+            const currentModelStat = document.getElementById('currentModel');
+            
+            analyzeIcon.textContent = config.icon;
+            currentModelStat.textContent = config.name;
+            currentModelStat.className = config.color;
+            
+            analyzeBtn.disabled = !modelLoaded || isAnalyzing;
+        }
+
+        async function loadSelectedModel() {
+            const config = modelConfigs[modelType];
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeText = document.getElementById('aiAnalyzeText');
+            
+            showProgress(`Loading ${config.name} model (${config.size})...`, 0);
+            analyzeBtn.classList.add('model-loading');
+            analyzeText.textContent = 'Loading Model...';
+            analyzeBtn.disabled = true;
+
+            try {
+                currentModel = await config.loadFunc();
+                modelLoaded = true;
+                hideProgress();
+                
+                analyzeBtn.classList.remove('model-loading');
+                analyzeText.textContent = 'AI Analyze';
+                analyzeBtn.disabled = false;
+                
+                console.log(`${config.name} model loaded successfully`);
+            } catch (error) {
+                console.error(`Error loading ${config.name} model:`, error);
+                hideProgress();
+                analyzeBtn.classList.remove('model-loading');
+                analyzeText.textContent = 'Model Load Failed';
+                alert(`Failed to load ${config.name} model. Please check your internet connection and try again.`);
+            }
+        }
+
+        async function loadMobileNet() {
+            return await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+        }
+
+        async function loadEfficientNet() {
+            return await tf.loadLayersModel('https://tfhub.dev/tensorflow/tfjs-model/efficientnet/tfjs_b0_classification/1/default/1');
+        }
+
+        async function loadMediaPipe() {
+            return await tf.loadLayersModel('https://tfhub.dev/google/tfjs-model/imagenet/mediapipe_image_classifier/1/default/1');
+        }
+
+        function resetAnalyzedState() {
+            // Clear AI indicators and data for current model
+            const indicators = document.querySelectorAll('.ai-indicator');
+            indicators.forEach(indicator => {
+                indicator.classList.remove('analyzed');
+            });
+            
+            // Keep existing AI data but mark as not analyzed for new model
+            updateStats();
+        }
+
+        function selectFiles() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = 'image/*';
+            input.onchange = (e) => loadImages(Array.from(e.target.files));
+            input.click();
+        }
+
+        function selectFolder() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.webkitdirectory = true;
+            input.multiple = true;
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files).filter(file => 
+                    file.type.startsWith('image/')
+                );
+                loadImages(files);
+            };
+            input.click();
+        }
+
+        function loadImages(files) {
+            images = files.map((file, index) => ({
+                id: index,
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                analyzed: false
+            }));
+            
+            renderImages();
+            updateStats();
+        }
+
+        function renderImages() {
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = '';
+            
+            images.forEach(image => {
+                const card = createImageCard(image);
+                grid.appendChild(card);
+            });
+        }
+
+        function createImageCard(image) {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.innerHTML = `
+                <div class="image-wrapper">
+                    <img src="${image.url}" alt="${image.name}" loading="lazy">
+                    <div class="ai-indicator" data-id="${image.id}">
+                        ${modelConfigs[modelType].icon} Analyzed
+                    </div>
+                </div>
+                <div class="image-content">
+                    <div class="image-title">${image.name}</div>
+                    <div class="image-caption" data-id="${image.id}" onclick="editCaption(${image.id})">
+                        ${captions[image.name] || 'Click to add caption...'}
+                    </div>
+                    <div class="image-tags" data-id="${image.id}"></div>
+                    <div class="confidence-score" data-id="${image.id}"></div>
+                </div>
+            `;
+            
+            // Update if already analyzed
+            if (aiData[image.name]) {
+                updateImageCard(image.id, aiData[image.name]);
+            }
+            
+            return card;
+        }
+
+        function editCaption(imageId) {
+            const captionElement = document.querySelector(`[data-id="${imageId}"].image-caption`);
+            const currentCaption = captionElement.textContent;
+            
+            if (currentCaption === 'Click to add caption...') {
+                captionElement.textContent = '';
+            }
+            
+            captionElement.contentEditable = true;
+            captionElement.focus();
+            
+            captionElement.onblur = () => {
+                captionElement.contentEditable = false;
+                const newCaption = captionElement.textContent.trim();
+                const imageName = images[imageId].name;
+                
+                if (newCaption === '') {
+                    captionElement.textContent = 'Click to add caption...';
+                    delete captions[imageName];
+                } else {
+                    captions[imageName] = newCaption;
+                }
+            };
+            
+            captionElement.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    captionElement.blur();
+                }
+            };
+        }
+
+        async function analyzeImages() {
+            if (!modelLoaded || isAnalyzing || images.length === 0) {
+                return;
+            }
+
+            isAnalyzing = true;
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeText = document.getElementById('aiAnalyzeText');
+            
+            analyzeBtn.disabled = true;
+            analyzeText.textContent = 'Analyzing...';
+            
+            showProgress('Analyzing images with AI...', 0);
+
+            try {
+                // Load object detection model (COCO-SSD) for all model types
+                const objectDetectionModel = await loadCOCOSSD();
+                
+                for (let i = 0; i < images.length; i++) {
+                    const image = images[i];
+                    const progress = ((i + 1) / images.length) * 100;
+                    
+                    updateProgress(`Analyzing image ${i + 1}/${images.length}: ${image.name}`, progress);
+                    
+                    try {
+                        // Create image element for processing
+                        const imgElement = await createImageElement(image.url);
+                        
+                        // Perform classification with selected model
+                        const classification = await classifyImage(imgElement);
+                        
+                        // Perform object detection
+                        const detections = await objectDetectionModel.detect(imgElement);
+                        
+                        // Process and store results
+                        const analysisResult = processAnalysisResults(classification, detections);
+                        aiData[image.name] = {
+                            ...analysisResult,
+                            modelUsed: modelConfigs[modelType].name,
+                            timestamp: new Date().toISOString()
+                        };
+                        
+                        // Update UI
+                        updateImageCard(image.id, aiData[image.name]);
+                        image.analyzed = true;
+                        
+                    } catch (error) {
+                        console.error(`Error analyzing ${image.name}:`, error);
+                    }
+                }
+                
+                hideProgress();
+                analyzeText.textContent = 'AI Analyze';
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                hideProgress();
+                analyzeText.textContent = 'Analysis Failed';
+                alert('AI analysis failed. Please try again.');
+            } finally {
+                isAnalyzing = false;
+                analyzeBtn.disabled = false;
+                updateStats();
+            }
+        }
+
+        async function loadCOCOSSD() {
+            return await cocoSsd.load();
+        }
+
+        async function createImageElement(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        async function classifyImage(imgElement) {
+            const tensor = tf.browser.fromPixels(imgElement)
+                .resizeNearestNeighbor([224, 224])
+                .expandDims(0)
+                .div(255.0);
+
+            const predictions = await currentModel.predict(tensor).data();
+            tensor.dispose();
+
+            // Convert predictions to class probabilities
+            // This is simplified - in reality, you'd need proper ImageNet class labels
+            return Array.from(predictions)
+                .map((confidence, index) => ({ class: `Class_${index}`, confidence }))
+                .sort((a, b) => b.confidence - a.confidence)
+                .slice(0, 5);
+        }
+
+        function processAnalysisResults(classification, detections) {
+            // Extract tags from classification and object detection
+            const tags = [];
+            
+            // Add classification tags (top 3)
+            classification.slice(0, 3).forEach(pred => {
+                if (pred.confidence > 0.1) {
+                    tags.push({
+                        name: pred.class.replace('_', ' ').toLowerCase(),
+                        confidence: pred.confidence,
+                        source: 'classification'
+                    });
+                }
+            });
+            
+            // Add object detection tags
+            detections.forEach(detection => {
+                if (detection.score > 0.3) {
+                    tags.push({
+                        name: detection.class,
+                        confidence: detection.score,
+                        source: 'detection'
+                    });
+                }
+            });
+            
+            // Generate description
+            const description = generateDescription(classification, detections);
+            const avgConfidence = tags.length > 0 ? 
+                tags.reduce((sum, tag) => sum + tag.confidence, 0) / tags.length : 0;
+            
+            return {
+                tags: tags.map(tag => tag.name),
+                confidence: avgConfidence,
+                description: description,
+                detections: detections.length,
+                classification: classification[0]?.class || 'Unknown'
+            };
+        }
+
+        function generateDescription(classification, detections) {
+            const objects = detections.filter(d => d.score > 0.5).map(d => d.class);
+            const mainClass = classification[0]?.class?.replace('_', ' ') || 'image';
+            
+            if (objects.length > 0) {
+                return `This ${mainClass} contains ${objects.slice(0, 3).join(', ')}`;
+            } else {
+                return `This appears to be ${mainClass}`;
+            }
+        }
+
+        function updateImageCard(imageId, data) {
+            const indicator = document.querySelector(`.ai-indicator[data-id="${imageId}"]`);
+            const tagsContainer = document.querySelector(`.image-tags[data-id="${imageId}"]`);
+            const confidenceElement = document.querySelector(`.confidence-score[data-id="${imageId}"]`);
+            
+            if (indicator) {
+                indicator.classList.add('analyzed');
+            }
+            
+            if (tagsContainer && data.tags) {
+                tagsContainer.innerHTML = data.tags.map(tag => 
+                    `<span class="tag ${data.confidence > 0.7 ? 'high-confidence' : ''}">${tag}</span>`
+                ).join('');
+            }
+            
+            if (confidenceElement) {
+                confidenceElement.textContent = 
+                    `${Math.round(data.confidence * 100)}% confidence • ${data.detections} objects`;
+            }
+        }
+
+        function updateStats() {
+            const totalElement = document.getElementById('totalImages');
+            const analyzedElement = document.getElementById('analyzedImages');
+            
+            const analyzedCount = Object.keys(aiData).length;
+            
+            totalElement.textContent = images.length;
+            analyzedElement.textContent = analyzedCount;
+        }
+
+        function updateGridSize(value) {
+            const grid = document.getElementById('imageGrid');
+            const gridValue = document.getElementById('gridValue');
+            
+            grid.className = `image-grid grid-${value}`;
+            gridValue.textContent = `${value} per row`;
+        }
+
+        function showProgress(message, percent) {
+            const container = document.getElementById('progressContainer');
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            container.style.display = 'block';
+            fill.style.width = `${percent}%`;
+            text.textContent = message;
+        }
+
+        function updateProgress(message, percent) {
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            fill.style.width = `${percent}%`;
+            text.textContent = message;
+        }
+
+        function hideProgress() {
+            const container = document.getElementById('progressContainer');
+            container.style.display = 'none';
+        }
+
+        function exportMetadata() {
+            if (images.length === 0) {
+                alert('No images to export metadata for');
+                return;
+            }
+
+            const metadata = createMetadataObject();
+            const json = JSON.stringify(metadata, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-image-${modelType}-metadata.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert(`Metadata exported as ai-image-${modelType}-metadata.json`);
+        }
+
+        function createMetadataObject() {
+            return {
+                version: '2.0',
+                timestamp: new Date().toISOString(),
+                appName: `AI Image - ${modelConfigs[modelType].name}`,
+                modelUsed: modelConfigs[modelType].name,
+                totalImages: images.length,
+                aiEnabled: true,
+                captions: captions,
+                aiData: aiData
+            };
+        }
+
+        function importMetadata() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const metadata = JSON.parse(e.target.result);
+                            
+                            // Import captions and AI data
+                            if (metadata.captions) {
+                                Object.assign(captions, metadata.captions);
+                            }
+                            
+                            if (metadata.aiData) {
+                                Object.assign(aiData, metadata.aiData);
+                            }
+                            
+                            // Re-render to show imported data
+                            renderImages();
+                            updateStats();
+                            
+                            alert(`Metadata imported successfully! Model: ${metadata.modelUsed || 'Unknown'}`);
+                        } catch (error) {
+                            alert('Error importing metadata: Invalid JSON file');
+                            console.error('Import error:', error);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function openSearch() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearch() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchInput').value = '';
+        }
+
+        function handleSearchKeydown(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function searchImages(query) {
+            document.getElementById('searchInput').value = query;
+            performSearch();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '<p>Please enter a search query.</p>';
+                return;
+            }
+            
+            if (Object.keys(aiData).length === 0) {
+                resultsContainer.innerHTML = '<p>No analyzed images found. Please analyze images first.</p>';
+                return;
+            }
+            
+            const results = searchInImages(query);
+            displaySearchResults(results, resultsContainer);
+        }
+
+        function searchInImages(query) {
+            const results = [];
+            
+            images.forEach(image => {
+                const data = aiData[image.name];
+                if (!data) return;
+                
+                let score = 0;
+                const queryTerms = query.split(' ').filter(term => term.length > 0);
+                
+                // Search in tags
+                if (data.tags) {
+                    queryTerms.forEach(term => {
+                        data.tags.forEach(tag => {
+                            if (tag.toLowerCase().includes(term)) {
+                                score += 0.8;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in description
+                if (data.description) {
+                    queryTerms.forEach(term => {
+                        if (data.description.toLowerCase().includes(term)) {
+                            score += 0.6;
+                        }
+                    });
+                }
+                
+                // Search in captions
+                const caption = captions[image.name];
+                if (caption) {
+                    queryTerms.forEach(term => {
+                        if (caption.toLowerCase().includes(term)) {
+                            score += 0.9;
+                        }
+                    });
+                }
+                
+                if (score > 0) {
+                    results.push({
+                        image: image,
+                        score: score,
+                        data: data
+                    });
+                }
+            });
+            
+            return results.sort((a, b) => b.score - a.score);
+        }
+
+        function displaySearchResults(results, container) {
+            if (results.length === 0) {
+                container.innerHTML = '<p>No matching images found.</p>';
+                return;
+            }
+            
+            const html = results.map(result => `
+                <div class="search-result-item">
+                    <img src="${result.image.url}" alt="${result.image.name}">
+                    <div class="result-content">
+                        <div class="result-title">${result.image.name}</div>
+                        <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                            ${result.data.tags ? result.data.tags.slice(0, 3).join(', ') : 'No tags'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `<h4>Found ${results.length} matching images:</h4>${html}`;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('searchModal');
+            if (event.target === modal) {
+                closeSearch();
+            }
+        }
+    </script>
+    
+    <!-- COCO-SSD for object detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+</body>
+</html>

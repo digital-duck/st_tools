@@ -15,6 +15,7 @@ import os
 import shutil
 import math
 import click
+import tarfile
 from pathlib import Path
 from typing import List, Tuple
 import json
@@ -26,9 +27,7 @@ class WorkSplitter:
     
     SUPPORTED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'}
     HTML_FILES = [
-        'ai_image_viewer.html',
-        'ai_image_viewer_efficientnet.html', 
-        'ai_image_viewer_mediapipe.html'
+        'ai_image.html'
     ]
     
     def __init__(self, source_folder: Path, output_folder: Path, num_splits: int):
@@ -93,6 +92,15 @@ class WorkSplitter:
             shutil.copytree(docs_src, docs_dst, dirs_exist_ok=True)
             click.echo(f"  ✓ Copied docs folder")
         
+        # Copy compression script for team members
+        compress_script = self.project_root / "collab" / "compress-packages.sh"
+        if compress_script.exists():
+            dst_script = package_path / "compress-package.sh"
+            shutil.copy2(compress_script, dst_script)
+            # Make executable
+            dst_script.chmod(0o755)
+            click.echo(f"  ✓ Copied compression script")
+        
         # Create images subfolder and copy images
         images_path = package_path / "images"
         images_path.mkdir(exist_ok=True)
@@ -105,6 +113,9 @@ class WorkSplitter:
         
         # Create package manifest
         self.create_manifest(package_path, chunk_id, image_chunk)
+        
+        # Create README for team members
+        self.create_package_readme(package_path, chunk_id, image_chunk)
         
         return package_path
     
@@ -134,6 +145,86 @@ class WorkSplitter:
             json.dump(manifest, f, indent=2, ensure_ascii=False)
         
         click.echo(f"  ✓ Created package manifest")
+    
+    def create_package_readme(self, package_path: Path, chunk_id: int, image_chunk: List[Path]):
+        """Create a README.md file with instructions for team members."""
+        readme_content = f"""# AI Image Analysis Work Package
+
+📦 **Package:** work-package-{chunk_id:03d}  
+🖼️ **Images to analyze:** {len(image_chunk)}  
+📅 **Created:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## 🚀 Quick Start
+
+### 1. Open the AI Image Viewer
+Open the HTML file in your web browser:
+- `ai_image.html` - Unified viewer with all AI models (MobileNet, EfficientNet, MediaPipe)
+
+### 2. Load Images
+- Click **"📂 Select Folder"** and choose the `images/` folder
+- Or click **"📁 Select Images"** to load individual files
+- You should see {len(image_chunk)} images loaded
+
+### 3. Choose AI Model and Analyze
+- Select your preferred AI model from the dropdown (MobileNet, EfficientNet, or MediaPipe)
+- Click the **AI Analyze** button 🤖
+- Wait for analysis to complete (progress bar will show status)
+- All images will get AI-generated tags and descriptions
+
+### 4. Export Results
+- Click **"💾 Export Metadata"** button
+- This saves a `.json` file with all analysis results
+- The filename will be based on your selected model: `ai-image-mobilenet-metadata.json`, `ai-image-efficientnet-metadata.json`, or `ai-image-mediapipe-metadata.json`
+
+### 5. Send Back to Team Lead
+- **Compress this entire folder** (including the new metadata file):
+  ```bash
+  # Easy way: Use the included script
+  ./compress-package.sh
+  
+  # Manual way: 
+  cd ..
+  tar -czf work-package-{chunk_id:03d}-completed.tar.gz work-package-{chunk_id:03d}/
+  ```
+- **Send the compressed file** back to your team lead
+- Team lead will merge all results using the join tool
+
+## 📝 Tips
+
+- **Edit captions**: Click on any image caption to edit it manually
+- **Search**: Use the search feature to find specific images
+- **Grid layout**: Adjust how many images per row (1-6)
+- **Model comparison**: Try different models to compare accuracy
+
+## 🔍 File Structure
+
+```
+work-package-{chunk_id:03d}/
+├── README.md                              # This file
+├── compress-package.sh                    # Script to compress your completed work
+├── ai_image.html                          # Unified AI viewer (all models)
+├── docs/                                  # Documentation assets
+├── images/                                # Your {len(image_chunk)} images to analyze
+├── package-manifest.json                 # Package info
+└── [exported-metadata].json              # Your analysis results (after export)
+```
+
+## ❓ Questions?
+
+If you run into issues:
+1. Make sure you're using a modern web browser (Chrome, Firefox, Safari, Edge)
+2. Check the browser console for any error messages
+3. Try a different AI model if one isn't working
+4. Contact your team lead for help
+
+**Happy analyzing! 🚀**
+"""
+        
+        readme_path = package_path / "README.md"
+        with open(readme_path, 'w', encoding='utf-8') as f:
+            f.write(readme_content)
+        
+        click.echo(f"  ✓ Created README.md for team members")
     
     def split(self) -> List[Path]:
         """Main method to split the work."""
@@ -167,6 +258,35 @@ class WorkSplitter:
             click.echo(f"   Package: {package_path.name} ({len(chunk)} images)")
         
         return created_packages
+    
+    def compress_packages(self, packages: List[Path]) -> List[Path]:
+        """Compress work packages into .tar.gz files."""
+        compressed_files = []
+        
+        click.echo(f"\n🗜️  Compressing {len(packages)} packages...")
+        
+        for package_path in packages:
+            if not package_path.exists():
+                continue
+                
+            # Create .tar.gz file in the same directory
+            archive_name = f"{package_path.name}.tar.gz"
+            archive_path = package_path.parent / archive_name
+            
+            click.echo(f"   Compressing {package_path.name}...")
+            
+            try:
+                with tarfile.open(archive_path, "w:gz") as tar:
+                    tar.add(package_path, arcname=package_path.name)
+                
+                compressed_files.append(archive_path)
+                click.echo(f"   ✓ Created {archive_name}")
+                
+            except Exception as e:
+                click.echo(f"   ❌ Error compressing {package_path.name}: {e}")
+                continue
+        
+        return compressed_files
 
 
 @click.command()
@@ -182,8 +302,12 @@ class WorkSplitter:
               type=click.Path(path_type=Path),
               default=None,
               help='Output folder for work packages (default: ./split/)')
+@click.option('--compress', '-c',
+              is_flag=True,
+              default=True,
+              help='Automatically compress each package as .tar.gz')
 @click.version_option(version='1.0.0', prog_name='AI Image Viewer Work Splitter')
-def main(source: Path, num_splits: int, output: Path):
+def main(source: Path, num_splits: int, output: Path, compress: bool):
     """
     🧠 AI Image Viewer - Work Splitter Tool
     
@@ -221,7 +345,14 @@ def main(source: Path, num_splits: int, output: Path):
         # Perform the split
         packages = splitter.split()
         
+        # Compress packages if requested
+        compressed_files = []
+        if compress:
+            compressed_files = splitter.compress_packages(packages)
+        
         click.echo(f"\n✅ Successfully created {len(packages)} work packages!")
+        if compressed_files:
+            click.echo(f"🗜️  Compressed {len(compressed_files)} packages!")
         click.echo(f"📁 Output location: {output}")
         
         # Show summary
@@ -235,10 +366,17 @@ def main(source: Path, num_splits: int, output: Path):
                 click.echo(f"   {package.name}: {image_count} images")
         
         click.echo(f"\n🚀 Next Steps:")
-        click.echo(f"1. Compress each package: tar -czf package.tar.gz work-package-001/")
-        click.echo(f"2. Share packages with team members")
-        click.echo(f"3. Team members analyze their assigned images")
-        click.echo(f"4. Use join_work.py to merge results when complete")
+        if compress:
+            click.echo(f"1. Share .tar.gz files with team members")
+            click.echo(f"2. Team members extract: tar -xzf work-package-001.tar.gz")
+            click.echo(f"3. Team members analyze their assigned images and send back the bundle to team lead")
+            click.echo(f"4. Team lead uses join_work.py to merge results after all work packages are received")
+        else:
+            click.echo(f"1. Compress packages: python split_work.py -s {source} -n {num_splits} -c")
+            click.echo(f"2. Or manually: tar -czf work-package-001.tar.gz work-package-001/")
+            click.echo(f"3. Share packages with team members")
+            click.echo(f"4. Team members analyze their assigned images and send back the bundle to team lead")
+            click.echo(f"5. Team lead uses join_work.py to merge results after all work packages are received")
         
     except Exception as e:
         click.echo(f"❌ Error: {e}", err=True)

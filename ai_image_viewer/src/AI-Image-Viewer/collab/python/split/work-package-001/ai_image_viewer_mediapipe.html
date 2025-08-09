@@ -1023,7 +1023,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'mediapipe-image-metadata.json';
+            a.download = 'ai-image-mediapipe-metadata.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1036,7 +1036,7 @@
             const metadata = {
                 version: '2.0-MediaPipe',
                 timestamp: new Date().toISOString(),
-                appName: 'AI Image Viewer - MediaPipe',
+                appName: 'AI Image - MediaPipe',
                 modelType: 'MediaPipe',
                 totalImages: images.length,
                 aiEnabled: isModelsLoaded,

@@ -15,6 +15,8 @@ import os
 import shutil
 import json
 import click
+import tarfile
+import tempfile
 from pathlib import Path
 from typing import List, Dict, Any
 from datetime import datetime
@@ -26,23 +28,15 @@ class WorkJoiner:
     
     SUPPORTED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'}
     HTML_FILES = [
-        'ai_image_viewer.html',
-        'ai_image_viewer_efficientnet.html', 
-        'ai_image_viewer_mediapipe.html'
+        'ai_image.html'
     ]
-    METADATA_PATTERNS = [
-        'ai-image-metadata.json',
-        '*-image-metadata.json',
-        'efficientnet-image-metadata.json',
-        'mediapipe-image-metadata.json',
-        '*-analysis.json',
-        'metadata.json'
-    ]
+    # Removed METADATA_PATTERNS - now using flexible filename detection
     
     def __init__(self, package_paths: List[Path], output_path: Path):
         self.package_paths = [Path(p) for p in package_paths]
         self.output_path = Path(output_path)
         self.project_root = self.find_project_root()
+        self.temp_dir = None  # For extracted .tar.gz files
         
     def find_project_root(self) -> Path:
         """Find the project root containing HTML files."""
@@ -52,6 +46,60 @@ class WorkJoiner:
                 return current
             current = current.parent
         raise FileNotFoundError("Could not find project root with HTML files")
+    
+    def detect_and_extract_archives(self) -> List[Path]:
+        """Detect .tar.gz files and directories, extract archives if needed."""
+        extracted_paths = []
+        archive_files = []
+        
+        for path in self.package_paths:
+            if path.is_file() and path.suffix == '.gz' and path.name.endswith('.tar.gz'):
+                # This is a .tar.gz file
+                archive_files.append(path)
+            elif path.is_dir():
+                # Check if directory contains .tar.gz files
+                for gz_file in path.glob('*.tar.gz'):
+                    archive_files.append(gz_file)
+                # Also check for existing work-package directories
+                for work_dir in path.glob('work-package-*'):
+                    if work_dir.is_dir():
+                        extracted_paths.append(work_dir)
+            else:
+                # Regular directory or file
+                if path.exists():
+                    extracted_paths.append(path)
+        
+        # Extract .tar.gz files if any found
+        if archive_files:
+            click.echo(f"🗜️  Found {len(archive_files)} compressed packages to extract...")
+            
+            # Create temporary directory for extraction
+            self.temp_dir = Path(tempfile.mkdtemp(prefix="ai-image-join-"))
+            
+            for archive_file in archive_files:
+                click.echo(f"📦 Extracting {archive_file.name}...")
+                
+                try:
+                    with tarfile.open(archive_file, 'r:gz') as tar:
+                        tar.extractall(path=self.temp_dir)
+                    click.echo(f"  ✓ Extracted {archive_file.name}")
+                    
+                    # Find extracted work-package directories
+                    for extracted_dir in self.temp_dir.glob('work-package-*'):
+                        if extracted_dir.is_dir():
+                            extracted_paths.append(extracted_dir)
+                            
+                except Exception as e:
+                    click.echo(f"  ❌ Failed to extract {archive_file.name}: {e}")
+                    continue
+        
+        return extracted_paths
+    
+    def cleanup_temp_files(self):
+        """Clean up temporary extracted files."""
+        if self.temp_dir and self.temp_dir.exists():
+            shutil.rmtree(self.temp_dir)
+            click.echo(f"🧹 Cleaned up temporary files")
     
     def validate_packages(self) -> List[Path]:
         """Validate that package paths exist and contain expected content."""
@@ -101,16 +149,11 @@ class WorkJoiner:
             click.echo(f"📸 Package {package.name}: {len(package_images)} images")
             
             for img in package_images:
-                # Handle duplicate names by adding package prefix
                 original_name = img.name
                 if original_name in seen_names:
-                    new_name = f"{package.name}_{original_name}"
-                    click.echo(f"  ⚠️  Renaming duplicate: {original_name} → {new_name}")
-                    # Create a temporary renamed copy
-                    temp_path = img.parent / new_name
-                    shutil.copy2(img, temp_path)
-                    all_images.append(temp_path)
-                    seen_names.add(new_name)
+                    # Skip duplicates - first survives
+                    click.echo(f"  ⚠️  Skipping duplicate image: {original_name} (first survives)")
+                    continue
                 else:
                     all_images.append(img)
                     seen_names.add(original_name)
@@ -118,19 +161,22 @@ class WorkJoiner:
         return all_images
     
     def find_metadata_files(self, packages: List[Path]) -> List[Path]:
-        """Find all metadata JSON files in packages."""
+        """Find all metadata JSON files in packages using flexible filename detection."""
         metadata_files = []
         
         for package in packages:
             found_in_package = []
             
-            # Search for metadata files using patterns
-            for pattern in self.METADATA_PATTERNS:
-                matches = list(package.glob(pattern))
-                found_in_package.extend(matches)
+            # Find all .json files in the package
+            json_files = list(package.glob("*.json"))
             
-            # Remove duplicates
-            found_in_package = list(set(found_in_package))
+            # Filter for files containing "metadata" (case-insensitive)
+            for json_file in json_files:
+                filename_lower = json_file.name.lower()
+                if "metadata" in filename_lower:
+                    # Exclude package-manifest.json (not analysis data)
+                    if json_file.name != "package-manifest.json":
+                        found_in_package.append(json_file)
             
             if found_in_package:
                 click.echo(f"📊 Package {package.name}: {len(found_in_package)} metadata files")
@@ -170,23 +216,19 @@ class WorkJoiner:
                 package_name = meta_file.parent.name
                 click.echo(f"📋 Processing: {meta_file.name}")
                 
-                # Merge captions
+                # Merge captions - first survives for duplicates
                 if 'captions' in data:
                     for img_name, caption in data['captions'].items():
-                        # Handle duplicate image names
-                        key = img_name
-                        if key in merged['captions']:
-                            key = f"{package_name}_{img_name}"
-                        merged['captions'][key] = caption
+                        if img_name not in merged['captions']:
+                            merged['captions'][img_name] = caption
+                        # Skip if duplicate - first survives
                 
-                # Merge AI data
+                # Merge AI data - first survives for duplicates
                 if 'aiData' in data:
                     for img_name, ai_data in data['aiData'].items():
-                        # Handle duplicate image names
-                        key = img_name
-                        if key in merged['aiData']:
-                            key = f"{package_name}_{img_name}"
-                        merged['aiData'][key] = ai_data
+                        if img_name not in merged['aiData']:
+                            merged['aiData'][img_name] = ai_data
+                        # Skip if duplicate - first survives
                         
                         # Track models used
                         if 'modelUsed' in ai_data:
@@ -284,50 +326,63 @@ class WorkJoiner:
     
     def join(self) -> Path:
         """Main method to join work packages."""
-        click.echo(f"🔍 Validating {len(self.package_paths)} packages...")
+        try:
+            click.echo(f"🔍 Processing {len(self.package_paths)} input paths...")
+            
+            # Detect and extract .tar.gz files
+            extracted_paths = self.detect_and_extract_archives()
+            
+            # Update package paths with extracted directories
+            self.package_paths = extracted_paths
+            
+            click.echo(f"🔍 Validating {len(self.package_paths)} packages...")
+            
+            # Validate packages
+            valid_packages = self.validate_packages()
+            if not valid_packages:
+                raise click.ClickException("No valid packages found to merge")
+            
+            click.echo(f"✓ Found {len(valid_packages)} valid packages")
+            
+            # Collect all images
+            click.echo(f"\n📸 Collecting images from packages...")
+            all_images = self.collect_images(valid_packages)
+            click.echo(f"✓ Collected {len(all_images)} total images")
+            
+            # Find and merge metadata
+            click.echo(f"\n📊 Processing metadata files...")
+            metadata_files = self.find_metadata_files(valid_packages)
+            
+            if not metadata_files:
+                click.echo("⚠️  No metadata files found. Creating package with images only.")
+                merged_metadata = {
+                    "version": "2.0-Consolidated",
+                    "timestamp": datetime.now().isoformat(),
+                    "appName": "AI Image Viewer - Consolidated Results",
+                    "consolidation_info": {
+                        "source_files": [],
+                        "packages_merged": len(valid_packages),
+                        "merge_date": datetime.now().isoformat(),
+                        "models_used": [],
+                        "total_analyzed_images": 0
+                    },
+                    "totalImages": len(all_images),
+                    "aiEnabled": False,
+                    "captions": {},
+                    "aiData": {}
+                }
+            else:
+                merged_metadata = self.merge_metadata(metadata_files)
+            
+            # Create consolidated package
+            click.echo(f"\n📦 Creating consolidated package...")
+            output_path = self.create_consolidated_package(all_images, merged_metadata)
+            
+            return output_path
         
-        # Validate packages
-        valid_packages = self.validate_packages()
-        if not valid_packages:
-            raise click.ClickException("No valid packages found to merge")
-        
-        click.echo(f"✓ Found {len(valid_packages)} valid packages")
-        
-        # Collect all images
-        click.echo(f"\n📸 Collecting images from packages...")
-        all_images = self.collect_images(valid_packages)
-        click.echo(f"✓ Collected {len(all_images)} total images")
-        
-        # Find and merge metadata
-        click.echo(f"\n📊 Processing metadata files...")
-        metadata_files = self.find_metadata_files(valid_packages)
-        
-        if not metadata_files:
-            click.echo("⚠️  No metadata files found. Creating package with images only.")
-            merged_metadata = {
-                "version": "2.0-Consolidated",
-                "timestamp": datetime.now().isoformat(),
-                "appName": "AI Image Viewer - Consolidated Results",
-                "consolidation_info": {
-                    "source_files": [],
-                    "packages_merged": len(valid_packages),
-                    "merge_date": datetime.now().isoformat(),
-                    "models_used": [],
-                    "total_analyzed_images": 0
-                },
-                "totalImages": len(all_images),
-                "aiEnabled": False,
-                "captions": {},
-                "aiData": {}
-            }
-        else:
-            merged_metadata = self.merge_metadata(metadata_files)
-        
-        # Create consolidated package
-        click.echo(f"\n📦 Creating consolidated package...")
-        output_path = self.create_consolidated_package(all_images, merged_metadata)
-        
-        return output_path
+        finally:
+            # Clean up temporary files
+            self.cleanup_temp_files()
 
 
 @click.command()
@@ -339,6 +394,7 @@ class WorkJoiner:
               help='Output folder for consolidated package (default: ./join/consolidated)')
 @click.option('--force', '-f',
               is_flag=True,
+              default=True,
               help='Force overwrite existing output directory')
 @click.version_option(version='1.0.0', prog_name='AI Image Viewer Work Joiner')
 def main(packages: List[Path], output: Path, force: bool):

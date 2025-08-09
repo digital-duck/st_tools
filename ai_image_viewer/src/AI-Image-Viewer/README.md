@@ -6,15 +6,17 @@
 
 ![AI Image Viewer](docs/ai_image_viewer.png)
 
-## 🎯 **Multiple AI Models Available**
+## 🎯 **Unified AI Image Viewer**
 
-Choose the best model for your needs - each optimized for different use cases:
+**One app, three powerful AI models!** Choose your model with a simple dropdown:
 
-| Version | Model | Accuracy | Best For | File |
-|---------|-------|----------|----------|------|
-| **Baseline** 🧠 | MobileNet v2 | 71% | Fast processing, mobile devices | `ai_image_viewer.html` |
-| **Enhanced** 🎯 | EfficientNet | 77% | Higher accuracy, balanced performance | `ai_image_viewer_efficientnet.html` |
-| **Advanced** 🚀 | MediaPipe | 82% | State-of-the-art, contextual understanding | `ai_image_viewer_mediapipe.html` |
+| Model | Accuracy | Best For | Icon |
+|-------|----------|----------|------|
+| **MobileNet v2** 🧠 | 71% | Fast processing, mobile devices | 🧠 |
+| **EfficientNet** 🎯 | 77% | Higher accuracy, balanced performance | 🎯 |
+| **MediaPipe** 🚀 | 82% | State-of-the-art, contextual understanding | 🚀 |
+
+**Single File:** `ai_image.html` - Contains all three models with dynamic loading!
 
 ## ✨ Features
 
@@ -29,14 +31,14 @@ Choose the best model for your needs - each optimized for different use cases:
 - **Confidence Scoring** - Shows prediction reliability (accuracy varies by model)
 
 ### 🔍 Semantic Search
-Search images by visual content with model-specific accuracy:
+Search images by visual content - accuracy depends on your selected AI model:
 - `"person smiling"` - finds photos with happy people
 - `"outdoor scene"` - finds landscape and nature photos  
 - `"food and drinks"` - finds meal and dining photos
 - `"vehicle"` - finds cars, trucks, motorcycles, etc.
 - `"animals"` - finds pets and wildlife
 
-**Search Quality by Model:**
+**Search Quality:**
 - **MobileNet** 🧠: Basic keyword matching with AI tags
 - **EfficientNet** 🎯: Enhanced relevance scoring with improved tags
 - **MediaPipe** 🚀: Superior semantic understanding with contextual analysis
@@ -57,45 +59,40 @@ Search images by visual content with model-specific accuracy:
 
 ## 🚀 Getting Started
 
-### **Choose Your AI Model**
+### **Open the Unified AI Viewer**
 
-1. **🧠 Baseline (MobileNet)** - For fast processing and mobile devices
-   ```bash
-   open ai_image_viewer.html
-   ```
+```bash
+open ai_image.html
+```
 
-2. **🎯 Enhanced (EfficientNet)** - For higher accuracy and better performance  
-   ```bash
-   open ai_image_viewer_efficientnet.html
-   ```
+**That's it!** One file, all models included.
 
-3. **🚀 Advanced (MediaPipe)** - For state-of-the-art results and contextual understanding
-   ```bash
-   open ai_image_viewer_mediapipe.html
-   ```
-
-### **Basic Usage (All Versions)**
+### **Basic Usage**
 
 1. **Load Your Images**
    - Click "📁 Select Images" for individual files
    - Click "📂 Select Folder" to load an entire directory
    - Or drag and drop images directly onto the viewer
 
-2. **Analyze with AI**
-   - Click the AI Analyze button (🧠/🎯/🚀 depending on version)
+2. **Choose Your AI Model**
+   - Select from dropdown: MobileNet 🧠, EfficientNet 🎯, or MediaPipe 🚀
+   - Model loads automatically with progress indicator
+   - Switch models anytime to compare results
+
+3. **Analyze with AI**
+   - Click the **🤖 AI Analyze** button 
    - Wait for analysis to complete (shows progress with model-specific messaging)
    - AI tags and descriptions will appear on each image
 
-3. **Search Your Collection**
+4. **Search Your Collection**
    - Click "🔍 AI Search" to open the search modal
    - Type natural language descriptions
    - Click search suggestions for quick queries
-   - Results ranked by relevance (quality varies by model)
+   - Results ranked by relevance (quality varies by selected model)
 
-4. **Compare Results**
-   - Load the same images in different versions
-   - Compare accuracy and tag quality
-   - Export metadata from each version for analysis
+5. **Export Results**
+   - Click "💾 Export Metadata" to save analysis results
+   - Filename automatically includes model name: `ai-image-mobilenet-metadata.json`
 
 ## 📦 **Portability & Collaboration**
 
@@ -105,10 +102,10 @@ The beauty of single-file HTML applications - just compress and share!
 **Create Portable Package:**
 ```bash
 # Using ZIP (cross-platform)
-zip -r my-image-analysis.zip ai_image_viewer_efficientnet.html images/ *.json
+zip -r my-image-analysis.zip ai_image.html images/ *.json
 
 # Using TAR (Mac/Linux preferred)
-tar -czf my-image-analysis.tar.gz ai_image_viewer_efficientnet.html images/ *.json
+tar -czf my-image-analysis.tar.gz ai_image.html images/ *.json
 ```
 
 **Uncompress and Use:**
@@ -119,8 +116,8 @@ unzip my-image-analysis.zip
 tar -xzf my-image-analysis.tar.gz
 
 # Open HTML file - no installation needed!
-open ai_image_viewer_efficientnet.html  # Mac
-xdg-open ai_image_viewer_efficientnet.html  # Linux
+open ai_image.html  # Mac
+xdg-open ai_image.html  # Linux
 # Or double-click the HTML file on Windows
 ```
 
@@ -129,28 +126,29 @@ xdg-open ai_image_viewer_efficientnet.html  # Linux
 **1. Distribute Dataset for Analysis**
 ```bash
 # Project lead creates initial package
-tar -czf dataset-project.tar.gz ai_image_viewer.html images/
+tar -czf dataset-project.tar.gz ai_image.html images/
 # Share with team members via email, cloud, or USB drive
 ```
 
 **2. Crowd-Source Image Labeling**
 - Each team member extracts the package locally
-- Everyone analyzes their assigned image subset
-- Export individual metadata JSON files
+- Everyone analyzes their assigned image subset using their preferred AI model
+- Export individual metadata JSON files (model-specific naming)
 - Project lead merges all JSON results
 
 **3. Collaborative Analysis Process**
 ```bash
 # Team member workflow:
 tar -xzf dataset-project.tar.gz        # Extract package
-open ai_image_viewer.html               # Open analyzer
+open ai_image.html                      # Open unified analyzer
+# Choose AI model (MobileNet/EfficientNet/MediaPipe)
 # Analyze assigned images (1-100, 101-200, etc.)
-# Export metadata as "member1-analysis.json"
+# Export metadata as "ai-image-[model]-metadata.json"
 # Share JSON file back to project lead
 
 # Project lead merges results:
-# Import each member's JSON into master viewer
-# Combine all analysis results
+# Import each member's JSON into unified viewer
+# Combine all analysis results from different models
 # Create final consolidated dataset
 ```
 
@@ -187,7 +185,7 @@ pip install click
 python3 split_work.py -s /path/to/big-dataset -n 5
 
 # Team members analyze their assigned packages
-# Each gets all 3 HTML viewers + subset of images
+# Each gets the unified HTML viewer + subset of images
 
 # Merge completed work back together
 python3 join_work.py ../split/work-package-*
@@ -204,7 +202,7 @@ npm install
 node split-work.js -s /path/to/big-dataset -n 5
 
 # Team members analyze their assigned packages
-# Each gets all 3 HTML viewers + subset of images
+# Each gets the unified HTML viewer + subset of images
 
 # Merge completed work back together
 node join-work.js ../split/work-package-*
