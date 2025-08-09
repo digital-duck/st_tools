@@ -1,0 +1,29 @@
+{
+  "package_info": {
+    "id": 1,
+    "name": "work-package-001",
+    "created": "2025-08-09T07:58:31.556617",
+    "total_packages": 3,
+    "image_count": 6
+  },
+  "html_files": [
+    "ai_image_viewer.html",
+    "ai_image_viewer_efficientnet.html",
+    "ai_image_viewer_mediapipe.html"
+  ],
+  "images": [
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp",
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg",
+    "Coyote-animal-sentience-research.jpg",
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg",
+    "Giant_Panda_2004-03-2.jpg",
+    "Tiger-600x380.jpg"
+  ],
+  "instructions": {
+    "1": "Open any of the HTML files in your browser",
+    "2": "Load images from the 'images' folder",
+    "3": "Click 'AI Analyze' to process your assigned images",
+    "4": "Export metadata when analysis is complete",
+    "5": "Share the exported JSON file back to the project lead"
+  }
+}

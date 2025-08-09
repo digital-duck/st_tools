@@ -1,0 +1,16 @@
+{
+  "version": "2.0-Consolidated",
+  "timestamp": "2025-08-09T07:59:50.179345",
+  "appName": "AI Image Viewer - Consolidated Results",
+  "consolidation_info": {
+    "source_files": [],
+    "packages_merged": 3,
+    "merge_date": "2025-08-09T07:59:50.179351",
+    "models_used": [],
+    "total_analyzed_images": 0
+  },
+  "totalImages": 18,
+  "aiEnabled": false,
+  "captions": {},
+  "aiData": {}
+}

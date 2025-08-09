@@ -1,0 +1,29 @@
+{
+  "package_info": {
+    "id": 2,
+    "name": "work-package-002",
+    "created": "2025-08-09T07:58:31.558608",
+    "total_packages": 3,
+    "image_count": 6
+  },
+  "html_files": [
+    "ai_image_viewer.html",
+    "ai_image_viewer_efficientnet.html",
+    "ai_image_viewer_mediapipe.html"
+  ],
+  "images": [
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg",
+    "african-american-family-1200x675-1.jpg",
+    "bright-daylight-environment-forest-240040-1.webp",
+    "do-babies-grow-in-their-sleep-scaled.jpeg",
+    "images.jpeg",
+    "maxresdefault (1).jpg"
+  ],
+  "instructions": {
+    "1": "Open any of the HTML files in your browser",
+    "2": "Load images from the 'images' folder",
+    "3": "Click 'AI Analyze' to process your assigned images",
+    "4": "Export metadata when analysis is complete",
+    "5": "Share the exported JSON file back to the project lead"
+  }
+}

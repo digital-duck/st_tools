@@ -1,0 +1,42 @@
+{
+  "name": "ai-image-viewer-collab-tools",
+  "version": "1.0.0",
+  "description": "JavaScript collaboration tools for AI Image Viewer - split and join work packages for team collaboration",
+  "type": "module",
+  "bin": {
+    "split-work": "./split-work.js",
+    "join-work": "./join-work.js"
+  },
+  "scripts": {
+    "split": "node split-work.js",
+    "join": "node join-work.js",
+    "test": "node --test",
+    "dev": "node --watch"
+  },
+  "keywords": [
+    "ai",
+    "image-viewer", 
+    "collaboration",
+    "computer-vision",
+    "dataset-splitting",
+    "team-tools"
+  ],
+  "author": "AI Image Viewer Team",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "chalk": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

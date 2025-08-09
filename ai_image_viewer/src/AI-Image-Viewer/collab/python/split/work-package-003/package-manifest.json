@@ -1,0 +1,29 @@
+{
+  "package_info": {
+    "id": 3,
+    "name": "work-package-003",
+    "created": "2025-08-09T07:58:31.561061",
+    "total_packages": 3,
+    "image_count": 6
+  },
+  "html_files": [
+    "ai_image_viewer.html",
+    "ai_image_viewer_efficientnet.html",
+    "ai_image_viewer_mediapipe.html"
+  ],
+  "images": [
+    "maxresdefault.jpg",
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg",
+    "pexels-mali-maeder-110820-1280x720.png",
+    "photo-1608365151231-7dbed3034787.jpeg",
+    "red-chevy-sedan.webp",
+    "water-plant-growth_800x.webp"
+  ],
+  "instructions": {
+    "1": "Open any of the HTML files in your browser",
+    "2": "Load images from the 'images' folder",
+    "3": "Click 'AI Analyze' to process your assigned images",
+    "4": "Export metadata when analysis is complete",
+    "5": "Share the exported JSON file back to the project lead"
+  }
+}
