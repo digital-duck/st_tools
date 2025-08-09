@@ -1,4 +1,4 @@
-# AI Image Viewer
+# AI Image App
 
 🧠 **A powerful, portable web-based image viewer with multiple AI model options for computer vision**
 
