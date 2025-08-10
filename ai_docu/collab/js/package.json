@@ -1,0 +1,41 @@
+{
+  "name": "ai-docu-collaboration-tools",
+  "version": "1.0.0",
+  "description": "JavaScript collaboration tools for AI Docu App - split and join document analysis work packages",
+  "main": "index.js",
+  "scripts": {
+    "split": "node split-docs.js",
+    "join": "node join-docs.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "split-docs": "./split-docs.js",
+    "join-docs": "./join-docs.js"
+  },
+  "keywords": [
+    "ai",
+    "document-analysis",
+    "collaboration",
+    "nlp",
+    "machine-learning",
+    "text-processing"
+  ],
+  "author": "AI Docu App Team",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "archiver": "^5.3.1",
+    "adm-zip": "^0.5.10"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-docu-app/collaboration-tools"
+  },
+  "bugs": {
+    "url": "https://github.com/ai-docu-app/collaboration-tools/issues"
+  },
+  "homepage": "https://github.com/ai-docu-app/collaboration-tools#readme"
+}

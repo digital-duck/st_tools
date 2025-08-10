@@ -1,0 +1,17 @@
+# AI Docu App - Python Collaboration Tools Dependencies
+
+# Core CLI framework
+click>=8.0.0
+
+# For future enhancements (optional)
+# rich>=12.0.0          # Enhanced terminal output
+# pathlib>=1.0.0        # Path handling (built-in in Python 3.4+)
+# json                  # JSON handling (built-in)
+# tarfile               # Archive handling (built-in)
+# shutil                # File operations (built-in)
+# datetime              # Date/time handling (built-in)
+
+# Development dependencies (uncomment if needed)
+# pytest>=7.0.0         # Testing framework
+# black>=22.0.0         # Code formatting
+# flake8>=4.0.0         # Code linting
