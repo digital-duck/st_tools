@@ -1,20 +1,33 @@
 # AI Docu App
 
-📄 **A powerful, portable web-based document viewer with AI-powered text analysis and semantic search**
+📄 **A powerful, portable web-based document viewer with AI-powered text analysis, semantic search, and intelligent document management**
 
 ✨ **Ultra-Portable**: Single HTML file application - no installation, no server, no dependencies. Just zip and share!
 
+🎯 **Smart & Intuitive**: Modern UI with click-to-edit summaries, interactive document viewer, and AI model guidance
+
 ![AI Docu App](docs/ai_docu_screenshot.png)
+
+## 🌟 **What's New & Exciting**
+
+✅ **Interactive Document Viewer** - Double-click any document to view full content  
+✅ **Clickable Search Results** - Search then click to instantly open documents  
+✅ **Smart AI Model Guide** - Hover tooltips with direct links to model documentation  
+✅ **One-Click Summary Editing** - Auto-clearing placeholders for smooth UX  
+✅ **PDF Browser Integration** - PDFs open in new tabs for native viewing  
+✅ **Modern Responsive UI** - Beautiful animations and mobile-optimized design  
 
 ## 🎯 **AI-Powered Document Management**
 
-**One app, three powerful AI models for text processing!** Choose your model with a simple dropdown:
+**One app, three powerful AI models for text processing!** Choose your model with intelligent guidance:
 
-| Model | Best For | Icon |
-|-------|----------|------|
-| **Sentence-BERT** 🧠 | Fast text embeddings and similarity | 🧠 |
-| **DistilBERT** 🎯 | Document classification and categorization | 🎯 |
-| **Universal Encoder** 🚀 | Advanced semantic understanding | 🚀 |
+| Model | Best For | Speed | Learn More |
+|-------|----------|-------|------------|
+| **Sentence-BERT** 🧠 | Fast text embeddings & similarity search | ⚡ Fast | [Documentation](https://www.sbert.net/) |
+| **DistilBERT** 🎯 | Document classification & categorization | 🚀 Balanced | [Model Info](https://huggingface.co/distilbert-base-uncased) |
+| **Universal Encoder** 🚀 | Advanced semantic understanding | 🔄 Comprehensive | [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder/4) |
+
+**✨ Smart Model Selection**: Hover over the **?** icon next to the model dropdown for detailed guidance and direct links to documentation!
 
 **Single File:** `ai_docu.html` - Contains all three models with dynamic loading!
 
@@ -42,25 +55,40 @@ Search documents by content using natural language:
 - `"research papers on AI"` - identifies academic and research content
 - `"technical documentation"` - finds technical specs and manuals
 
+**🎯 Enhanced Search Experience:**
+- **Clickable Results** - Click any search result to instantly open the document viewer
+- **Smart Scoring** - Match percentages help you find the most relevant documents
+- **Seamless Navigation** - Search modal auto-closes when you select a document
+- **Keyword Preview** - See relevant keywords for each search result
+
 **Search Quality:**
 - **Sentence-BERT** 🧠: Fast embedding-based similarity search
 - **DistilBERT** 🎯: Category-aware document matching
 - **Universal Encoder** 🚀: Advanced semantic understanding with context
 
-### 📁 File Management
-- **Multi-format Support** - TXT, PDF, DOCX, RTF, MD
+### 📖 Interactive Document Viewer
+**Double-click any document** to open the enhanced viewer:
+- **📄 Text Files (TXT, MD)** - Full content display with proper formatting
+- **📕 PDF Files** - Opens PDF in new browser tab for native viewing
+- **📊 Document Metadata** - File size, type, and modification date
+- **🎨 Clean Interface** - Responsive design that works on all devices
+
+### 📁 Smart File Management
+- **Multi-format Support** - TXT, PDF, DOCX, RTF, MD files
 - **Bulk Operations** - Select individual files or entire folders
 - **Drag & Drop** - Drop documents directly onto the viewer
 - **Metadata Export/Import** - Save and load AI analysis results
-- **Editable Summaries** - Click to edit document summaries
+- **🎯 Smart Summaries** - Click "Click to add summary..." to instantly start editing (auto-clears placeholder)
+- **📊 Visual Organization** - Document type badges and grid layout (1-4 per row)
 
-### 🎨 User Interface
-- **Document Grid Layout** - 1-4 documents per row
-- **File Type Indicators** - Visual badges for different document types
-- **Real-time Progress** - Watch AI processing with live progress bars
-- **Search Suggestions** - Common search queries for quick access
-- **Mobile Optimized** - Works seamlessly on phones and tablets
-- **Document Viewer** - Double-click to read full document content
+### 🎨 Modern User Interface
+- **📱 Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- **🎯 Interactive Elements** - Hover tooltips, clickable components, smooth animations
+- **⚡ Real-time Feedback** - Live progress bars during AI processing
+- **🔍 Smart Search UI** - Search suggestions with instant clickable results
+- **📊 Visual Document Grid** - Customizable layout (1-4 documents per row)
+- **🏷️ File Type Badges** - Clear visual indicators for different document types
+- **✏️ Inline Editing** - Click-to-edit summaries with smart placeholder behavior
 
 ## 🚀 Getting Started
 
@@ -159,7 +187,8 @@ open ai_docu.html                          # Open document analyzer
 
 ### **🤖 Automated Collaboration Tools**
 
-For large document collections and team projects, choose your preferred automation tools:
+For large document collections and team projects, choose your preferred automation tools.  
+**🔄 Recently updated** - All collaboration tools have been renamed for better clarity:
 
 #### **🐍 Python Tools** (`python3` / `pip`)
 
@@ -167,13 +196,13 @@ For large document collections and team projects, choose your preferred automati
 # Setup and split large document collections for team distribution
 cd collab/python/
 pip install click
-python3 split_docs.py -s /path/to/big-document-collection -n 5
+python3 split_work.py -s /path/to/big-document-collection -n 5
 
 # Team members analyze their assigned packages
 # Each gets the AI Docu App + subset of documents
 
 # Merge completed work back together
-python3 join_docs.py ../split/work-package-*
+python3 join_work.py ../split/work-package-*
 ```
 
 #### **📦 JavaScript Tools** (`npx` / `npm`)
@@ -184,13 +213,13 @@ Modern Node.js tools for web development workflows:
 # Setup and split large document collections for team distribution  
 cd collab/js/
 npm install
-node split-docs.js -s /path/to/big-document-collection -n 5
+node split-work.js -s /path/to/big-document-collection -n 5
 
 # Team members analyze their assigned packages
 # Each gets the AI Docu App + subset of documents
 
 # Merge completed work back together
-node join-docs.js ../split/work-package-*
+node join-work.js ../split/work-package-*
 ```
 
 **📖 See [collab/README.md](collab/README.md) for complete collaboration workflow documentation.**
@@ -259,7 +288,7 @@ ai_docu/
 ├── docs/                             # Documentation assets
 │   ├── ai_docu_screenshot.png        # App screenshot
 │   └── architecture.md              # Technical architecture
-├── images/                           # Sample documents for testing
+├── docs/                             # Sample documents for testing
 │   ├── sample.txt                   # Plain text sample
 │   ├── sample.pdf                   # PDF sample
 │   ├── sample.docx                  # Word document sample
@@ -267,12 +296,12 @@ ai_docu/
 └── collab/                          # Collaboration tools
     ├── README.md                    # Collaboration documentation
     ├── python/                      # Python-based tools
-    │   ├── split_docs.py           # Split document collections
-    │   └── join_docs.py            # Merge document analysis
+    │   ├── split_work.py            # Split document collections
+    │   └── join_work.py             # Merge document analysis
     └── js/                         # JavaScript tools
         ├── package.json            # Node.js dependencies
-        ├── split-docs.js           # Split document collections
-        └── join-docs.js            # Merge document analysis
+        ├── split-work.js            # Split document collections
+        └── join-work.js             # Merge document analysis
 ```
 
 ### Architecture
@@ -328,6 +357,17 @@ For questions or issues:
 3. Try the fallback text search if AI models fail to load
 4. Clear browser cache and reload if models seem corrupted
 
+## 🎉 **Why AI Docu App Stands Out**
+
+🚀 **Zero Installation** - One HTML file does it all  
+🧠 **Three AI Models** - Choose the perfect model for your needs  
+🎯 **Smart UX** - Every interaction is thoughtfully designed  
+📱 **Works Everywhere** - Desktop, tablet, mobile - no limits  
+🔒 **Privacy First** - All processing happens locally in your browser  
+⚡ **Lightning Fast** - Optimized for performance and responsiveness  
+🤝 **Team Ready** - Built-in collaboration tools for any team size  
+
 ---
 
-**Built with ❤️ by Claude-Code and powered by TensorFlow.js**
+**Built with ❤️ using Claude Code and powered by TensorFlow.js**  
+*Creating the future of document management, one feature at a time.*

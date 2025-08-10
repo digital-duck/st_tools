@@ -106,6 +106,103 @@
             box-shadow: 0 0 0 2px rgba(0,123,255,.25);
         }
 
+        .model-help {
+            position: relative;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        .model-help-icon {
+            background: #6c757d;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            user-select: none;
+        }
+
+        .model-help:hover .model-help-icon {
+            background: #495057;
+        }
+
+        .model-help-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 350px;
+            font-size: 13px;
+            line-height: 1.4;
+            z-index: 1000;
+            transition: opacity 0.2s, visibility 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .model-help:hover .model-help-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .model-help-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #2c3e50;
+        }
+
+        .model-option {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .model-option:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 2px;
+        }
+
+        .model-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .model-link {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 11px;
+            margin-top: 3px;
+            display: inline-block;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .model-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
         button {
             background: linear-gradient(45deg, #2196F3, #21CBF3);
             color: white;
@@ -441,6 +538,34 @@
             overflow-y: auto;
         }
 
+        .search-result-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background: #e9ecef;
+            border-color: #2196F3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-score {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: 500;
+        }
+
         .close-modal {
             float: right;
             font-size: 24px;
@@ -520,6 +645,36 @@
             justify-content: center;
         }
 
+        .popup-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .popup-file-info {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .popup-document-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .popup-document-content.pdf-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            white-space: normal;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -540,7 +695,6 @@
         <div class="header">
             <div class="header-title">
                 <h1>AI Docu App</h1>
-                <span class="docu-badge">📄 AI POWERED</span>
             </div>
             
             <div class="controls-row">
@@ -552,6 +706,26 @@
                             <option value="distilbert">DistilBERT (Classification)</option>
                             <option value="universal">Universal Encoder (Advanced)</option>
                         </select>
+                        <div class="model-help">
+                            <div class="model-help-icon">?</div>
+                            <div class="model-help-tooltip">
+                                <div class="model-option">
+                                    <div class="model-name">🧠 Sentence-BERT (Fast)</div>
+                                    <div class="model-desc">Best for: Quick similarity search, document embedding, fast processing. Great for large document collections when speed matters.</div>
+                                    <a href="https://www.sbert.net/" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🎯 DistilBERT (Balanced)</div>
+                                    <div class="model-desc">Best for: Document classification, content categorization, general-purpose analysis. Recommended for most users.</div>
+                                    <a href="https://huggingface.co/distilbert-base-uncased" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🚀 Universal Encoder (Advanced)</div>
+                                    <div class="model-desc">Best for: Complex semantic understanding, research projects, detailed analysis. Slower but most comprehensive.</div>
+                                    <a href="https://tfhub.dev/google/universal-sentence-encoder/4" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <button onclick="selectFiles()">📁 Select Documents</button>
@@ -609,8 +783,11 @@
         <div class="popup-overlay" id="documentPopup">
             <div class="popup-close" onclick="closeDocumentPopup()">&times;</div>
             <div class="popup-content" id="popupContent">
-                <h3 id="popupTitle">Document Title</h3>
-                <div id="popupDocumentContent">Document content will appear here...</div>
+                <div class="popup-header">
+                    <h3 id="popupTitle">Document Title</h3>
+                    <div id="popupFileInfo" class="popup-file-info"></div>
+                </div>
+                <div id="popupDocumentContent" class="popup-document-content">Document content will appear here...</div>
             </div>
         </div>
     </div>
@@ -753,13 +930,92 @@
         }
         
         // Document popup functionality
-        function showDocumentPopup(documentContent, documentTitle) {
+        function openDocumentViewer(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
             const popup = document.getElementById('documentPopup');
             const popupTitle = document.getElementById('popupTitle');
             const popupContent = document.getElementById('popupDocumentContent');
+            const popupFileInfo = document.getElementById('popupFileInfo');
+            
+            // Set title and file info
+            popupTitle.textContent = docData.name;
+            popupFileInfo.innerHTML = `
+                <span class="document-type ${docData.type}">${docData.type.toUpperCase()}</span> • 
+                ${formatFileSize(docData.file.size)} • 
+                Modified: ${formatDate(docData.file.lastModified)}
+            `;
+            
+            // Handle content based on file type
+            if (docData.type === 'pdf') {
+                // For PDF files, show a placeholder since we can't render PDF directly in HTML
+                popupContent.className = 'popup-document-content pdf-content';
+                popupContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                        <h4>PDF Document</h4>
+                        <p style="margin: 16px 0;">This is a PDF file: <strong id="pdfFileName"></strong></p>
+                        <p style="color: #6c757d; margin-bottom: 20px;">PDF rendering is not yet implemented. Content extraction shows:</p>
+                        <div style="background: white; padding: 20px; border-radius: 6px; text-align: left; font-family: monospace; white-space: pre-wrap;" id="pdfContentPreview"></div>
+                        <button onclick="openPdfInBrowser(${docData.id})" style="margin-top: 20px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Open PDF in Browser</button>
+                    </div>
+                `;
+                // Set PDF content and filename safely
+                setTimeout(() => {
+                    const pdfPreview = document.getElementById('pdfContentPreview');
+                    const pdfFileName = document.getElementById('pdfFileName');
+                    if (pdfPreview) {
+                        pdfPreview.textContent = docData.content || 'PDF content extraction will be implemented';
+                    }
+                    if (pdfFileName) {
+                        pdfFileName.textContent = docData.name;
+                    }
+                }, 0);
+            } else {
+                // For text files, show content directly
+                popupContent.className = 'popup-document-content';
+                popupContent.textContent = docData.content || 'Loading content...';
+            }
+            
+            popup.classList.add('active');
+        }
+        
+        function openPdfInBrowser(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
+            const url = URL.createObjectURL(docData.file);
+            window.open(url, '_blank');
+            // Clean up URL after a delay to allow browser to load it
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function downloadDocument(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
+            const url = URL.createObjectURL(docData.file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = docData.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showDocumentPopup(documentContent, documentTitle) {
+            // Legacy function for compatibility
+            const popup = document.getElementById('documentPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupDocumentContent');
+            const popupFileInfo = document.getElementById('popupFileInfo');
             
             popupTitle.textContent = documentTitle;
-            popupContent.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${documentContent}</pre>`;
+            popupFileInfo.innerHTML = '';
+            popupContent.className = 'popup-document-content';
+            popupContent.textContent = documentContent;
             popup.classList.add('active');
         }
         
@@ -983,40 +1239,40 @@
             });
         }
 
-        function createDocumentCard(document) {
+        function createDocumentCard(docData) {
             const card = document.createElement('div');
             card.className = 'document-card';
             
-            const preview = document.content ? 
-                document.content.substring(0, 150) + (document.content.length > 150 ? '...' : '') : 
+            const preview = docData.content ? 
+                docData.content.substring(0, 150) + (docData.content.length > 150 ? '...' : '') : 
                 'Loading content...';
             
             card.innerHTML = `
                 <div class="document-header">
-                    <div class="document-type ${document.type}">${document.type.toUpperCase()}</div>
-                    <div class="ai-indicator" data-id="${document.id}">
+                    <div class="document-type ${docData.type}">${docData.type.toUpperCase()}</div>
+                    <div class="ai-indicator" data-id="${docData.id}">
                         ${modelConfigs[modelType].icon} Analyzed
                     </div>
                 </div>
                 <div class="document-content">
-                    <div class="document-title">${document.name}</div>
-                    <div class="file-attributes" data-id="${document.id}" style="display: none;">
-                        Size: ${formatFileSize(document.file.size)} | Modified: ${formatDate(document.file.lastModified)}
+                    <div class="document-title">${docData.name}</div>
+                    <div class="file-attributes" data-id="${docData.id}" style="display: none;">
+                        Size: ${formatFileSize(docData.file.size)} | Modified: ${formatDate(docData.file.lastModified)}
                     </div>
-                    <div class="document-summary" data-id="${document.id}" onclick="editSummary(${document.id})">
-                        ${summaries[document.name] || 'Click to add summary...'}
+                    <div class="document-summary" data-id="${docData.id}" onclick="editSummary(${docData.id})">
+                        ${summaries[docData.name] || 'Click to add summary...'}
                     </div>
-                    <div class="document-preview" ondblclick="showDocumentPopup('${document.content.replace(/'/g, "\\'")}', '${document.name}')">
+                    <div class="document-preview" ondblclick="openDocumentViewer(${docData.id})">
                         ${preview}
                     </div>
-                    <div class="document-tags" data-id="${document.id}"></div>
-                    <div class="confidence-score" data-id="${document.id}"></div>
+                    <div class="document-tags" data-id="${docData.id}"></div>
+                    <div class="confidence-score" data-id="${docData.id}"></div>
                 </div>
             `;
             
             // Update if already analyzed
-            if (aiData[document.name]) {
-                updateDocumentCard(document.id, aiData[document.name]);
+            if (aiData[docData.name]) {
+                updateDocumentCard(docData.id, aiData[docData.name]);
             }
             
             return card;
@@ -1027,16 +1283,22 @@
             const currentSummary = summaryElement.textContent;
             const isPlaceholder = currentSummary === 'Click to add summary...';
             
-            // If it's placeholder text, clear it immediately
+            summaryElement.contentEditable = true;
+            
+            // If it's placeholder text, clear it and position cursor
             if (isPlaceholder) {
                 summaryElement.textContent = '';
-            }
-            
-            summaryElement.contentEditable = true;
-            summaryElement.focus();
-            
-            // Select all text so user can immediately start typing
-            if (!isPlaceholder) {
+                summaryElement.focus();
+                // Set cursor to beginning
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(summaryElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                summaryElement.focus();
+                // Select all existing text for easy editing
                 document.execCommand('selectAll', false, null);
             }
             
@@ -1360,7 +1622,7 @@
             }
             
             const html = results.map(result => `
-                <div class="search-result-item">
+                <div class="search-result-item" onclick="openDocumentFromSearch(${result.document.id})" style="cursor: pointer;">
                     <div class="result-content">
                         <div class="result-title">${result.document.name} <span class="document-type ${result.document.type}">${result.document.type.toUpperCase()}</span></div>
                         <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
@@ -1368,10 +1630,18 @@
                             ${result.data.keywords ? result.data.keywords.slice(0, 3).map(k => k.word).join(', ') : 'No keywords'}
                         </div>
                     </div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open document</div>
                 </div>
             `).join('');
             
             container.innerHTML = `<h4>Found ${results.length} matching documents:</h4>${html}`;
+        }
+
+        function openDocumentFromSearch(documentId) {
+            // Close the search modal first
+            closeSearch();
+            // Open the document viewer
+            openDocumentViewer(documentId);
         }
 
         // Close modal when clicking outside

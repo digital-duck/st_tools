@@ -11,12 +11,12 @@ The AI Docu App collaboration tools enable teams to efficiently process large do
 ```bash
 # Python version
 cd collab/python
-python split_docs.py -s /path/to/documents -n 5
+python split_work.py -s /path/to/documents -n 5
 
 # JavaScript version  
 cd collab/js
 npm install
-node split-docs.js -s /path/to/documents -n 5
+node split-work.js -s /path/to/documents -n 5
 ```
 
 ### For Team Members: Analyze Documents
@@ -32,20 +32,20 @@ node split-docs.js -s /path/to/documents -n 5
 
 ```bash
 # Python version
-python join_docs.py -i /path/to/completed-packages
+python join_work.py -i /path/to/completed-packages
 
 # JavaScript version
-node join-docs.js -i /path/to/completed-packages
+node join-work.js -i /path/to/completed-packages
 ```
 
 ## 📁 Tools Overview
 
 | Tool | Language | Purpose | Input | Output |
 |------|----------|---------|-------|--------|
-| `split_docs.py` | Python | Split document collection | Document folder | Work packages |
-| `join_docs.py` | Python | Merge analysis results | Completed packages | Unified metadata |
-| `split-docs.js` | JavaScript | Split document collection | Document folder | Work packages |
-| `join-docs.js` | JavaScript | Merge analysis results | Completed packages | Unified metadata |
+| `split_work.py` | Python | Split document collection | Document folder | Work packages |
+| `join_work.py` | Python | Merge analysis results | Completed packages | Unified metadata |
+| `split-work.js` | JavaScript | Split document collection | Document folder | Work packages |
+| `join-work.js` | JavaScript | Merge analysis results | Completed packages | Unified metadata |
 
 ## 🏗️ Directory Structure
 
@@ -53,12 +53,12 @@ node join-docs.js -i /path/to/completed-packages
 collab/
 ├── README.md                    # This documentation
 ├── python/                      # Python collaboration tools
-│   ├── split_docs.py           # Document splitter
-│   ├── join_docs.py            # Result merger
+│   ├── split_work.py           # Document splitter
+│   ├── join_work.py            # Result merger
 │   └── requirements.txt        # Python dependencies
 └── js/                         # JavaScript collaboration tools
-    ├── split-docs.js           # Document splitter
-    ├── join-docs.js            # Result merger
+    ├── split-work.js           # Document splitter
+    ├── join-work.js            # Result merger
     └── package.json            # Node.js dependencies
 ```
 
@@ -73,7 +73,7 @@ cd collab/python
 pip install click
 
 # Make scripts executable (Linux/Mac)
-chmod +x split_docs.py join_docs.py
+chmod +x split_work.py join_work.py
 ```
 
 ### JavaScript Tools
@@ -85,7 +85,7 @@ cd collab/js
 npm install
 
 # Make scripts executable (Linux/Mac)
-chmod +x split-docs.js join-docs.js
+chmod +x split-work.js join-work.js
 ```
 
 ## 📖 Detailed Usage Guide
@@ -96,26 +96,26 @@ chmod +x split-docs.js join-docs.js
 
 ```bash
 # Basic usage - split 1000 docs into 5 packages
-python split_docs.py -s ./big-document-collection -n 5
+python split_work.py -s ./big-document-collection -n 5
 
 # Custom output location
-python split_docs.py -s /data/documents -n 3 -o /shared/packages
+python split_work.py -s /data/documents -n 3 -o /shared/packages
 
 # Get help
-python split_docs.py --help
+python split_work.py --help
 ```
 
 #### JavaScript Version
 
 ```bash
 # Basic usage
-node split-docs.js -s ./big-document-collection -n 5
+node split-work.js -s ./big-document-collection -n 5
 
 # Custom output location  
-node split-docs.js -s /data/documents -n 3 -o /shared/packages
+node split-work.js -s /data/documents -n 3 -o /shared/packages
 
 # Get help
-node split-docs.js --help
+node split-work.js --help
 ```
 
 #### Options
@@ -200,32 +200,32 @@ tar -czf docu-package-001-completed.tar.gz docu-package-001/
 
 ```bash
 # Basic usage - merge all packages in folder
-python join_docs.py -i ./completed-packages
+python join_work.py -i ./completed-packages
 
 # Custom output location
-python join_docs.py -i /data/completed -o /results/merged
+python join_work.py -i /data/completed -o /results/merged
 
 # Auto-cleanup extracted folders
-python join_docs.py -i ./packages -c
+python join_work.py -i ./packages -c
 
 # Get help
-python join_docs.py --help
+python join_work.py --help
 ```
 
 #### JavaScript Version
 
 ```bash
 # Basic usage
-node join-docs.js -i ./completed-packages
+node join-work.js -i ./completed-packages
 
 # Custom output location
-node join-docs.js -i /data/completed -o /results/merged
+node join-work.js -i /data/completed -o /results/merged
 
 # Auto-cleanup extracted folders
-node join-docs.js -i ./packages -c
+node join-work.js -i ./packages -c
 
 # Get help
-node join-docs.js --help
+node join-work.js --help
 ```
 
 #### Join Options
@@ -255,7 +255,7 @@ joined/
 ```bash
 # 1. Split documents
 cd collab/python
-python split_docs.py -s /data/research-papers -n 5 -o /shared/packages
+python split_work.py -s /data/research-papers -n 5 -o /shared/packages
 
 # 2. Share packages with team
 # docu-package-001.tar.gz → Alice
@@ -291,7 +291,7 @@ mkdir completed-work
 # Copy all *-completed.tar.gz files here
 
 # 2. Merge results
-python join_docs.py -i ./completed-work -o ./final-results
+python join_work.py -i ./completed-work -o ./final-results
 
 # 3. Review merged data
 # - Check join-summary-report.md
@@ -306,7 +306,7 @@ python join_docs.py -i ./completed-work -o ./final-results
 1. **Optimal Split Size**: 50-200 documents per package
    ```bash
    # For 1000 documents, use 5-10 splits
-   python split_docs.py -s ./docs -n 8
+   python split_work.py -s ./docs -n 8
    ```
 
 2. **Parallel Processing**: Team members can work simultaneously
@@ -338,7 +338,7 @@ python join_docs.py -i ./completed-work -o ./final-results
 ls -la your-folder/ | grep -E '\.(txt|pdf|docx|rtf|md)$'
 
 # Verify folder path
-python split_docs.py -s "$(pwd)/your-folder" -n 3
+python split_work.py -s "$(pwd)/your-folder" -n 3
 ```
 
 **Error: "Could not find project root"**
@@ -423,8 +423,8 @@ for f in *.tar.gz; do tar -xzf "$f"; done
 
 ```bash
 # Create packages of different sizes
-python split_docs.py -s ./priority-docs -n 2    # Large packages
-python split_docs.py -s ./regular-docs -n 8     # Small packages
+python split_work.py -s ./priority-docs -n 2    # Large packages
+python split_work.py -s ./regular-docs -n 8     # Small packages
 
 # Assign by expertise
 # Package 1 → Technical expert (AI model: Sentence-BERT)
@@ -438,7 +438,7 @@ python split_docs.py -s ./regular-docs -n 8     # Small packages
 # automated-split.sh
 
 # Split documents
-python split_docs.py -s "$1" -n "$2" -o ./packages
+python split_work.py -s "$1" -n "$2" -o ./packages
 
 # Email packages to team
 for package in ./packages/*.tar.gz; do

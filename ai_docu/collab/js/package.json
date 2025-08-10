@@ -4,13 +4,13 @@
   "description": "JavaScript collaboration tools for AI Docu App - split and join document analysis work packages",
   "main": "index.js",
   "scripts": {
-    "split": "node split-docs.js",
-    "join": "node join-docs.js",
+    "split": "node split-work.js",
+    "join": "node join-work.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "split-docs": "./split-docs.js",
-    "join-docs": "./join-docs.js"
+    "split-work": "./split-work.js",
+    "join-work": "./join-work.js"
   },
   "keywords": [
     "ai",
