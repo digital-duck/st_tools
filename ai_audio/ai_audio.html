@@ -104,29 +104,27 @@
         }
 
         .model-info {
-            position: relative;
             display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+            color: #667eea;
         }
 
-        .model-tooltip {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2d3748;
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+        label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-right: 8px;
         }
 
-        .model-info:hover .model-tooltip {
-            opacity: 1;
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 15px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin: 0;
         }
 
         .progress-container {
@@ -162,9 +160,30 @@
 
         .audio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
+        }
+
+        .audio-grid.cols-1 { grid-template-columns: 1fr; }
+        .audio-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .audio-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .audio-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .audio-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+        .audio-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+        @media (max-width: 768px) {
+            .audio-grid.cols-3,
+            .audio-grid.cols-4,
+            .audio-grid.cols-5,
+            .audio-grid.cols-6 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .audio-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         .audio-card {
@@ -183,21 +202,17 @@
         }
 
         .audio-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 15px;
         }
 
         .audio-title {
             font-weight: 600;
             color: #2d3748;
-            font-size: 16px;
+            font-size: 14px;
             margin: 0;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .audio-format {
@@ -293,6 +308,45 @@
             font-size: 14px;
         }
 
+        .audio-player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .audio-player-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .player-details {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
         .search-modal {
             position: fixed;
             top: 0;
@@ -367,13 +421,24 @@
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             margin-bottom: 10px;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .search-result:hover {
             background: #f7fafc;
             border-color: #667eea;
+        }
+
+        .search-result-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-result-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
         }
 
         .search-result-title {
@@ -390,12 +455,33 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #718096;
+            color: #2d3748;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .empty-state:hover {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .empty-state h3 {
-            color: #4a5568;
+            color: #2d3748;
             margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .empty-state p {
+            color: #4a5568;
+            font-size: 1.1em;
+        }
+
+        .empty-state.drag-over {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
         }
 
         @media (max-width: 768px) {
@@ -423,28 +509,39 @@
     <div class="container">
         <div class="header">
             <h1>🎵 AI Audio App</h1>
-            <p>Intelligent audio management with AI-powered analysis, smart search, and waveform visualization</p>
-            <p><strong>🎯 Privacy-first:</strong> All processing happens locally in your browser</p>
         </div>
 
         <div class="controls">
             <div class="control-group">
-                <button id="selectFiles">📁 Select Audio Files</button>
-                <button id="selectFolder">📂 Select Audio Folder</button>
-            </div>
-            
-            <div class="control-group">
+                <label for="modelSelect">AI Model:</label>
                 <select id="modelSelect">
                     <option value="audiobert">🎵 Audio-BERT (Fast embeddings)</option>
                     <option value="musiccnn">🎼 MusicCNN (Music analysis)</option>
                     <option value="universal">🚀 Universal Audio (Advanced)</option>
                 </select>
-                <div class="model-info">
-                    <button id="modelInfo">?</button>
-                    <div class="model-tooltip">
-                        Click to see model documentation and guidance
-                    </div>
+                <div class="model-info" title="Audio-BERT: Fast embeddings (https://arxiv.org/abs/1904.02755) | MusicCNN: Music analysis (https://github.com/jordipons/musicnn) | Universal Audio: Advanced processing (https://github.com/tensorflow/models)">
+                    ℹ️
                 </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="gridLayout">Layout:</label>
+                <select id="gridLayout">
+                    <option value="1">1 per row</option>
+                    <option value="2">2 per row</option>
+                    <option value="3" selected>3 per row</option>
+                    <option value="4">4 per row</option>
+                    <option value="5">5 per row</option>
+                    <option value="6">6 per row</option>
+                </select>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="showFileInfo" checked> Display file info
+                </label>
+            </div>
+            
+            <div class="control-group">
+                <button id="selectFiles">📁 Select Audio Files</button>
+                <button id="selectFolder">📂 Select Audio Folder</button>
             </div>
 
             <div class="control-group">
@@ -470,6 +567,24 @@
                 <h3>🎵 Welcome to AI Audio App</h3>
                 <p>Select audio files or a folder to get started with AI-powered audio analysis</p>
                 <p><strong>Supported formats:</strong> MP3, WAV, FLAC, AAC, OGG, M4A</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Player Modal -->
+    <div class="audio-player-modal" id="audioPlayerModal">
+        <div class="audio-player-content">
+            <div class="player-header">
+                <h2 id="playerTitle">Audio Player</h2>
+                <button id="closePlayer" style="background: transparent; color: #666; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div class="player-audio">
+                <audio id="audioElement" controls style="width: 100%; margin: 20px 0;"></audio>
+            </div>
+            
+            <div class="player-details" id="playerDetails">
+                <!-- Audio details will be populated here -->
             </div>
         </div>
     </div>
@@ -500,6 +615,12 @@
         </div>
     </div>
 
+    <footer style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.8); font-size: 14px;">
+        <p>🎵 Intelligent audio management with AI-powered analysis, smart search, and waveform visualization</p>
+        <p><strong>🎯 Privacy-first:</strong> All processing happens locally in your browser</p>
+        <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">Built with ❤️ using Claude Code and powered by TensorFlow.js</p>
+    </footer>
+
     <!-- Hidden file inputs -->
     <input type="file" id="fileInput" multiple accept="audio/*" style="display: none;">
     <input type="file" id="folderInput" webkitdirectory style="display: none;">
@@ -522,7 +643,8 @@
             fileInput: document.getElementById('fileInput'),
             folderInput: document.getElementById('folderInput'),
             modelSelect: document.getElementById('modelSelect'),
-            modelInfo: document.getElementById('modelInfo'),
+            gridLayout: document.getElementById('gridLayout'),
+            showFileInfo: document.getElementById('showFileInfo'),
             analyzeBtn: document.getElementById('analyzeBtn'),
             searchBtn: document.getElementById('searchBtn'),
             exportBtn: document.getElementById('exportBtn'),
@@ -544,15 +666,29 @@
         elements.fileInput.addEventListener('change', handleFileSelect);
         elements.folderInput.addEventListener('change', handleFileSelect);
         elements.modelSelect.addEventListener('change', handleModelChange);
-        elements.modelInfo.addEventListener('click', showModelInfo);
+        elements.gridLayout.addEventListener('change', updateGridLayout);
+        elements.showFileInfo.addEventListener('change', toggleFileInfo);
         elements.analyzeBtn.addEventListener('click', analyzeAudio);
         elements.searchBtn.addEventListener('click', openSearch);
         elements.exportBtn.addEventListener('click', exportMetadata);
         elements.importBtn.addEventListener('click', () => elements.importInput.click());
         elements.importInput.addEventListener('change', importMetadata);
         elements.closeSearch.addEventListener('click', closeSearch);
+        
+        // Audio player modal events
+        document.getElementById('closePlayer').addEventListener('click', closeAudioPlayer);
+        
+        // Drag and drop events
+        elements.audioGrid.addEventListener('dragover', handleDragOver);
+        elements.audioGrid.addEventListener('dragleave', handleDragLeave);
+        elements.audioGrid.addEventListener('drop', handleDrop);
+        
+        // Prevent default drag behaviors on document
+        document.addEventListener('dragover', (e) => e.preventDefault());
+        document.addEventListener('drop', (e) => e.preventDefault());
 
-        // Search functionality
+        // Search functionality - real-time search
+        elements.searchInput.addEventListener('input', performSearch);
         elements.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') performSearch();
         });
@@ -586,50 +722,48 @@
         // Display audio files in grid
         function displayAudioFiles() {
             if (audioFiles.length === 0) {
-                elements.audioGrid.innerHTML = `
-                    <div class="empty-state">
-                        <h3>🎵 Welcome to AI Audio App</h3>
-                        <p>Select audio files or a folder to get started with AI-powered audio analysis</p>
-                        <p><strong>Supported formats:</strong> MP3, WAV, FLAC, AAC, OGG, M4A</p>
-                    </div>
-                `;
+                elements.audioGrid.innerHTML = 
+                    '<div class="empty-state">' +
+                        '<h3>🎵 Welcome to AI Audio App</h3>' +
+                        '<p>Select audio files or a folder to get started with AI-powered audio analysis</p>' +
+                        '<p><strong>Supported formats:</strong> MP3, WAV, FLAC, AAC, OGG, M4A</p>' +
+                    '</div>';
+                elements.audioGrid.className = 'audio-grid';
                 return;
             }
 
-            elements.audioGrid.innerHTML = audioFiles.map((file, index) => `
-                <div class="audio-card" data-index="${index}">
-                    <div class="audio-header">
-                        <h3 class="audio-title" title="${file.name}">${file.name}</h3>
-                        <span class="audio-format">${getFileExtension(file.name).toUpperCase()}</span>
-                    </div>
+            elements.audioGrid.innerHTML = audioFiles.map((file, index) =>
+                '<div class="audio-card" data-index="' + index + '" ondblclick="openAudioPlayer(' + index + ')">' +
+                    '<div class="audio-header">' +
+                        '<h3 class="audio-title">' + file.name + '</h3>' +
+                    '</div>' +
                     
-                    <div class="waveform-container">
-                        <div class="waveform-placeholder"></div>
-                    </div>
+                    '<div class="audio-controls">' +
+                        '<button class="play-btn" onclick="togglePlay(' + index + ')">▶️</button>' +
+                        '<span class="audio-time" id="time-' + index + '">--:-- / --:--</span>' +
+                    '</div>' +
                     
-                    <div class="audio-controls">
-                        <button class="play-btn" onclick="togglePlay(${index})">▶️</button>
-                        <span class="audio-time">--:-- / --:--</span>
-                    </div>
+                    '<div class="audio-metadata" id="metadata-' + index + '">' +
+                        '<div>Size: ' + formatFileSize(file.size) + '</div>' +
+                        '<div>Format: ' + getFileExtension(file.name).toUpperCase() + '</div>' +
+                    '</div>' +
                     
-                    <div class="audio-metadata">
-                        <div>Size: ${formatFileSize(file.size)}</div>
-                        <div>Format: ${getFileExtension(file.name).toUpperCase()}</div>
-                    </div>
+                    '<div class="audio-tags">' +
+                        '<input type="text" placeholder="Click to add tags..." ' +
+                               'onfocus="clearPlaceholder(this)" ' +
+                               'onblur="restorePlaceholder(this)" ' +
+                               'onchange="saveTags(' + index + ', this.value)">' +
+                    '</div>' +
                     
-                    <div class="audio-tags">
-                        <input type="text" placeholder="Click to add tags..." 
-                               onfocus="clearPlaceholder(this)" 
-                               onblur="restorePlaceholder(this)"
-                               onchange="saveTags(${index}, this.value)">
-                    </div>
-                    
-                    <div id="analysis-${index}" class="ai-analysis" style="display: none;">
-                        <h4>🤖 AI Analysis</h4>
-                        <div id="analysis-content-${index}"></div>
-                    </div>
-                </div>
-            `).join('');
+                    '<div id="analysis-' + index + '" class="ai-analysis" style="display: none;">' +
+                        '<h4>🤖 AI Analysis</h4>' +
+                        '<div id="analysis-content-' + index + '"></div>' +
+                    '</div>' +
+                '</div>'
+            ).join('');
+            
+            updateGridLayout();
+            toggleFileInfo();
         }
 
         // Enable controls when files are loaded
@@ -661,7 +795,7 @@
                 const loadTime = getModelLoadTime(modelName);
                 
                 for (let i = 0; i <= 100; i += 5) {
-                    updateProgress(i, `Loading ${getModelDisplayName(modelName)}... ${i}%`);
+                    updateProgress(i, 'Loading ' + getModelDisplayName(modelName) + '... ' + i + '%');
                     await new Promise(resolve => setTimeout(resolve, loadTime / 20));
                 }
                 
@@ -669,7 +803,7 @@
                 modelLoaded = true;
                 hideProgress();
                 
-                console.log(`✅ ${getModelDisplayName(modelName)} loaded successfully`);
+                console.log('✅ ' + getModelDisplayName(modelName) + ' loaded successfully');
             } catch (error) {
                 console.error('❌ Failed to load model:', error);
                 hideProgress();
@@ -693,7 +827,7 @@
                     const file = audioFiles[i];
                     const progress = ((i + 1) / audioFiles.length) * 100;
                     
-                    updateProgress(progress, `Analyzing ${file.name}... (${i + 1}/${audioFiles.length})`);
+                    updateProgress(progress, 'Analyzing ' + file.name + '... (' + (i + 1) + '/' + audioFiles.length + ')');
                     
                     // Simulate audio analysis
                     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -749,35 +883,32 @@
 
         // Display analysis results
         function displayAnalysis(index, analysis) {
-            const analysisDiv = document.getElementById(`analysis-${index}`);
-            const contentDiv = document.getElementById(`analysis-content-${index}`);
+            const analysisDiv = document.getElementById('analysis-' + index);
+            const contentDiv = document.getElementById('analysis-content-' + index);
             
             let content = '';
             
             if (currentModel === 'audiobert') {
-                content = `
-                    <strong>Genre:</strong> ${analysis.genre}<br>
-                    <strong>Tempo:</strong> ${analysis.tempo} BPM<br>
-                    <strong>Mood:</strong> ${analysis.mood}<br>
-                    <strong>Instruments:</strong> ${analysis.instruments.join(', ')}<br>
-                    <strong>Confidence:</strong> ${(analysis.confidence * 100).toFixed(0)}%
-                `;
+                content = 
+                    '<strong>Genre:</strong> ' + analysis.genre + '<br>' +
+                    '<strong>Tempo:</strong> ' + analysis.tempo + ' BPM<br>' +
+                    '<strong>Mood:</strong> ' + analysis.mood + '<br>' +
+                    '<strong>Instruments:</strong> ' + analysis.instruments.join(', ') + '<br>' +
+                    '<strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%';
             } else if (currentModel === 'musiccnn') {
-                content = `
-                    <strong>Style:</strong> ${analysis.style}<br>
-                    <strong>Key:</strong> ${analysis.key}<br>
-                    <strong>Time Signature:</strong> ${analysis.rhythm}<br>
-                    <strong>Complexity:</strong> ${analysis.complexity}<br>
-                    <strong>Confidence:</strong> ${(analysis.confidence * 100).toFixed(0)}%
-                `;
+                content = 
+                    '<strong>Style:</strong> ' + analysis.style + '<br>' +
+                    '<strong>Key:</strong> ' + analysis.key + '<br>' +
+                    '<strong>Time Signature:</strong> ' + analysis.rhythm + '<br>' +
+                    '<strong>Complexity:</strong> ' + analysis.complexity + '<br>' +
+                    '<strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%';
             } else {
-                content = `
-                    <strong>Tags:</strong> ${analysis.semanticTags.join(', ')}<br>
-                    <strong>Emotions:</strong> ${analysis.emotionalProfile.join(', ')}<br>
-                    <strong>Quality:</strong> ${analysis.audioQuality}<br>
-                    <strong>Structure:</strong> ${analysis.structuralAnalysis}<br>
-                    <strong>Confidence:</strong> ${(analysis.confidence * 100).toFixed(0)}%
-                `;
+                content = 
+                    '<strong>Tags:</strong> ' + analysis.semanticTags.join(', ') + '<br>' +
+                    '<strong>Emotions:</strong> ' + analysis.emotionalProfile.join(', ') + '<br>' +
+                    '<strong>Quality:</strong> ' + analysis.audioQuality + '<br>' +
+                    '<strong>Structure:</strong> ' + analysis.structuralAnalysis + '<br>' +
+                    '<strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%';
             }
             
             contentDiv.innerHTML = content;
@@ -817,32 +948,32 @@
                 if (currentModel === 'audiobert') {
                     if (analysis.genre.toLowerCase().includes(query)) {
                         score += 0.8;
-                        matches.push(`Genre: ${analysis.genre}`);
+                        matches.push('Genre: ' + analysis.genre);
                     }
                     if (analysis.mood.toLowerCase().includes(query)) {
                         score += 0.7;
-                        matches.push(`Mood: ${analysis.mood}`);
+                        matches.push('Mood: ' + analysis.mood);
                     }
                     analysis.instruments.forEach(inst => {
                         if (inst.toLowerCase().includes(query)) {
                             score += 0.6;
-                            matches.push(`Instrument: ${inst}`);
+                            matches.push('Instrument: ' + inst);
                         }
                     });
                 } else if (currentModel === 'musiccnn') {
                     if (analysis.style.toLowerCase().includes(query)) {
                         score += 0.8;
-                        matches.push(`Style: ${analysis.style}`);
+                        matches.push('Style: ' + analysis.style);
                     }
                     if (analysis.key.toLowerCase().includes(query)) {
                         score += 0.6;
-                        matches.push(`Key: ${analysis.key}`);
+                        matches.push('Key: ' + analysis.key);
                     }
                 } else {
                     analysis.semanticTags.forEach(tag => {
                         if (tag.toLowerCase().includes(query)) {
                             score += 0.7;
-                            matches.push(`Tag: ${tag}`);
+                            matches.push('Tag: ' + tag);
                         }
                     });
                 }
@@ -875,25 +1006,95 @@
                 return;
             }
             
-            elements.searchResults.innerHTML = results.map(result => `
-                <div class="search-result" onclick="playFromSearch(${result.index})">
-                    <div class="search-result-title">${result.file.name}</div>
-                    <div class="search-result-match">Match: ${(result.score * 100).toFixed(0)}%</div>
-                    <div>${result.matches.join(' • ')}</div>
-                </div>
-            `).join('');
+            elements.searchResults.innerHTML = results.map(result => 
+                '<div class="search-result">' +
+                    '<div class="search-result-title">' + result.file.name + '</div>' +
+                    '<div class="search-result-match">Match: ' + (result.score * 100).toFixed(0) + '%</div>' +
+                    '<div>' + result.matches.join(' • ') + '</div>' +
+                    '<div class="search-result-actions">' +
+                        '<button onclick="playFromSearch(' + result.index + ')" style="margin-right: 10px;">🎵 Play</button>' +
+                        '<button onclick="openAudioInNewTab(' + result.index + ')">🔗 Open in New Tab</button>' +
+                    '</div>' +
+                '</div>'
+            ).join('');
         }
 
         function playFromSearch(index) {
             closeSearch();
             // Scroll to audio card
-            const card = document.querySelector(`[data-index="${index}"]`);
+            const card = document.querySelector('[data-index="' + index + '"]');
             if (card) {
                 card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 // Highlight the card briefly
                 card.style.border = '3px solid #667eea';
                 setTimeout(() => card.style.border = '', 2000);
+                // Auto-play the audio
+                togglePlay(index);
             }
+        }
+        
+        function openAudioInNewTab(index) {
+            const file = audioFiles[index];
+            
+            // Create a data URL from the file for better compatibility
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const audioDataUrl = e.target.result;
+                
+                // Create a simple HTML page with the audio player
+                const fileName = file.name.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                const fileSize = formatFileSize(file.size);
+                const fileFormat = getFileExtension(file.name).toUpperCase();
+                const fileDate = new Date(file.lastModified).toLocaleString();
+                
+                const htmlContent = '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<title>' + fileName + '</title>' +
+                '<style>' +
+                'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0; padding: 40px; color: white; text-align: center; }' +
+                '.player-container { background: white; border-radius: 12px; padding: 30px; margin: 0 auto; max-width: 600px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); color: #333; }' +
+                'audio { width: 100%; margin: 20px 0; outline: none; }' +
+                'h1 { margin-bottom: 20px; color: #2d3748; word-wrap: break-word; font-size: 1.5em; }' +
+                '.info { text-align: left; background: #f7fafc; padding: 20px; border-radius: 8px; margin-top: 20px; }' +
+                '.info p { margin: 8px 0; }' +
+                '</style>' +
+                '</head>' +
+                '<body>' +
+                '<div class="player-container">' +
+                '<h1>🎵 ' + fileName + '</h1>' +
+                '<audio controls preload="metadata">' +
+                '<source src="' + audioDataUrl + '" type="' + file.type + '">' +
+                'Your browser does not support the audio element.' +
+                '</audio>' +
+                '<div class="info">' +
+                '<p><strong>File Size:</strong> ' + fileSize + '</p>' +
+                '<p><strong>Format:</strong> ' + fileFormat + '</p>' +
+                '<p><strong>Last Modified:</strong> ' + fileDate + '</p>' +
+                '</div>' +
+                '</div>' +
+                '<script>' +
+                'document.addEventListener("DOMContentLoaded", function() {' +
+                'const audio = document.querySelector("audio");' +
+                'audio.load();' +
+                'audio.addEventListener("error", function(e) { console.error("Audio loading error:", e); alert("Failed to load audio file. Please try again."); });' +
+                'audio.addEventListener("loadedmetadata", function() { console.log("Audio loaded successfully"); });' +
+                '});' +
+                '</script>' +
+                '</body>' +
+                '</html>';
+                
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const pageUrl = URL.createObjectURL(blob);
+                window.open(pageUrl, '_blank');
+                
+                // Clean up after a delay
+                setTimeout(() => {
+                    URL.revokeObjectURL(pageUrl);
+                }, 2000);
+            };
+            
+            reader.readAsDataURL(file);
         }
 
         // Export/Import functionality
@@ -918,7 +1119,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ai-audio-${currentModel}-metadata.json`;
+            a.download = 'ai-audio-' + currentModel + '-metadata.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -980,10 +1181,164 @@
             return times[model] || 2000;
         }
 
-        // Audio playback functions (simplified)
+        // Drag and drop functions
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elements.audioGrid.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elements.audioGrid.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elements.audioGrid.classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            const audioFilesList = files.filter(file => 
+                supportedFormats.some(format => 
+                    file.name.toLowerCase().endsWith(format)
+                )
+            );
+            
+            if (audioFilesList.length === 0) {
+                alert('No supported audio files found. Please drop MP3, WAV, FLAC, AAC, OGG, or M4A files.');
+                return;
+            }
+            
+            audioFiles = [...audioFiles, ...audioFilesList];
+            displayAudioFiles();
+            enableControls();
+        }
+
+        // Audio player modal functions
+        function openAudioPlayer(index) {
+            const file = audioFiles[index];
+            const modal = document.getElementById('audioPlayerModal');
+            const audioElement = document.getElementById('audioElement');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerDetails = document.getElementById('playerDetails');
+            
+            // Set up audio player
+            const url = URL.createObjectURL(file);
+            audioElement.src = url;
+            playerTitle.textContent = file.name;
+            
+            // Display file details
+            const analysis = analysisResults[file.name];
+            let detailsHTML = 
+                '<h3>File Information</h3>' +
+                '<p><strong>Name:</strong> ' + file.name + '</p>' +
+                '<p><strong>Size:</strong> ' + formatFileSize(file.size) + '</p>' +
+                '<p><strong>Format:</strong> ' + getFileExtension(file.name).toUpperCase() + '</p>' +
+                '<p><strong>Last Modified:</strong> ' + new Date(file.lastModified).toLocaleString() + '</p>';
+            
+            if (analysis) {
+                detailsHTML += '<h3>AI Analysis</h3>';
+                if (currentModel === 'audiobert') {
+                    detailsHTML += 
+                        '<p><strong>Genre:</strong> ' + analysis.genre + '</p>' +
+                        '<p><strong>Tempo:</strong> ' + analysis.tempo + ' BPM</p>' +
+                        '<p><strong>Mood:</strong> ' + analysis.mood + '</p>' +
+                        '<p><strong>Instruments:</strong> ' + analysis.instruments.join(', ') + '</p>' +
+                        '<p><strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%</p>';
+                } else if (currentModel === 'musiccnn') {
+                    detailsHTML += 
+                        '<p><strong>Style:</strong> ' + analysis.style + '</p>' +
+                        '<p><strong>Key:</strong> ' + analysis.key + '</p>' +
+                        '<p><strong>Time Signature:</strong> ' + analysis.rhythm + '</p>' +
+                        '<p><strong>Complexity:</strong> ' + analysis.complexity + '</p>' +
+                        '<p><strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%</p>';
+                } else {
+                    detailsHTML += 
+                        '<p><strong>Tags:</strong> ' + analysis.semanticTags.join(', ') + '</p>' +
+                        '<p><strong>Emotions:</strong> ' + analysis.emotionalProfile.join(', ') + '</p>' +
+                        '<p><strong>Quality:</strong> ' + analysis.audioQuality + '</p>' +
+                        '<p><strong>Structure:</strong> ' + analysis.structuralAnalysis + '</p>' +
+                        '<p><strong>Confidence:</strong> ' + (analysis.confidence * 100).toFixed(0) + '%</p>';
+                }
+            }
+            
+            playerDetails.innerHTML = detailsHTML;
+            modal.style.display = 'flex';
+            
+            // Clean up URL when audio ends or modal closes
+            audioElement.addEventListener('ended', () => URL.revokeObjectURL(url));
+        }
+
+        function closeAudioPlayer() {
+            const modal = document.getElementById('audioPlayerModal');
+            const audioElement = document.getElementById('audioElement');
+            
+            audioElement.pause();
+            audioElement.src = '';
+            modal.style.display = 'none';
+        }
+
+        // Audio playback functions
+        let currentPlayingIndex = null;
+        let currentAudioElement = null;
+
         function togglePlay(index) {
-            console.log(`Playing audio file: ${audioFiles[index].name}`);
-            // Real implementation would use Web Audio API for playback
+            const file = audioFiles[index];
+            const playBtn = document.querySelector('[data-index="' + index + '"] .play-btn');
+            const timeSpan = document.getElementById('time-' + index);
+            
+            // Stop current playing audio if any
+            if (currentAudioElement && currentPlayingIndex !== index) {
+                currentAudioElement.pause();
+                const prevBtn = document.querySelector('[data-index="' + currentPlayingIndex + '"] .play-btn');
+                if (prevBtn) prevBtn.textContent = '▶️';
+            }
+            
+            // Toggle current audio
+            if (currentPlayingIndex === index && currentAudioElement && !currentAudioElement.paused) {
+                // Pause current audio
+                currentAudioElement.pause();
+                playBtn.textContent = '▶️';
+                currentPlayingIndex = null;
+            } else {
+                // Play audio
+                if (currentAudioElement) {
+                    URL.revokeObjectURL(currentAudioElement.src);
+                }
+                
+                const url = URL.createObjectURL(file);
+                currentAudioElement = new Audio(url);
+                currentPlayingIndex = index;
+                
+                currentAudioElement.addEventListener('loadedmetadata', () => {
+                    const duration = formatTime(currentAudioElement.duration);
+                    timeSpan.textContent = '00:00 / ' + duration;
+                });
+                
+                currentAudioElement.addEventListener('timeupdate', () => {
+                    const current = formatTime(currentAudioElement.currentTime);
+                    const duration = formatTime(currentAudioElement.duration);
+                    timeSpan.textContent = current + ' / ' + duration;
+                });
+                
+                currentAudioElement.addEventListener('ended', () => {
+                    playBtn.textContent = '▶️';
+                    currentPlayingIndex = null;
+                    URL.revokeObjectURL(url);
+                });
+                
+                currentAudioElement.play();
+                playBtn.textContent = '⏸️';
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
         }
 
         // Tag management
@@ -1000,7 +1355,7 @@
         }
 
         function saveTags(index, tags) {
-            console.log(`Saved tags for ${audioFiles[index].name}: ${tags}`);
+            console.log('Saved tags for ' + audioFiles[index].name + ': ' + tags);
         }
 
         // Progress bar functions
@@ -1019,16 +1374,18 @@
             elements.progressContainer.style.display = 'none';
         }
 
-        // Model info
-        function showModelInfo() {
-            const model = elements.modelSelect.value;
-            const info = {
-                audiobert: 'Audio-BERT: Fast audio embeddings and similarity search. Best for quick audio discovery and matching.',
-                musiccnn: 'MusicCNN: Music analysis with genre classification and audio feature extraction. Balanced speed and accuracy.',
-                universal: 'Universal Audio: Advanced audio understanding with semantic analysis and emotional profiling.'
-            };
-            
-            alert(info[model] || 'Select a model to see information.');
+        // Grid layout functions
+        function updateGridLayout() {
+            const cols = elements.gridLayout.value;
+            elements.audioGrid.className = 'audio-grid cols-' + cols;
+        }
+        
+        function toggleFileInfo() {
+            const show = elements.showFileInfo.checked;
+            const metadataElements = document.querySelectorAll('.audio-metadata');
+            metadataElements.forEach(el => {
+                el.style.display = show ? 'block' : 'none';
+            });
         }
 
         // Initialize app

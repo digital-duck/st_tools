@@ -327,6 +327,19 @@ ai_video/
 ⚡ **Lightning Fast** - Optimized for performance and video responsiveness  
 🤝 **Team Ready** - Built-in collaboration tools for any video production team  
 
+## Video Download
+### [yt-dlp](https://pypi.org/project/yt-dlp/)
+
+```bash
+pip install yt-dlp
+yt-dlp -f mp4 xD-nRvkuNJk
+yt-dlp -f mp4 bfxVWhErxvI
+yt-dlp -f mp4 V8uCeLHMAnk
+yt-dlp -f mp4 gEt7PwBSaOs
+yt-dlp -f mp4 7xASPU6rS-0
+yt-dlp -f mp4 QpxcuXd3E94
+```
+
 ## 📜 License
 
 MIT License - feel free to use, modify, and distribute.

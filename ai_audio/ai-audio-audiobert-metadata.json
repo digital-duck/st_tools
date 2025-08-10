@@ -1,0 +1,123 @@
+{
+  "model": "audiobert",
+  "timestamp": "2025-08-10T13:35:00.151Z",
+  "results": {
+    "Classicals.de-Vivaldi-The-Four-Seasons-11-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Winter-Mvt-2-Largo.mp3": {
+      "genre": "Classical",
+      "tempo": 105,
+      "mood": "Dramatic",
+      "instruments": [
+        "Piano"
+      ],
+      "confidence": "0.86"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-10-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Winter-Mvt-1-Allegro-non-molto.mp3": {
+      "genre": "Classical",
+      "tempo": 123,
+      "mood": "Uplifting",
+      "instruments": [
+        "Piano"
+      ],
+      "confidence": "0.99"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-07-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Autumn-Mvt-1-Allegro.mp3": {
+      "genre": "Electronic",
+      "tempo": 136,
+      "mood": "Energetic",
+      "instruments": [
+        "Piano"
+      ],
+      "confidence": "0.95"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-06-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-3-Presto.mp3": {
+      "genre": "Ambient",
+      "tempo": 124,
+      "mood": "Dramatic",
+      "instruments": [
+        "Piano"
+      ],
+      "confidence": "0.81"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-02-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Spring-Mvt-2-Largo.mp3": {
+      "genre": "Classical",
+      "tempo": 136,
+      "mood": "Dramatic",
+      "instruments": [
+        "Piano",
+        "Guitar"
+      ],
+      "confidence": "0.89"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-03-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Spring-Mvt-3-Allegro-pastorale.mp3": {
+      "genre": "Ambient",
+      "tempo": 100,
+      "mood": "Uplifting",
+      "instruments": [
+        "Piano",
+        "Guitar"
+      ],
+      "confidence": "0.92"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-04-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-1-Allegro-non-molto.mp3": {
+      "genre": "Ambient",
+      "tempo": 128,
+      "mood": "Energetic",
+      "instruments": [
+        "Piano"
+      ],
+      "confidence": "0.83"
+    },
+    "Classicals.de-Vivaldi-The-Four-Seasons-05-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-2-Adagio.mp3": {
+      "genre": "Ambient",
+      "tempo": 95,
+      "mood": "Uplifting",
+      "instruments": [
+        "Piano",
+        "Guitar"
+      ],
+      "confidence": "0.91"
+    }
+  },
+  "fileInfo": [
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-11-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Winter-Mvt-2-Largo.mp3",
+      "size": 3180130,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-10-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Winter-Mvt-1-Allegro-non-molto.mp3",
+      "size": 5016430,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-07-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Autumn-Mvt-1-Allegro.mp3",
+      "size": 7305443,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-06-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-3-Presto.mp3",
+      "size": 3818914,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-02-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Spring-Mvt-2-Largo.mp3",
+      "size": 4123617,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-03-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Spring-Mvt-3-Allegro-pastorale.mp3",
+      "size": 6102765,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-04-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-1-Allegro-non-molto.mp3",
+      "size": 7254189,
+      "type": "audio/mpeg"
+    },
+    {
+      "name": "Classicals.de-Vivaldi-The-Four-Seasons-05-John-Harrison-with-the-Wichita-State-University-Chamber-Players-Summer-Mvt-2-Adagio.mp3",
+      "size": 2589154,
+      "type": "audio/mpeg"
+    }
+  ]
+}

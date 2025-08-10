@@ -312,6 +312,12 @@ ai_audio/
 ⚡ **Lightning Fast** - Optimized for performance and audio responsiveness  
 🤝 **Team Ready** - Built-in collaboration tools for any music team  
 
+
+## MP3 downloads
+- [Classical.de](https://www.classicals.de/vivaldi-seasons)
+
+
+
 ## 📜 License
 
 MIT License - feel free to use, modify, and distribute.
