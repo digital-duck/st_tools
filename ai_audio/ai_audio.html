@@ -437,12 +437,23 @@
         }
 
         .grid-1 { grid-template-columns: 1fr; }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
-        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        @media (max-width: 1200px) {
+            .grid-6 { grid-template-columns: repeat(4, 1fr); }
+            .grid-5 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-6, .grid-5, .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
 
         @media (max-width: 600px) {
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
         }
 
         .modal {
@@ -719,7 +730,7 @@
                     
                     <div class="grid-control">
                         Grid Layout:
-                        <input type="range" id="gridSlider" class="grid-slider" min="1" max="4" value="3" onchange="updateGridSize(this.value)">
+                        <input type="range" id="gridSlider" class="grid-slider" min="1" max="6" value="3" onchange="updateGridSize(this.value)">
                         <span id="gridValue">3 per row</span>
                     </div>
                     
@@ -770,18 +781,18 @@
     <div class="modal" id="searchModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeSearch()">&times;</span>
-            <h3>🔍 AI Video Search</h3>
+            <h3>🔍 AI Audio Search</h3>
             <div class="search-container">
-                <input type="text" class="search-box" id="searchInput" placeholder="Search videos by content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search audio files by content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
                 <div class="search-suggestions">
-                    <span class="suggestion" onclick="searchVideos('cooking videos')">cooking videos</span>
-                    <span class="suggestion" onclick="searchVideos('nature documentaries')">nature documentaries</span>
-                    <span class="suggestion" onclick="searchVideos('family gatherings')">family gatherings</span>
-                    <span class="suggestion" onclick="searchVideos('tutorial videos')">tutorial videos</span>
-                    <span class="suggestion" onclick="searchVideos('funny moments')">funny moments</span>
-                    <span class="suggestion" onclick="searchVideos('travel vlogs')">travel vlogs</span>
+                    <span class="suggestion" onclick="searchAudio('classical music')">classical music</span>
+                    <span class="suggestion" onclick="searchAudio('jazz songs')">jazz songs</span>
+                    <span class="suggestion" onclick="searchAudio('rock music')">rock music</span>
+                    <span class="suggestion" onclick="searchAudio('electronic beats')">electronic beats</span>
+                    <span class="suggestion" onclick="searchAudio('calm instrumental')">calm instrumental</span>
+                    <span class="suggestion" onclick="searchAudio('energetic vocals')">energetic vocals</span>
                 </div>
-                <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Videos</button>
+                <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Audio Files</button>
             </div>
             <div class="search-results" id="searchResults"></div>
         </div>
@@ -905,8 +916,61 @@
             const audioData = audioFiles.find(audio => audio.id === audioId);
             if (!audioData) return;
             
-            // Simple implementation - just play the audio
-            alert('Playing: ' + audioData.name);
+            // Create and play audio in a new popup/tab
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const audioDataUrl = e.target.result;
+                const fileName = audioData.name.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+                const fileSize = formatFileSize(audioData.file.size);
+                const fileFormat = audioData.type.toUpperCase();
+                const fileDate = new Date(audioData.file.lastModified).toLocaleDateString();
+                
+                let analysisHTML = '';
+                const analysis = aiData[audioData.name];
+                if (analysis) {
+                    analysisHTML = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">' +
+                        '<h3>🤖 AI Analysis</h3>' +
+                        '<p><strong>Tags:</strong> ' + (analysis.tags ? analysis.tags.map(t => t.word).join(', ') : 'None') + '</p>' +
+                        '<p><strong>Confidence:</strong> ' + (analysis.confidence ? (analysis.confidence * 100).toFixed(0) + '%' : 'N/A') + '</p>' +
+                        '<p><strong>Model:</strong> ' + (analysis.model || 'Unknown') + '</p>' +
+                    '</div>';
+                }
+                
+                const htmlContent = '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<title>' + fileName + '</title>' +
+                '<style>' +
+                'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0; padding: 40px; color: white; text-align: center; }' +
+                '.player-container { background: white; border-radius: 12px; padding: 30px; margin: 0 auto; max-width: 600px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); color: #333; }' +
+                'audio { width: 100%; margin: 20px 0; outline: none; }' +
+                'h1 { margin-bottom: 20px; color: #2d3748; word-wrap: break-word; font-size: 1.5em; }' +
+                '.info { text-align: left; background: #f7fafc; padding: 20px; border-radius: 8px; margin-top: 20px; }' +
+                '.info p { margin: 8px 0; }' +
+                '</style>' +
+                '</head>' +
+                '<body>' +
+                '<div class="player-container">' +
+                '<h1>🎵 ' + fileName + '</h1>' +
+                '<audio controls preload="metadata" autoplay>' +
+                '<source src="' + audioDataUrl + '" type="' + audioData.file.type + '">' +
+                'Your browser does not support the audio element.' +
+                '</audio>' +
+                '<div class="info">' +
+                '<p><strong>File Size:</strong> ' + fileSize + '</p>' +
+                '<p><strong>Format:</strong> ' + fileFormat + '</p>' +
+                '<p><strong>Last Modified:</strong> ' + fileDate + '</p>' +
+                '</div>' +
+                analysisHTML +
+                '</div>' +
+                '</body>' +
+                '</html>';
+                
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(htmlContent);
+                newWindow.document.close();
+            };
+            reader.readAsDataURL(audioData.file);
         }
         
         // Video popup functionality
@@ -1093,7 +1157,7 @@
                     <div class="file-attributes" data-id="${audioData.id}" style="display: none;">
                         Size: ${formatFileSize(audioData.file.size)} | Modified: ${formatDate(audioData.file.lastModified)}
                     </div>
-                    <div class="video-thumbnail" onclick="openAudioViewer(${audioData.id})">
+                    <div class="video-thumbnail" onclick="openAudioViewer(${audioData.id})" ondblclick="openAudioViewer(${audioData.id})">
                         <audio controls>
                             <source src="${URL.createObjectURL(audioData.file)}" type="${audioData.file.type}">
                         </audio>
@@ -1315,27 +1379,32 @@
         }
 
         function exportMetadata() {
+            if (audioFiles.length === 0) {
+                alert('No audio files to export metadata for.');
+                return;
+            }
+            
             const metadata = {
                 model: modelType,
                 modelName: modelConfigs[modelType].name,
-                videos: videos.map(video => ({
-                    name: video.name,
-                    type: video.type,
-                    size: video.file.size,
-                    lastModified: video.file.lastModified,
-                    aiData: aiData[video.name],
-                    summary: summaries[video.name]
+                audioFiles: audioFiles.map(audioFile => ({
+                    name: audioFile.name,
+                    type: audioFile.type,
+                    size: audioFile.file.size,
+                    lastModified: audioFile.file.lastModified,
+                    aiData: aiData[audioFile.name],
+                    summary: summaries[audioFile.name]
                 })),
                 exportDate: new Date().toISOString(),
-                totalVideos: videos.length,
-                analyzedVideos: Object.keys(aiData).length
+                totalAudioFiles: audioFiles.length,
+                analyzedAudioFiles: Object.keys(aiData).length
             };
             
             const blob = new Blob([JSON.stringify(metadata, null, 2)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ai-video-${modelType}-metadata.json`;
+            a.download = `ai-audio-${modelType}-metadata.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1356,20 +1425,22 @@
                         const metadata = JSON.parse(e.target.result);
                         
                         // Import AI data and summaries
-                        metadata.videos.forEach(videoMeta => {
-                            if (videoMeta.aiData) {
-                                aiData[videoMeta.name] = videoMeta.aiData;
+                        const audioMetadata = metadata.audioFiles || metadata.videos || []; // Support both formats
+                        audioMetadata.forEach(audioMeta => {
+                            if (audioMeta.aiData) {
+                                aiData[audioMeta.name] = audioMeta.aiData;
                             }
-                            if (videoMeta.summary) {
-                                summaries[videoMeta.name] = videoMeta.summary;
+                            if (audioMeta.summary) {
+                                summaries[audioMeta.name] = audioMeta.summary;
                             }
                         });
                         
                         // Update UI
-                        renderVideos();
+                        renderAudioFiles();
                         updateStats();
                         
-                        alert(`Imported metadata for ${metadata.analyzedVideos} videos from ${metadata.modelName} model.`);
+                        const count = metadata.analyzedAudioFiles || metadata.analyzedVideos || 0;
+                        alert(`Imported metadata for ${count} audio files from ${metadata.modelName} model.`);
                     } catch (error) {
                         alert('Error importing metadata: Invalid file format.');
                     }
@@ -1404,7 +1475,7 @@
             }
         }
 
-        function searchVideos(query) {
+        function searchAudio(query) {
             document.getElementById('searchInput').value = query;
             performSearch();
         }
@@ -1418,15 +1489,15 @@
                 return;
             }
             
-            const results = searchInVideos(query);
+            const results = searchInAudioFiles(query);
             displaySearchResults(results, resultsContainer);
         }
 
-        function searchInVideos(query) {
+        function searchInAudioFiles(query) {
             const results = [];
             
-            videos.forEach(video => {
-                const data = aiData[video.name];
+            audioFiles.forEach(audioFile => {
+                const data = aiData[audioFile.name];
                 if (!data) return;
                 
                 let score = 0;
@@ -1445,13 +1516,13 @@
                 
                 // Search in filename
                 queryWords.forEach(queryWord => {
-                    if (video.name.toLowerCase().includes(queryWord)) {
+                    if (audioFile.name.toLowerCase().includes(queryWord)) {
                         score += 0.6;
                     }
                 });
                 
                 // Search in summary
-                const summary = summaries[video.name];
+                const summary = summaries[audioFile.name];
                 if (summary) {
                     queryWords.forEach(queryWord => {
                         if (summary.toLowerCase().includes(queryWord)) {
@@ -1462,7 +1533,7 @@
                 
                 if (score > 0.1) {
                     results.push({
-                        video: video,
+                        audioFile: audioFile,
                         data: data,
                         score: Math.min(score, 1.0)
                     });
@@ -1479,26 +1550,26 @@
             }
             
             const html = results.map(result => `
-                <div class="search-result-item" onclick="openVideoFromSearch(${result.video.id})" style="cursor: pointer;">
+                <div class="search-result-item" onclick="openAudioFromSearch(${result.audioFile.id})" style="cursor: pointer;">
                     <div class="result-content">
-                        <div class="result-title">${result.video.name} <span class="video-type ${result.video.type}">${result.video.type.toUpperCase()}</span></div>
+                        <div class="result-title">${result.audioFile.name} <span class="video-type ${result.audioFile.type}">${result.audioFile.type.toUpperCase()}</span></div>
                         <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
                         <div style="font-size: 12px; color: #666; margin-top: 4px;">
                             ${result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word).join(', ') : 'No tags'}
                         </div>
                     </div>
-                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open video</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open audio</div>
                 </div>
             `).join('');
             
-            container.innerHTML = `<h4>Found ${results.length} matching videos:</h4>${html}`;
+            container.innerHTML = `<h4>Found ${results.length} matching audio files:</h4>${html}`;
         }
 
-        function openVideoFromSearch(videoId) {
+        function openAudioFromSearch(audioId) {
             // Close the search modal first
             closeSearch();
-            // Open the video viewer
-            openVideoViewer(videoId);
+            // Open the audio viewer
+            openAudioViewer(audioId);
         }
 
         // Close modal when clicking outside

@@ -437,12 +437,23 @@
         }
 
         .grid-1 { grid-template-columns: 1fr; }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
-        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        @media (max-width: 1200px) {
+            .grid-6 { grid-template-columns: repeat(4, 1fr); }
+            .grid-5 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-6, .grid-5, .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
 
         @media (max-width: 600px) {
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
         }
 
         .modal {
@@ -719,7 +730,7 @@
                     
                     <div class="grid-control">
                         Grid Layout:
-                        <input type="range" id="gridSlider" class="grid-slider" min="1" max="4" value="3" onchange="updateGridSize(this.value)">
+                        <input type="range" id="gridSlider" class="grid-slider" min="1" max="6" value="3" onchange="updateGridSize(this.value)">
                         <span id="gridValue">3 per row</span>
                     </div>
                     
