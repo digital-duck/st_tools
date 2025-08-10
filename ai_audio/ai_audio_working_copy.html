@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 AI Audio App</title>
+    <title>AI Video App</title>
     <style>
         * {
             margin: 0;
@@ -661,17 +661,17 @@
     <div class="container">
         <div class="header">
             <div class="header-title">
-                <h1>🎵 AI Audio App</h1>
+                <h1>AI Video App</h1>
             </div>
             
             <div class="controls-row">
                 <div class="main-controls">
                     <div class="model-selector">
-                        <label for="aiModel">🎵 AI Model:</label>
+                        <label for="aiModel">🎬 AI Model:</label>
                         <select id="aiModel" onchange="handleModelChange()">
-                            <option value="audiobert">Audio-BERT (Fast Embedding)</option>
-                            <option value="musiccnn">MusicCNN (Music Analysis)</option>
-                            <option value="universal">Universal Audio (Advanced)</option>
+                            <option value="videobert">Video-BERT (Fast Embedding)</option>
+                            <option value="videomae">VideoMAE (Scene Recognition)</option>
+                            <option value="universal">Universal Video (Advanced)</option>
                         </select>
                         <div class="model-help">
                             <div class="model-help-icon">?</div>
@@ -695,9 +695,9 @@
                         </div>
                     </div>
                     
-                    <button onclick="selectFiles()">📁 Select Audio Files</button>
-                    <button onclick="selectFolder()">📂 Select Audio Folder</button>
-                    <button id="aiAnalyzeBtn" onclick="analyzeAudioFiles()" disabled class="ai-button">
+                    <button onclick="selectFiles()">📁 Select Videos</button>
+                    <button onclick="selectFolder()">📂 Select Folder</button>
+                    <button id="aiAnalyzeBtn" onclick="analyzeVideos()" disabled class="ai-button">
                         <span id="aiAnalyzeIcon">🎬</span>
                         <span id="aiAnalyzeText">AI Analyze</span>
                     </button>
@@ -741,8 +741,8 @@
 
         <!-- Drag & Drop Area -->
         <div class="drag-drop-area" id="dragDropArea">
-            <div class="drag-drop-title">🎵 Drag & Drop Audio Files Here</div>
-            <div class="drag-drop-hint">Supports MP3, WAV, FLAC, AAC, OGG, M4A files</div>
+            <div class="drag-drop-title">📹 Drag & Drop Videos Here</div>
+            <div class="drag-drop-hint">Supports MP4, AVI, MOV, WMV, MKV, WebM files</div>
         </div>
 
         <div class="video-grid" id="videoGrid">
@@ -792,28 +792,28 @@
 
     <script>
         // Global variables
-        let audioFiles = [];
+        let videos = [];
         let currentModel = null;
-        let modelType = 'audiobert';
+        let modelType = 'videobert';
         let modelLoaded = false;
         let aiData = {};
         let summaries = {};
 
         const modelConfigs = {
-            audiobert: {
-                name: 'Audio-BERT',
-                icon: '🎵',
-                description: 'Fast audio embedding and similarity search'
+            videobert: {
+                name: 'Video-BERT',
+                icon: '🎬',
+                description: 'Fast video embedding and similarity search'
             },
-            musiccnn: {
-                name: 'MusicCNN', 
-                icon: '🎼',
-                description: 'Music analysis and genre classification'
+            videomae: {
+                name: 'VideoMAE', 
+                icon: '🎥',
+                description: 'Scene detection and action recognition'
             },
             universal: {
-                name: 'Universal Audio',
+                name: 'Universal Video',
                 icon: '🚀', 
-                description: 'Advanced audio understanding and analysis'
+                description: 'Advanced video understanding and analysis'
             }
         };
 
@@ -884,11 +884,11 @@
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = Array.from(dt.files).filter(file => 
-                file.type.startsWith('audio/') || 
-                file.name.toLowerCase().match(/\.(mp3|wav|flac|aac|ogg|m4a)$/i)
+                file.type.startsWith('video/') || 
+                file.name.toLowerCase().match(/\.(mp4|avi|mov|wmv|mkv|webm|flv|3gp)$/i)
             );
             if (files.length > 0) {
-                loadAudioFiles(files);
+                loadVideos(files);
             }
         }
 
@@ -898,15 +898,6 @@
                 attr.style.display = checked ? 'block' : 'none';
             });
             updateStats();
-        }
-        
-        // Audio viewer functionality  
-        function openAudioViewer(audioId) {
-            const audioData = audioFiles.find(audio => audio.id === audioId);
-            if (!audioData) return;
-            
-            // Simple implementation - just play the audio
-            alert('Playing: ' + audioData.name);
         }
         
         // Video popup functionality
@@ -966,8 +957,8 @@
             const input = document.createElement('input');
             input.type = 'file';
             input.multiple = true;
-            input.accept = 'audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a';
-            input.onchange = (e) => loadAudioFiles(Array.from(e.target.files));
+            input.accept = 'video/*,.mp4,.avi,.mov,.wmv,.mkv,.webm,.flv,.3gp';
+            input.onchange = (e) => loadVideos(Array.from(e.target.files));
             input.click();
         }
 
@@ -978,30 +969,30 @@
             input.multiple = true;
             input.onchange = (e) => {
                 const files = Array.from(e.target.files).filter(file => 
-                    file.type.startsWith('audio/') || 
-                    file.name.toLowerCase().match(/\.(mp3|wav|flac|aac|ogg|m4a)$/i)
+                    file.type.startsWith('video/') || 
+                    file.name.toLowerCase().match(/\.(mp4|avi|mov|wmv|mkv|webm|flv|3gp)$/i)
                 );
-                loadAudioFiles(files);
+                loadVideos(files);
             };
             input.click();
         }
 
-        function loadAudioFiles(files) {
+        function loadVideos(files) {
             // Filter out duplicate files based on name and size
             const newFiles = files.filter(file => {
-                return !audioFiles.some(existing => 
+                return !videos.some(existing => 
                     existing.name === file.name && existing.file.size === file.size
                 );
             });
             
             if (newFiles.length === 0) {
-                alert('All selected audio files are already loaded.');
+                alert('All selected videos are already loaded.');
                 return;
             }
             
-            // Append new audio files to existing array
-            const startingId = audioFiles.length;
-            const newAudioFiles = newFiles.map((file, index) => ({
+            // Append new videos to existing array
+            const startingId = videos.length;
+            const newVideos = newFiles.map((file, index) => ({
                 id: startingId + index,
                 name: file.name,
                 file: file,
@@ -1010,27 +1001,32 @@
                 thumbnail: null
             }));
             
-            audioFiles.push(...newAudioFiles);
+            videos.push(...newVideos);
             
-            renderAudioFiles();
+            // Generate thumbnails for new videos
+            newVideos.forEach(generateVideoThumbnail);
+            
+            renderVideos();
             updateStats();
             
             if (newFiles.length < files.length) {
                 const duplicates = files.length - newFiles.length;
-                alert(`Added ${newFiles.length} new audio files. ${duplicates} duplicate(s) were skipped.`);
+                alert(`Added ${newFiles.length} new videos. ${duplicates} duplicate(s) were skipped.`);
             }
         }
 
         function getFileType(filename) {
             const ext = filename.split('.').pop().toLowerCase();
             switch(ext) {
-                case 'mp3': return 'mp3';
-                case 'wav': return 'wav';
-                case 'flac': return 'flac';
-                case 'aac': return 'aac';
-                case 'ogg': return 'ogg';
-                case 'm4a': return 'm4a';
-                default: return 'mp3';
+                case 'mp4': return 'mp4';
+                case 'avi': return 'avi';
+                case 'mov': return 'mov';
+                case 'wmv': return 'wmv';
+                case 'mkv': return 'mkv';
+                case 'webm': return 'webm';
+                case 'flv': return 'flv';
+                case '3gp': return '3gp';
+                default: return 'mp4';
             }
         }
 
@@ -1066,50 +1062,48 @@
             video.src = URL.createObjectURL(videoData.file);
         }
 
-        function renderAudioFiles() {
+        function renderVideos() {
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
             
-            audioFiles.forEach(audioFile => {
-                const card = createAudioCard(audioFile);
+            videos.forEach(video => {
+                const card = createVideoCard(video);
                 grid.appendChild(card);
             });
         }
 
-        function createAudioCard(audioData) {
+        function createVideoCard(videoData) {
             const card = document.createElement('div');
             card.className = 'video-card';
-            card.setAttribute('data-video-id', audioData.id);
+            card.setAttribute('data-video-id', videoData.id);
             
             card.innerHTML = `
                 <div class="video-header">
-                    <div class="video-type ${audioData.type}">${audioData.type.toUpperCase()}</div>
-                    <div class="ai-indicator" data-id="${audioData.id}">
+                    <div class="video-type ${videoData.type}">${videoData.type.toUpperCase()}</div>
+                    <div class="ai-indicator" data-id="${videoData.id}">
                         ${modelConfigs[modelType].icon} Analyzed
                     </div>
                 </div>
                 <div class="video-content">
-                    <div class="video-title">${audioData.name}</div>
-                    <div class="file-attributes" data-id="${audioData.id}" style="display: none;">
-                        Size: ${formatFileSize(audioData.file.size)} | Modified: ${formatDate(audioData.file.lastModified)}
+                    <div class="video-title">${videoData.name}</div>
+                    <div class="file-attributes" data-id="${videoData.id}" style="display: none;">
+                        Size: ${formatFileSize(videoData.file.size)} | Modified: ${formatDate(videoData.file.lastModified)}
                     </div>
-                    <div class="video-thumbnail" onclick="openAudioViewer(${audioData.id})">
-                        <audio controls>
-                            <source src="${URL.createObjectURL(audioData.file)}" type="${audioData.file.type}">
-                        </audio>
-                        <div class="play-icon">🎵</div>
+                    <div class="video-thumbnail" onclick="openVideoViewer(${videoData.id})">
+                        <video poster="${videoData.thumbnail || ''}"></video>
+                        <div class="play-icon">▶</div>
                     </div>
-                    <div class="video-summary" data-id="${audioData.id}" onclick="editSummary(${audioData.id})">
-                        ${summaries[audioData.name] || 'Click to add summary...'}
+                    <div class="video-summary" data-id="${videoData.id}" onclick="editSummary(${videoData.id})">
+                        ${summaries[videoData.name] || 'Click to add summary...'}
                     </div>
-                    <div class="video-tags" data-id="${audioData.id}"></div>
-                    <div class="confidence-score" data-id="${audioData.id}"></div>
+                    <div class="video-tags" data-id="${videoData.id}"></div>
+                    <div class="confidence-score" data-id="${videoData.id}"></div>
                 </div>
             `;
             
             // Update if already analyzed
-            if (aiData[audioData.name]) {
-                updateVideoCard(audioData.id, aiData[audioData.name]);
+            if (aiData[videoData.name]) {
+                updateVideoCard(videoData.id, aiData[videoData.name]);
             }
             
             return card;
@@ -1183,85 +1177,85 @@
 
         function updateAnalyzeButton() {
             const btn = document.getElementById('aiAnalyzeBtn');
-            btn.disabled = !modelLoaded || audioFiles.length === 0;
+            btn.disabled = !modelLoaded || videos.length === 0;
             
             if (!modelLoaded) {
                 btn.classList.add('model-loading');
                 document.getElementById('aiAnalyzeText').textContent = 'Loading Model...';
-            } else if (audioFiles.length === 0) {
+            } else if (videos.length === 0) {
                 btn.classList.remove('model-loading');
-                document.getElementById('aiAnalyzeText').textContent = 'No Audio Files';
+                document.getElementById('aiAnalyzeText').textContent = 'No Videos';
             } else {
                 btn.classList.remove('model-loading');
                 document.getElementById('aiAnalyzeText').textContent = 'AI Analyze';
             }
         }
 
-        function analyzeAudioFiles() {
-            if (!modelLoaded || audioFiles.length === 0) return;
+        function analyzeVideos() {
+            if (!modelLoaded || videos.length === 0) return;
             
-            const unanalyzedAudioFiles = audioFiles.filter(audioFile => !aiData[audioFile.name]);
-            if (unanalyzedAudioFiles.length === 0) {
-                alert('All audio files have already been analyzed with the current model.');
+            const unanalyzedVideos = videos.filter(video => !aiData[video.name]);
+            if (unanalyzedVideos.length === 0) {
+                alert('All videos have already been analyzed with the current model.');
                 return;
             }
             
-            showProgress('Analyzing audio files with AI...', 0);
+            showProgress('Analyzing videos with AI...', 0);
             
             let processed = 0;
-            const total = unanalyzedAudioFiles.length;
+            const total = unanalyzedVideos.length;
             
-            unanalyzedAudioFiles.forEach((audioFile, index) => {
+            unanalyzedVideos.forEach((video, index) => {
                 setTimeout(() => {
                     // Simulate AI analysis
-                    const mockAnalysis = generateMockAudioAnalysis(audioFile);
-                    aiData[audioFile.name] = mockAnalysis;
-                    updateVideoCard(audioFile.id, mockAnalysis);
+                    const mockAnalysis = generateMockVideoAnalysis(video);
+                    aiData[video.name] = mockAnalysis;
+                    updateVideoCard(video.id, mockAnalysis);
                     
                     processed++;
                     const progress = (processed / total) * 100;
-                    showProgress(`Analyzing audio files... (${processed}/${total})`, progress);
+                    showProgress(`Analyzing videos... (${processed}/${total})`, progress);
                     
                     if (processed === total) {
                         hideProgress();
                         updateStats();
-                        alert(`Analysis complete! Processed ${total} audio files with ${modelConfigs[modelType].name}.`);
+                        alert(`Analysis complete! Processed ${total} videos with ${modelConfigs[modelType].name}.`);
                     }
                 }, index * 1000 + Math.random() * 500);
             });
         }
 
-        function generateMockAudioAnalysis(audioFile) {
-            const genres = ['Classical', 'Jazz', 'Rock', 'Electronic', 'Folk', 'Hip-Hop', 'Pop', 'Blues', 'Country', 'Reggae'];
-            const moods = ['Energetic', 'Calm', 'Uplifting', 'Melancholic', 'Dramatic', 'Peaceful', 'Intense', 'Cheerful'];
-            const instruments = ['Piano', 'Guitar', 'Violin', 'Drums', 'Synthesizer', 'Vocals', 'Bass', 'Saxophone', 'Trumpet'];
+        function generateMockVideoAnalysis(video) {
+            const videoScenes = ['indoor', 'outdoor', 'kitchen', 'office', 'nature', 'city', 'home', 'restaurant'];
+            const videoActions = ['talking', 'walking', 'cooking', 'working', 'playing', 'dancing', 'driving', 'sitting'];
+            const videoObjects = ['person', 'car', 'food', 'animal', 'building', 'furniture', 'technology', 'clothing'];
             
             const tags = [];
             
-            // Add genre tags
-            for (let i = 0; i < Math.floor(Math.random() * 2) + 1; i++) {
-                const genre = genres[Math.floor(Math.random() * genres.length)];
+            // Add scene tags
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
+                const scene = videoScenes[Math.floor(Math.random() * videoScenes.length)];
                 tags.push({
-                    word: genre,
-                    confidence: 0.8 + Math.random() * 0.2
-                });
-            }
-            
-            // Add mood tags
-            for (let i = 0; i < Math.floor(Math.random() * 2) + 1; i++) {
-                const mood = moods[Math.floor(Math.random() * moods.length)];
-                tags.push({
-                    word: mood,
+                    word: scene,
                     confidence: 0.7 + Math.random() * 0.3
                 });
             }
             
-            // Add instrument tags
-            for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
-                const instrument = instruments[Math.floor(Math.random() * instruments.length)];
+            // Add action tags
+            for (let i = 0; i < Math.floor(Math.random() * 2) + 1; i++) {
+                const action = videoActions[Math.floor(Math.random() * videoActions.length)];
                 tags.push({
-                    word: instrument,
+                    word: action,
                     confidence: 0.6 + Math.random() * 0.4
+                });
+            }
+            
+            // Add object tags
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 2; i++) {
+                const object = videoObjects[Math.floor(Math.random() * videoObjects.length)];
+                tags.push({
+                    word: object,
+                    confidence: 0.5 + Math.random() * 0.5
                 });
             }
             
@@ -1274,7 +1268,7 @@
         }
 
         function updateStats() {
-            document.getElementById('videoCount').textContent = audioFiles.length;
+            document.getElementById('videoCount').textContent = videos.length;
             const analyzedCount = Object.keys(aiData).length;
             document.getElementById('analyzedCount').textContent = analyzedCount;
             updateAnalyzeButton();

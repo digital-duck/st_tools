@@ -257,6 +257,7 @@ node join-music.js ../split/music-package-*
 ```
 ai_audio/
 ├── ai_audio.html                       # 🎯 Main AI Audio App
+├── check_syntax.py                     # 🔍 JavaScript Syntax Checker
 ├── README.md                          # Main documentation
 ├── LICENSE                           # MIT License
 ├── docs/                             # Documentation assets
@@ -322,13 +323,49 @@ ai_audio/
 
 MIT License - feel free to use, modify, and distribute.
 
+### 🔍 Syntax Checker Tool
+
+The included `check_syntax.py` helps debug JavaScript issues in single-file HTML applications:
+
+```bash
+# Check current ai_audio.html
+python check_syntax.py
+
+# Check any HTML file
+python check_syntax.py path/to/your/file.html
+```
+
+**What it checks:**
+- Template literals (backticks) that break string concatenation
+- Dollar brace expressions that cause code display issues  
+- Unescaped quotes in HTML attributes
+- File statistics and JavaScript sections
+
+**Example output:**
+```
+🔍 Checking JavaScript syntax in: ai_audio.html
+--------------------------------------------------
+✅ No JavaScript syntax issues found!
+   - No template literals detected
+   - No dollar brace expressions found
+   - String concatenation should work properly
+
+📊 File Statistics:
+   - Total lines: 1486
+   - File size: 54,717 characters
+   - JavaScript sections detected
+```
+
+This tool is especially useful when adapting code between AI apps or troubleshooting JavaScript display issues.
+
 ## 🙋 Support
 
 For questions or issues:
-1. Check the browser console for error messages
-2. Ensure your browser supports Web Audio API
-3. Try the fallback audio player if AI models fail to load
-4. Clear browser cache and reload if models seem corrupted
+1. **Run the syntax checker first**: `python check_syntax.py`
+2. Check the browser console for error messages
+3. Ensure your browser supports Web Audio API
+4. Try the fallback audio player if AI models fail to load
+5. Clear browser cache and reload if models seem corrupted
 
 ---
 
