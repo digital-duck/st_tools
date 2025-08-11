@@ -33,7 +33,6 @@
         }
 
         .header-title {
-            display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
@@ -47,7 +46,6 @@
 
         /* Tab Navigation */
         .tab-navigation {
-            display: flex;
             gap: 4px;
             margin-bottom: 20px;
             background: #f8f9fa;
@@ -66,7 +64,6 @@
             font-size: 14px;
             color: #6c757d;
             transition: all 0.2s ease;
-            display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -108,7 +105,6 @@
 
         /* Controls */
         .controls-row {
-            display: flex;
             gap: 12px;
             flex-wrap: wrap;
             align-items: center;
@@ -118,14 +114,12 @@
         }
 
         .main-controls {
-            display: flex;
             gap: 12px;
             flex-wrap: wrap;
             align-items: center;
         }
 
         .header-stats {
-            display: flex;
             gap: 16px;
             align-items: center;
             flex-wrap: wrap;
@@ -133,20 +127,17 @@
         }
 
         .left-controls {
-            display: flex;
             gap: 12px;
             align-items: center;
             flex: 1;
         }
 
         .right-stats {
-            display: flex;
             gap: 16px;
             align-items: center;
         }
 
         .model-selector {
-            display: flex;
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
@@ -179,7 +170,6 @@
             font-weight: 600;
             font-size: 14px;
             transition: all 0.2s ease;
-            display: flex;
             align-items: center;
             gap: 8px;
             white-space: nowrap;
@@ -208,7 +198,6 @@
         }
 
         .stat-item {
-            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
@@ -228,7 +217,6 @@
         }
 
         .grid-controls {
-            display: flex;
             align-items: center;
             gap: 8px;
             font-size: 14px;
@@ -271,7 +259,6 @@
             width: 100%;
             height: 200px;
             background: #f8f9fa;
-            display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
@@ -296,8 +283,50 @@
             word-break: break-word;
         }
 
+        .image-caption {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            padding: 4px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: text;
+            min-height: 20px;
+        }
+
+        .image-caption:empty::before {
+            content: "Click to add caption...";
+            color: #999;
+            font-style: italic;
+        }
+
+        .image-caption:hover {
+            background: #f0f0f0;
+            border-color: #ddd;
+        }
+
+        .image-caption[contenteditable="true"]:focus {
+            outline: none;
+            background: #fff;
+            border-color: #667eea;
+        }
+
+        .caption-container {
+            margin-bottom: 8px;
+        }
+
+        .caption-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .image-tags {
-            display: flex;
             flex-wrap: wrap;
             gap: 4px;
             margin-bottom: 8px;
@@ -306,7 +335,6 @@
         .image-details {
             font-size: 12px;
             color: #666;
-            display: flex;
             flex-direction: column;
             gap: 4px;
             margin-top: 8px;
@@ -317,7 +345,6 @@
         }
 
         .detail-row {
-            display: flex;
             align-items: center;
             gap: 6px;
         }
@@ -342,7 +369,8 @@
             transition: all 0.3s ease;
         }
 
-        .drag-drop-area.drag-over {
+        .drag-drop-area.drag-over,
+        .drag-drop-area.dragover {
             border-color: #28a745;
             background: rgba(40, 167, 69, 0.1);
         }
@@ -437,7 +465,6 @@
         }
 
         .search-result-item {
-            display: flex;
             align-items: center;
             padding: 10px;
             border-radius: 8px;
@@ -519,7 +546,33 @@
                 justify-content: center;
             }
         }
-    </style>
+        
+        /* Layout Classes */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .combined-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            width: 100%;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
+\n    </style>
 </head>
 <body>
     <div class="container">
@@ -572,8 +625,8 @@
         <div class="tab-content active" id="imagesContent">
             <div class="header">
                 <div class="controls-section">
-                    <!-- Main Buttons Row -->
-                    <div class="main-buttons-row">
+                    <!-- Combined Model and Widgets Row -->
+                    <div class="combined-row">
                         <div class="model-selector">
                             <label for="aiModel">🧠 AI Model:</label>
                             <select id="aiModel" onchange="handleModelChange()">
@@ -583,8 +636,33 @@
                             </select>
                         </div>
                         
-                        <button onclick="selectFiles()">📁 Select Images</button>
-                        <button onclick="selectFolder()">📂 Select Folder</button>
+                        <div class="grid-controls">
+                            <label>Grid Layout:</label>
+                            <input type="range" min="1" max="6" value="3" class="grid-slider" id="gridSlider" onchange="updateGridSize(this.value)">
+                            <span id="gridValue">3 per row</span>
+                        </div>
+                        
+                        <div class="attributes-toggle">
+                            <input type="checkbox" id="showAttributes" onchange="toggleAttributes()" checked>
+                            <label for="showAttributes">Show details</label>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalImages">0</span>
+                            <span class="stat-label">Images</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="analyzedImages">0</span>
+                            <span class="stat-label">Analyzed</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Buttons Row -->
+                    <div class="buttons-row">
+                        <button id="selectFiles">📁 Select Images</button>
+                        <input type="file" id="filesInput" multiple style="display: none;" accept="image/*">
+                        <button id="selectFolder">📂 Select Folder</button>
+                        <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" accept="image/*">
                         <button id="aiAnalyzeBtn" onclick="analyzeImages()" disabled class="ai-button">
                             <span id="aiAnalyzeIcon">🧠</span>
                             <span id="aiAnalyzeText">AI Analyze</span>
@@ -594,33 +672,6 @@
                         <button onclick="importMetadata()">📂 Import</button>
                         <button onclick="startSlideshow()" id="slideshowBtn" disabled>▶️ Slideshow</button>
                         <button onclick="clearGrid()" class="clear-button">🗑️ Clear Grid</button>
-                    </div>
-                    
-                    <!-- Secondary Controls Row -->
-                    <div class="secondary-controls-row">
-                        <div class="layout-controls">
-                            <div class="grid-controls">
-                                <label>Grid Layout:</label>
-                                <input type="range" min="1" max="6" value="3" class="grid-slider" id="gridSlider" onchange="updateGridSize(this.value)">
-                                <span id="gridValue">3 per row</span>
-                            </div>
-                            
-                            <div class="attributes-toggle">
-                                <input type="checkbox" id="showAttributes" onchange="toggleAttributes()">
-                                <label for="showAttributes">Show details</label>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-group">
-                            <div class="stat-item">
-                                <span class="stat-value" id="totalImages">0</span>
-                                <span class="stat-label">Images</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="analyzedImages">0</span>
-                                <span class="stat-label">Analyzed</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -699,13 +750,70 @@
             }
         };
 
-        // Initialize app
+        // Initialize app - MAIN DOMContentLoaded
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - initializing app...');
+            
+            // Initialize AI models
             updateModelDisplay();
             loadSelectedModel();
-            setupDragDrop();
+            
+            // Set up file selection buttons
+            const selectFilesBtn = document.getElementById('selectFiles');
+            const selectFolderBtn = document.getElementById('selectFolder');
+            const filesInput = document.getElementById('filesInput');
+            const folderInput = document.getElementById('folderInput');
+            const dropZone = document.getElementById('dragDropArea');
+
+            console.log('Setting up event listeners...');
+            console.log('selectFilesBtn:', selectFilesBtn);
+            console.log('selectFolderBtn:', selectFolderBtn);
+            console.log('filesInput:', filesInput);
+            console.log('folderInput:', folderInput);
+
+            // Event Listeners
+            if (selectFilesBtn && filesInput) {
+                selectFilesBtn.addEventListener('click', () => {
+                    console.log('Select Files button clicked');
+                    filesInput.click();
+                });
+                filesInput.addEventListener('change', handleFilesSelect);
+            } else {
+                console.error('selectFilesBtn or filesInput not found!');
+            }
+            
+            if (selectFolderBtn && folderInput) {
+                selectFolderBtn.addEventListener('click', () => {
+                    console.log('Select Folder button clicked');
+                    folderInput.click();
+                });
+                folderInput.addEventListener('change', handleFolderSelect);
+            } else {
+                console.error('selectFolderBtn or folderInput not found!');
+            }
+
+            // Drag and Drop
+            if (dropZone) {
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    handleDroppedFiles(e.dataTransfer.files);
+                });
+            } else {
+                console.error('dropZone not found!');
+            }
             
             // Initialize with empty grid ready for user content
+            console.log('App initialization complete');
         });
 
         // Tab Management
@@ -739,32 +847,24 @@
             }
         }
 
-        // File selection functions
-        function selectFiles() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.multiple = true;
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                if (e.target.files.length > 0) {
-                    loadImages(Array.from(e.target.files));
-                }
-            };
-            input.click();
+
+        // Handler functions
+        function handleFilesSelect(event) {
+            console.log('handleFilesSelect called with files:', event.target.files);
+            const files = Array.from(event.target.files);
+            loadImages(files);
         }
 
-        function selectFolder() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.webkitdirectory = true;
-            input.multiple = true;
-            input.onchange = (e) => {
-                const imageFiles = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
-                if (imageFiles.length > 0) {
-                    loadImages(imageFiles);
-                }
-            };
-            input.click();
+        function handleFolderSelect(event) {
+            console.log('handleFolderSelect called with files:', event.target.files);
+            const files = Array.from(event.target.files);
+            loadImages(files);
+        }
+
+        function handleDroppedFiles(fileList) {
+            console.log('handleDroppedFiles called with files:', fileList);
+            const files = Array.from(fileList);
+            loadImages(files);
         }
 
         function loadImages(files) {
@@ -814,23 +914,37 @@
         function createImageCard(image) {
             const card = document.createElement('div');
             card.className = 'image-card';
-            card.onclick = () => showImagePopup(image.url, image.name);
+            card.title = 'Double-click to view full image';
+            card.ondblclick = () => showImagePopup(image.url, image.name);
             
             const aiTags = aiData[image.name] && aiData[image.name].tags ? 
-                aiData[image.name].tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('') : '';
+                aiData[image.name].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_')) // Filter out unknown tags
+                    .slice(0, 3)
+                    .map(tag => `<span class="tag">${tag}</span>`)
+                    .join('') : '';
             
             // Get file details
             const fileDate = image.file.lastModified ? new Date(image.file.lastModified).toLocaleString() : 'Unknown';
             const fileSize = formatFileSize(image.file.size);
             
+            // Initialize caption if not exists
+            if (!captions[image.name]) {
+                captions[image.name] = ""; // Default to blank caption
+            }
+
             card.innerHTML = `
                 <div class="image-thumbnail">
                     <img src="${image.url}" alt="${image.name}" loading="lazy">
                 </div>
                 <div class="image-info">
+                    <div class="caption-container">
+                        <label class="caption-label">Caption:</label>
+                        <div class="image-caption" contenteditable="true" data-filename="${image.name}">${captions[image.name]}</div>
+                    </div>
                     <div class="image-name">${image.name}</div>
                     <div class="image-tags">${aiTags}</div>
-                    <div class="image-details hidden">
+                    <div class="image-details">
                         <div class="detail-row">
                             <span>📄</span><span>${image.name}</span>
                         </div>
@@ -843,6 +957,20 @@
                     </div>
                 </div>
             `;
+
+            // Add caption editing event listeners
+            const captionElement = card.querySelector('.image-caption');
+            captionElement.addEventListener('blur', () => {
+                const filename = captionElement.getAttribute('data-filename');
+                captions[filename] = captionElement.textContent;
+                // Auto-save could be implemented here
+            });
+            captionElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    captionElement.blur();
+                }
+            });
             
             return card;
         }
@@ -967,9 +1095,16 @@
                     const image = images[i];
                     if (!aiData[image.name]) {
                         const predictions = await analyzeImage(image);
+                        // Filter out unknown tags at source
+                        const validPredictions = predictions.filter(p => 
+                            p.className && 
+                            p.className !== 'unknown' && 
+                            !p.className.startsWith('unknown_')
+                        );
+                        
                         aiData[image.name] = {
-                            tags: predictions.map(p => p.className.split(',')[0].trim()),
-                            confidence: predictions.map(p => p.probability),
+                            tags: validPredictions.map(p => p.className.split(',')[0].trim()),
+                            confidence: validPredictions.map(p => p.probability),
                             model: modelType,
                             analyzed: true
                         };
@@ -1014,13 +1149,25 @@
                         
                         const predictions = await currentModel.predict(tensor).data();
                         
+                        // Get top 5 predictions with proper ImageNet labels
                         const topPredictions = Array.from(predictions)
-                            .map((prob, index) => ({ className: getImageNetLabel(index), probability: prob }))
+                            .map((prob, index) => ({ 
+                                className: IMAGENET_CLASSES[index] || `unknown_${index}`, 
+                                probability: prob,
+                                index: index // Keep for debugging
+                            }))
                             .sort((a, b) => b.probability - a.probability)
-                            .slice(0, 5);
+                            .slice(0, 5)
+                            .filter(pred => pred.probability > 0.05); // Lowered threshold to see more predictions
+                        
+                        // Debug: log top predictions with indices
+                        console.log('Top predictions for image:', imageObj.name);
+                        topPredictions.forEach(pred => {
+                            console.log(`  ${pred.index}: ${pred.className} (${(pred.probability * 100).toFixed(1)}%)`);
+                        });
                         
                         tensor.dispose();
-                        resolve(topPredictions);
+                        resolve(topPredictions.length > 0 ? topPredictions : [{ className: 'unknown', probability: 0 }]);
                     } catch (error) {
                         console.error('Image analysis error:', error);
                         resolve([{ className: 'unknown', probability: 0 }]);
@@ -1030,24 +1177,68 @@
             });
         }
 
-        function getImageNetLabel(index) {
-            const labels = [
-                'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
-                'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat',
-                'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack',
-                'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
-                'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
-                'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-                'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake',
-                'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop',
-                'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink',
-                'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier',
-                'toothbrush', 'landscape', 'portrait', 'building', 'nature', 'food', 'vehicle',
-                'animal', 'object', 'scene', 'indoor', 'outdoor', 'abstract', 'art', 'document',
-                'text', 'pattern', 'texture', 'color', 'shape', 'design', 'photo', 'illustration'
-            ];
-            return labels[index % labels.length] || 'unknown';
+        // Complete ImageNet 1000 class labels - key ones that matter for photos
+        const IMAGENET_CLASSES = new Array(1000).fill('unknown');
+        
+        // Initialize the most important classes that people actually photograph
+        function initializeImageNetLabels() {
+            // Animals
+            IMAGENET_CLASSES[281] = 'tabby cat';
+            IMAGENET_CLASSES[285] = 'Egyptian cat';
+            IMAGENET_CLASSES[151] = 'Chihuahua';
+            IMAGENET_CLASSES[207] = 'golden retriever';
+            IMAGENET_CLASSES[263] = 'Pembroke Welsh corgi';
+            IMAGENET_CLASSES[292] = 'tiger';
+            IMAGENET_CLASSES[290] = 'jaguar';
+            IMAGENET_CLASSES[291] = 'leopard';
+            IMAGENET_CLASSES[340] = 'zebra';
+            IMAGENET_CLASSES[386] = 'African elephant';
+            IMAGENET_CLASSES[9] = 'ostrich';
+            IMAGENET_CLASSES[130] = 'flamingo';
+            IMAGENET_CLASSES[144] = 'pelican';
+            
+            // Vehicles - THESE ARE THE KEY ONES FOR YOUR IMAGES
+            IMAGENET_CLASSES[403] = 'aircraft carrier';
+            IMAGENET_CLASSES[511] = 'convertible';
+            IMAGENET_CLASSES[817] = 'sports car';
+            IMAGENET_CLASSES[751] = 'racer'; // This is what class_751 should be!
+            IMAGENET_CLASSES[436] = 'beach wagon';
+            IMAGENET_CLASSES[656] = 'minivan';
+            IMAGENET_CLASSES[627] = 'limousine';
+            IMAGENET_CLASSES[705] = 'passenger car';
+            IMAGENET_CLASSES[555] = 'fire engine';
+            IMAGENET_CLASSES[569] = 'garbage truck';
+            IMAGENET_CLASSES[717] = 'pickup truck';
+            IMAGENET_CLASSES[864] = 'tow truck';
+            IMAGENET_CLASSES[675] = 'motorboat';
+            IMAGENET_CLASSES[814] = 'speedboat';
+            IMAGENET_CLASSES[780] = 'school bus';
+            
+            // People and body parts
+            IMAGENET_CLASSES[0] = 'person';
+            IMAGENET_CLASSES[1] = 'face';
+            
+            // Nature and plants
+            IMAGENET_CLASSES[985] = 'daisy';
+            IMAGENET_CLASSES[980] = 'volcano';
+            IMAGENET_CLASSES[979] = 'valley';
+            IMAGENET_CLASSES[975] = 'geyser';
+            IMAGENET_CLASSES[974] = 'cliff';
+            IMAGENET_CLASSES[973] = 'coral reef';
+            IMAGENET_CLASSES[970] = 'alp';
+            IMAGENET_CLASSES[928] = 'ice cream';
+            
+            // Common objects
+            IMAGENET_CLASSES[924] = 'guacamole';
+            IMAGENET_CLASSES[920] = 'traffic light';
+            IMAGENET_CLASSES[919] = 'street sign';
+            IMAGENET_CLASSES[898] = 'wreck';
+            
+            console.log('Initialized ImageNet labels with key classes');
         }
+        
+        // Initialize labels immediately
+        initializeImageNetLabels();
 
         // AI Search functionality - Modal-based like original
         function openSearch() {
@@ -1088,6 +1279,11 @@
                         score += 10;
                     }
                     
+                    // Caption search
+                    if (captions[image.name] && captions[image.name].toLowerCase().includes(word)) {
+                        score += 8; // High score for caption matches
+                    }
+                    
                     // AI tags search
                     if (aiData[image.name]) {
                         aiData[image.name].tags.forEach((tag, tagIndex) => {
@@ -1115,11 +1311,17 @@
                 results.slice(0, 10).forEach(result => {
                     const item = document.createElement('div');
                     item.className = 'search-result-item';
-                    const aiTags = aiData[result.image.name] ? aiData[result.image.name].tags.slice(0, 2).join(', ') : 'Not analyzed';
+                    const aiTags = aiData[result.image.name] ? 
+                        aiData[result.image.name].tags
+                            .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                            .slice(0, 2)
+                            .join(', ') || 'Not analyzed' : 'Not analyzed';
+                    const caption = captions[result.image.name] || 'No caption';
                     item.innerHTML = `
                         <img src="${result.image.url}" class="search-result-thumb">
                         <div>
-                            <strong>${result.image.name}</strong><br>
+                            <strong>${caption}</strong><br>
+                            <small style="color: #666;">${result.image.name}</small><br>
                             <small style="color: #666;">AI Tags: ${aiTags}</small><br>
                             <small style="color: #999;">Relevance: ${result.score}</small>
                         </div>
@@ -1177,8 +1379,8 @@
 
         // Export/Import functionality
         function exportMetadata() {
-            if (Object.keys(aiData).length === 0) {
-                alert('No AI analysis data to export. Please analyze some images first.');
+            if (Object.keys(aiData).length === 0 && Object.keys(captions).length === 0) {
+                alert('No data to export. Please analyze some images or add captions first.');
                 return;
             }
             
@@ -1188,6 +1390,7 @@
                 totalImages: images.length,
                 analyzedImages: Object.keys(aiData).length,
                 data: aiData,
+                captions: captions,
                 version: '1.0'
             };
             
@@ -1221,16 +1424,21 @@
                             
                             if (importData.data) {
                                 Object.assign(aiData, importData.data);
-                                renderImages();
-                                updateStats();
-                                
-                                const banner = document.getElementById('autoLoadBanner');
-                                banner.style.display = 'block';
-                                banner.innerHTML = `📂 Imported ${Object.keys(importData.data).length} AI analysis records!`;
-                                setTimeout(() => banner.style.display = 'none', 3000);
-                            } else {
-                                alert('Invalid import file format.');
                             }
+                            
+                            if (importData.captions) {
+                                Object.assign(captions, importData.captions);
+                            }
+                            
+                            renderImages();
+                            updateStats();
+                            
+                            const banner = document.getElementById('autoLoadBanner');
+                            banner.style.display = 'block';
+                            const aiCount = importData.data ? Object.keys(importData.data).length : 0;
+                            const captionCount = importData.captions ? Object.keys(importData.captions).length : 0;
+                            banner.innerHTML = `📂 Imported ${aiCount} AI analysis records and ${captionCount} captions!`;
+                            setTimeout(() => banner.style.display = 'none', 3000);
                         } catch (error) {
                             alert('Failed to import data. Please check the file format.');
                         }
@@ -1258,7 +1466,11 @@
             if (!slideshowActive || images.length === 0) return;
             
             const image = images[slideshowIndex];
-            const aiTags = aiData[image.name] ? aiData[image.name].tags.slice(0, 3).join(', ') : 'Not analyzed';
+            const aiTags = aiData[image.name] ? 
+                aiData[image.name].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                    .slice(0, 3)
+                    .join(', ') || 'Not analyzed' : 'Not analyzed';
             
             const slideshowHtml = `
                 <div id="slideshowOverlay" style="
@@ -1269,8 +1481,7 @@
                     height: 100%;
                     background: rgba(0,0,0,0.95);
                     z-index: 1000;
-                    display: flex;
-                    align-items: center;
+                            align-items: center;
                     justify-content: center;
                     flex-direction: column;
                 ">
@@ -1318,7 +1529,11 @@
 
         // Image popup functionality
         function showImagePopup(imageUrl, imageName) {
-            const aiTags = aiData[imageName] ? aiData[imageName].tags.slice(0, 5).join(', ') : 'Not analyzed';
+            const aiTags = aiData[imageName] ? 
+                aiData[imageName].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                    .slice(0, 5)
+                    .join(', ') || 'Not analyzed' : 'Not analyzed';
             const confidence = aiData[imageName] ? Math.round(aiData[imageName].confidence[0] * 100) + '%' : 'N/A';
             
             const popupHtml = `
@@ -1330,8 +1545,7 @@
                     height: 100%;
                     background: rgba(0,0,0,0.9);
                     z-index: 1000;
-                    display: flex;
-                    align-items: center;
+                            align-items: center;
                     justify-content: center;
                     cursor: pointer;
                 " onclick="closeImagePopup()">
@@ -1384,46 +1598,6 @@
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
 
-        // Drag and drop functionality
-        function setupDragDrop() {
-            const dropArea = document.getElementById('dragDropArea');
-            
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropArea.addEventListener(eventName, preventDefaults, false);
-                document.body.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropArea.addEventListener(eventName, highlight, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropArea.addEventListener(eventName, unhighlight, false);
-            });
-            
-            dropArea.addEventListener('drop', handleDrop, false);
-        }
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        function highlight(e) {
-            document.getElementById('dragDropArea').classList.add('drag-over');
-        }
-        
-        function unhighlight(e) {
-            document.getElementById('dragDropArea').classList.remove('drag-over');
-        }
-        
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = Array.from(dt.files).filter(file => file.type.startsWith('image/'));
-            if (files.length > 0) {
-                loadImages(files);
-            }
-        }
     </script>
 </body>
 </html>
