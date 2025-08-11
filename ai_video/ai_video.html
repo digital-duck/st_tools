@@ -783,7 +783,7 @@
             <span class="close-modal" onclick="closeSearch()">&times;</span>
             <h3>🔍 AI Video Search</h3>
             <div class="search-container">
-                <input type="text" class="search-box" id="searchInput" placeholder="Search videos by content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search by filename, AI tags, objects, scenes, activities..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
                 <div class="search-suggestions">
                     <span class="suggestion" onclick="searchVideos('cooking videos')">cooking videos</span>
                     <span class="suggestion" onclick="searchVideos('nature documentaries')">nature documentaries</span>
@@ -1418,8 +1418,13 @@
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             const resultsContainer = document.getElementById('searchResults');
             
-            if (query.length < 2) {
-                resultsContainer.innerHTML = '<p>Please enter at least 2 characters to search.</p>';
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            if (videos.length === 0) {
+                resultsContainer.innerHTML = '<p>No videos loaded. Please load videos first.</p>';
                 return;
             }
             
@@ -1432,44 +1437,96 @@
             
             videos.forEach(video => {
                 const data = aiData[video.name];
-                if (!data) return;
-                
                 let score = 0;
-                const queryWords = query.split(' ').filter(w => w.length > 1);
+                const queryTerms = query.split(' ').filter(term => term.length > 0);
                 
-                // Search in tags
-                if (data.tags) {
-                    data.tags.forEach(tag => {
-                        queryWords.forEach(queryWord => {
-                            if (tag.word.toLowerCase().includes(queryWord)) {
-                                score += tag.confidence * 0.8;
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = video.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
+                        }
+                    }
+                });
+                
+                // Search in summaries/descriptions (high priority)
+                const summary = summaries[video.name];
+                if (summary) {
+                    queryTerms.forEach(term => {
+                        if (summary.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in AI tags/classifications (if video analyzed)
+                if (data && data.tags) {
+                    queryTerms.forEach(term => {
+                        data.tags.forEach(tag => {
+                            const tagLower = tag.word ? tag.word.toLowerCase() : tag.toLowerCase();
+                            if (tagLower === term) {
+                                // Exact tag match gets high score
+                                score += (tag.confidence || 0.8) * 0.9;
+                            } else if (tagLower.includes(term)) {
+                                // Partial tag match gets medium score
+                                score += (tag.confidence || 0.8) * 0.7;
                             }
                         });
                     });
                 }
                 
-                // Search in filename
-                queryWords.forEach(queryWord => {
-                    if (video.name.toLowerCase().includes(queryWord)) {
-                        score += 0.6;
-                    }
-                });
+                // Search in AI detected objects
+                if (data && data.objects) {
+                    queryTerms.forEach(term => {
+                        data.objects.forEach(obj => {
+                            if (obj.toLowerCase().includes(term)) {
+                                score += 0.8;
+                            }
+                        });
+                    });
+                }
                 
-                // Search in summary
-                const summary = summaries[video.name];
-                if (summary) {
-                    queryWords.forEach(queryWord => {
-                        if (summary.toLowerCase().includes(queryWord)) {
-                            score += 0.4;
+                // Search in AI scene descriptions
+                if (data && data.scenes) {
+                    queryTerms.forEach(term => {
+                        data.scenes.forEach(scene => {
+                            if (scene.toLowerCase().includes(term)) {
+                                score += 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI categories
+                if (data && data.category) {
+                    queryTerms.forEach(term => {
+                        if (data.category.toLowerCase().includes(term)) {
+                            score += 0.8;
                         }
                     });
                 }
                 
-                if (score > 0.1) {
+                // Search in AI activities
+                if (data && data.activities) {
+                    queryTerms.forEach(term => {
+                        data.activities.forEach(activity => {
+                            if (activity.toLowerCase().includes(term)) {
+                                score += 0.6;
+                            }
+                        });
+                    });
+                }
+                
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
+                if (score > 0) {
                     results.push({
                         video: video,
-                        data: data,
-                        score: Math.min(score, 1.0)
+                        data: data || null,
+                        score: Math.min(score, 2.0)
                     });
                 }
             });
@@ -1483,27 +1540,34 @@
                 return;
             }
             
-            const html = results.map(result => `
-                <div class="search-result-item" onclick="openVideoFromSearch(${result.video.id})" style="cursor: pointer;">
+            const html = results.map((result, index) => `
+                <div class="search-result-item" onclick="openVideoFromSearch(${index})" style="cursor: pointer;">
                     <div class="result-content">
                         <div class="result-title">${result.video.name} <span class="video-type ${result.video.type}">${result.video.type.toUpperCase()}</span></div>
                         <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
                         <div style="font-size: 12px; color: #666; margin-top: 4px;">
-                            ${result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word).join(', ') : 'No tags'}
+                            ${result.data && result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word || k).join(', ') : 'No AI tags'}
                         </div>
                     </div>
-                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open video</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to play video</div>
                 </div>
             `).join('');
             
             container.innerHTML = `<h4>Found ${results.length} matching videos:</h4>${html}`;
+            
+            // Store results globally for popup access
+            window.currentSearchResults = results;
         }
 
-        function openVideoFromSearch(videoId) {
-            // Close the search modal first
-            closeSearch();
-            // Open the video viewer
-            openVideoViewer(videoId);
+        function openVideoFromSearch(resultIndex) {
+            const result = window.currentSearchResults[resultIndex];
+            if (result && result.video) {
+                // Close search modal first
+                closeSearch();
+                // Play the video in a new tab (same as double-click behavior)
+                const videoUrl = URL.createObjectURL(result.video.file);
+                window.open(videoUrl, '_blank');
+            }
         }
 
         // Close modal when clicking outside

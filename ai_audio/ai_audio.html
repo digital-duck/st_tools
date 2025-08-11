@@ -783,7 +783,7 @@
             <span class="close-modal" onclick="closeSearch()">&times;</span>
             <h3>🔍 AI Audio Search</h3>
             <div class="search-container">
-                <input type="text" class="search-box" id="searchInput" placeholder="Search audio files by content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search by filename, AI tags, genres, moods, instruments..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
                 <div class="search-suggestions">
                     <span class="suggestion" onclick="searchAudio('classical music')">classical music</span>
                     <span class="suggestion" onclick="searchAudio('jazz songs')">jazz songs</span>
@@ -1484,8 +1484,13 @@
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             const resultsContainer = document.getElementById('searchResults');
             
-            if (query.length < 2) {
-                resultsContainer.innerHTML = '<p>Please enter at least 2 characters to search.</p>';
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            if (audioFiles.length === 0) {
+                resultsContainer.innerHTML = '<p>No audio files loaded. Please load audio files first.</p>';
                 return;
             }
             
@@ -1498,44 +1503,87 @@
             
             audioFiles.forEach(audioFile => {
                 const data = aiData[audioFile.name];
-                if (!data) return;
-                
                 let score = 0;
-                const queryWords = query.split(' ').filter(w => w.length > 1);
+                const queryTerms = query.split(' ').filter(term => term.length > 0);
                 
-                // Search in tags
-                if (data.tags) {
-                    data.tags.forEach(tag => {
-                        queryWords.forEach(queryWord => {
-                            if (tag.word.toLowerCase().includes(queryWord)) {
-                                score += tag.confidence * 0.8;
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = audioFile.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
+                        }
+                    }
+                });
+                
+                // Search in summaries/captions (high priority)
+                const summary = summaries[audioFile.name];
+                if (summary) {
+                    queryTerms.forEach(term => {
+                        if (summary.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in AI tags/genres (if audio analyzed)
+                if (data && data.tags) {
+                    queryTerms.forEach(term => {
+                        data.tags.forEach(tag => {
+                            const tagLower = tag.word ? tag.word.toLowerCase() : tag.toLowerCase();
+                            if (tagLower === term) {
+                                // Exact tag match gets high score
+                                score += (tag.confidence || 0.8) * 0.9;
+                            } else if (tagLower.includes(term)) {
+                                // Partial tag match gets medium score
+                                score += (tag.confidence || 0.8) * 0.7;
                             }
                         });
                     });
                 }
                 
-                // Search in filename
-                queryWords.forEach(queryWord => {
-                    if (audioFile.name.toLowerCase().includes(queryWord)) {
-                        score += 0.6;
-                    }
-                });
-                
-                // Search in summary
-                const summary = summaries[audioFile.name];
-                if (summary) {
-                    queryWords.forEach(queryWord => {
-                        if (summary.toLowerCase().includes(queryWord)) {
-                            score += 0.4;
-                        }
+                // Search in AI genres
+                if (data && data.genres) {
+                    queryTerms.forEach(term => {
+                        data.genres.forEach(genre => {
+                            if (genre.toLowerCase().includes(term)) {
+                                score += 0.8;
+                            }
+                        });
                     });
                 }
                 
-                if (score > 0.1) {
+                // Search in AI moods
+                if (data && data.moods) {
+                    queryTerms.forEach(term => {
+                        data.moods.forEach(mood => {
+                            if (mood.toLowerCase().includes(term)) {
+                                score += 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI instruments
+                if (data && data.instruments) {
+                    queryTerms.forEach(term => {
+                        data.instruments.forEach(instrument => {
+                            if (instrument.toLowerCase().includes(term)) {
+                                score += 0.6;
+                            }
+                        });
+                    });
+                }
+                
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
+                if (score > 0) {
                     results.push({
                         audioFile: audioFile,
-                        data: data,
-                        score: Math.min(score, 1.0)
+                        data: data || null,
+                        score: Math.min(score, 2.0)
                     });
                 }
             });
@@ -1545,31 +1593,38 @@
 
         function displaySearchResults(results, container) {
             if (results.length === 0) {
-                container.innerHTML = '<p>No matching videos found.</p>';
+                container.innerHTML = '<p>No matching audio files found.</p>';
                 return;
             }
             
-            const html = results.map(result => `
-                <div class="search-result-item" onclick="openAudioFromSearch(${result.audioFile.id})" style="cursor: pointer;">
+            const html = results.map((result, index) => `
+                <div class="search-result-item" onclick="openAudioFromSearch(${index})" style="cursor: pointer;">
                     <div class="result-content">
-                        <div class="result-title">${result.audioFile.name} <span class="video-type ${result.audioFile.type}">${result.audioFile.type.toUpperCase()}</span></div>
+                        <div class="result-title">${result.audioFile.name} <span class="audio-type ${result.audioFile.type}">${result.audioFile.type.toUpperCase()}</span></div>
                         <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
                         <div style="font-size: 12px; color: #666; margin-top: 4px;">
-                            ${result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word).join(', ') : 'No tags'}
+                            ${result.data && result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word || k).join(', ') : 'No AI tags'}
                         </div>
                     </div>
-                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open audio</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to play audio</div>
                 </div>
             `).join('');
             
             container.innerHTML = `<h4>Found ${results.length} matching audio files:</h4>${html}`;
+            
+            // Store results globally for popup access
+            window.currentSearchResults = results;
         }
 
-        function openAudioFromSearch(audioId) {
-            // Close the search modal first
-            closeSearch();
-            // Open the audio viewer
-            openAudioViewer(audioId);
+        function openAudioFromSearch(resultIndex) {
+            const result = window.currentSearchResults[resultIndex];
+            if (result && result.audioFile) {
+                // Close search modal first
+                closeSearch();
+                // Play the audio in a new tab (same as double-click behavior)
+                const audioUrl = URL.createObjectURL(result.audioFile.file);
+                window.open(audioUrl, '_blank');
+            }
         }
 
         // Close modal when clicking outside
