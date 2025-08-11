@@ -1,0 +1,83 @@
+graph TB
+    subgraph "🚀 AI Content Manager - Unified Architecture"
+        subgraph "🎨 Frontend Layer"
+            UI[Tab-Based Interface]
+            TAB1[🖼️ Images Tab]
+            TAB2[📄 Documents Tab] 
+            TAB3[🎵 Audios Tab]
+            TAB4[🎬 Videos Tab]
+            TAB5[📊 Dashboard Tab]
+            
+            UI --> TAB1
+            UI --> TAB2
+            UI --> TAB3
+            UI --> TAB4
+            UI --> TAB5
+        end
+        
+        subgraph "🧠 Core Engine"
+            CORE[Core Engine]
+            SEARCH[Universal Search]
+            AI_MGR[AI Model Manager]
+            STORAGE[Storage Engine]
+            EXPORT[Export/Import]
+            
+            CORE --> SEARCH
+            CORE --> AI_MGR
+            CORE --> STORAGE
+            CORE --> EXPORT
+        end
+        
+        subgraph "📱 Content Processors"
+            IMG_PROC[Image Processor]
+            DOC_PROC[Document Analyzer]
+            AUD_PROC[Audio Processor]
+            VID_PROC[Video Analyzer]
+        end
+        
+        subgraph "🤖 AI Models Layer"
+            IMG_MODELS[MobileNet v2<br/>EfficientNet<br/>MediaPipe]
+            DOC_MODELS[BERT Base<br/>GPT Summarizer<br/>Custom NLP]
+            AUD_MODELS[Audio-BERT<br/>MusicCNN<br/>Universal Audio]
+            VID_MODELS[VideoNet<br/>Action Recognition<br/>Object Tracker]
+        end
+        
+        subgraph "💾 Storage Layer"
+            LOCAL[Local Storage<br/>IndexedDB<br/>FileSystem API]
+            CLOUD[Cloud Storage<br/>(Optional)]
+            HYBRID[Hybrid Sync<br/>Engine]
+        end
+    end
+    
+    %% Connections
+    TAB1 --> IMG_PROC
+    TAB2 --> DOC_PROC
+    TAB3 --> AUD_PROC
+    TAB4 --> VID_PROC
+    
+    IMG_PROC --> IMG_MODELS
+    DOC_PROC --> DOC_MODELS
+    AUD_PROC --> AUD_MODELS
+    VID_PROC --> VID_MODELS
+    
+    STORAGE --> LOCAL
+    STORAGE --> CLOUD
+    STORAGE --> HYBRID
+    
+    CORE --> IMG_PROC
+    CORE --> DOC_PROC
+    CORE --> AUD_PROC
+    CORE --> VID_PROC
+    
+    %% Styling
+    classDef frontend fill:#e1f5fe
+    classDef core fill:#f3e5f5
+    classDef processor fill:#e8f5e8
+    classDef ai fill:#fff3e0
+    classDef storage fill:#fce4ec
+    
+    class UI,TAB1,TAB2,TAB3,TAB4,TAB5 frontend
+    class CORE,SEARCH,AI_MGR,STORAGE,EXPORT core
+    class IMG_PROC,DOC_PROC,AUD_PROC,VID_PROC processor
+    class IMG_MODELS,DOC_MODELS,AUD_MODELS,VID_MODELS ai
+    class LOCAL,CLOUD,HYBRID storage

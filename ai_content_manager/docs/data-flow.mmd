@@ -1,0 +1,94 @@
+graph LR
+    subgraph "📁 User Content Input"
+        FILES[User Files<br/>Images, Docs, Audios, Videos]
+        DRAG[Drag & Drop]
+        SELECT[Select Files]
+        FOLDER[Select Folder<br/>⚠️ Ubuntu Limitation]
+    end
+    
+    subgraph "🔄 Processing Pipeline"
+        LOAD[File Loading<br/>& Validation]
+        EXTRACT[Content<br/>Extraction]
+        AI_PROC[AI Analysis<br/>Processing]
+        META_GEN[Metadata<br/>Generation]
+    end
+    
+    subgraph "🧠 AI Analysis Layer"
+        MODEL_SELECT[Model Selection<br/>Per Content Type]
+        TF_PROC[TensorFlow.js<br/>Processing]
+        RESULT[AI Results<br/>Tags, Categories, etc.]
+    end
+    
+    subgraph "💾 Storage Strategy"
+        LOCAL_STORE[Local Storage<br/>100% Private]
+        CLOUD_OPT[Cloud Sync<br/>(Optional)]
+        HYBRID_SYNC[Intelligent<br/>Hybrid Sync]
+    end
+    
+    subgraph "🔍 Search & Discovery"
+        UNIV_SEARCH[Universal Search<br/>Cross-Content]
+        FILENAME[Filename<br/>Search]
+        AI_TAGS[AI Tags<br/>Search]
+        CONTENT[Content<br/>Search]
+        SMART_REC[Smart<br/>Recommendations]
+    end
+    
+    subgraph "📤 Output & Actions"
+        DISPLAY[Grid Display<br/>& Visualization]
+        EXPORT_JSON[Export<br/>Metadata JSON]
+        SHARE[Share &<br/>Collaborate]
+        SLIDESHOW[Content-Specific<br/>Actions]
+    end
+    
+    %% Data Flow Connections
+    FILES --> DRAG
+    FILES --> SELECT
+    FILES --> FOLDER
+    
+    DRAG --> LOAD
+    SELECT --> LOAD  
+    FOLDER --> LOAD
+    
+    LOAD --> EXTRACT
+    EXTRACT --> AI_PROC
+    AI_PROC --> META_GEN
+    
+    AI_PROC --> MODEL_SELECT
+    MODEL_SELECT --> TF_PROC
+    TF_PROC --> RESULT
+    
+    META_GEN --> LOCAL_STORE
+    LOCAL_STORE --> CLOUD_OPT
+    CLOUD_OPT --> HYBRID_SYNC
+    
+    META_GEN --> UNIV_SEARCH
+    UNIV_SEARCH --> FILENAME
+    UNIV_SEARCH --> AI_TAGS
+    UNIV_SEARCH --> CONTENT
+    UNIV_SEARCH --> SMART_REC
+    
+    UNIV_SEARCH --> DISPLAY
+    DISPLAY --> EXPORT_JSON
+    DISPLAY --> SHARE
+    DISPLAY --> SLIDESHOW
+    
+    %% Privacy-First Indicators
+    LOCAL_STORE -.->|"🔒 Never Leaves Device"| FILES
+    CLOUD_OPT -.->|"🔒 Metadata Only"| META_GEN
+    
+    %% Styling  
+    classDef input fill:#e3f2fd
+    classDef process fill:#f1f8e9
+    classDef ai fill:#fff3e0
+    classDef storage fill:#fce4ec
+    classDef search fill:#f3e5f5
+    classDef output fill:#e8eaf6
+    classDef warning fill:#ffebee
+    
+    class FILES,DRAG,SELECT,FOLDER input
+    class LOAD,EXTRACT,AI_PROC,META_GEN process
+    class MODEL_SELECT,TF_PROC,RESULT ai
+    class LOCAL_STORE,CLOUD_OPT,HYBRID_SYNC storage
+    class UNIV_SEARCH,FILENAME,AI_TAGS,CONTENT,SMART_REC search
+    class DISPLAY,EXPORT_JSON,SHARE,SLIDESHOW output
+    class FOLDER warning

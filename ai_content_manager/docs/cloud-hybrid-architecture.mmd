@@ -1,0 +1,83 @@
+graph TB
+    subgraph "🔒 Privacy-First Hybrid Architecture"
+        subgraph "💻 Client Side (100% Private)"
+            USER_FILES[User Content Files<br/>🔒 NEVER leaves device]
+            LOCAL_AI[TensorFlow.js Models<br/>🧠 Local AI Processing]
+            BROWSER_STORAGE[IndexedDB + FileSystem<br/>💾 Local metadata cache]
+            CLIENT_APP[AI Content Manager<br/>Single HTML Application]
+            
+            USER_FILES --> LOCAL_AI
+            LOCAL_AI --> BROWSER_STORAGE
+            BROWSER_STORAGE --> CLIENT_APP
+        end
+        
+        subgraph "☁️ Optional Cloud Layer"
+            API_GATEWAY[API Gateway<br/>🛡️ Authentication & Rate Limiting]
+            
+            subgraph "🔧 Microservices"
+                USER_SERVICE[User Preferences<br/>Settings & Personalization]
+                METADATA_SERVICE[Metadata Sync<br/>🔒 Encrypted, No Filenames]
+                RECOMMENDATION_SERVICE[Smart Recommendations<br/>📊 Anonymized Patterns]
+                ANALYTICS_SERVICE[Usage Analytics<br/>📈 Privacy-Preserving]
+            end
+            
+            DATABASE[(PostgreSQL<br/>🗄️ Metadata Only)]
+            REDIS[(Redis Cache<br/>⚡ Performance)]
+            ML_SERVICE[Recommendation ML<br/>🤖 Pattern Analysis]
+            
+            API_GATEWAY --> USER_SERVICE
+            API_GATEWAY --> METADATA_SERVICE
+            API_GATEWAY --> RECOMMENDATION_SERVICE
+            API_GATEWAY --> ANALYTICS_SERVICE
+            
+            USER_SERVICE --> DATABASE
+            METADATA_SERVICE --> DATABASE
+            METADATA_SERVICE --> REDIS
+            RECOMMENDATION_SERVICE --> ML_SERVICE
+            ML_SERVICE --> DATABASE
+        end
+        
+        subgraph "🌐 Deployment Infrastructure"
+            CDN[Global CDN<br/>🌍 Instant worldwide delivery]
+            STATIC_HOST[Static Hosting<br/>📁 GitHub Pages/Netlify]
+            CLOUD_BACKEND[Cloud Backend<br/>☁️ AWS/GCP/Azure]
+            
+            CDN --> STATIC_HOST
+            STATIC_HOST --> CLIENT_APP
+            CLOUD_BACKEND --> API_GATEWAY
+        end
+    end
+    
+    subgraph "🔄 Data Flow & Privacy"
+        subgraph "📱 What Stays Local"
+            LOCAL_DATA[✅ All user files<br/>✅ AI processing<br/>✅ Search results<br/>✅ File analysis]
+        end
+        
+        subgraph "☁️ What Goes to Cloud (Optional)"
+            CLOUD_DATA[✅ User preferences<br/>✅ Anonymized usage patterns<br/>✅ Encrypted metadata hashes<br/>❌ NO actual files<br/>❌ NO filenames<br/>❌ NO personal content]
+        end
+    end
+    
+    %% Connections
+    CLIENT_APP <-.->|"🔒 Encrypted API Calls<br/>Metadata Only"| API_GATEWAY
+    CLIENT_APP -.->|"📊 Anonymous Patterns"| RECOMMENDATION_SERVICE
+    CLIENT_APP <-.->|"⚙️ Settings Sync"| USER_SERVICE
+    
+    %% Privacy-First Indicators  
+    USER_FILES -.->|"🛡️ NEVER transmitted"| CLIENT_APP
+    LOCAL_AI -.->|"🧠 All AI stays local"| CLIENT_APP
+    METADATA_SERVICE -.->|"🔒 Only encrypted hashes"| DATABASE
+    
+    %% Styling
+    classDef client fill:#e8f5e8
+    classDef cloud fill:#e3f2fd
+    classDef deploy fill:#fff3e0
+    classDef privacy_good fill:#c8e6c9
+    classDef privacy_cloud fill:#e1f5fe
+    classDef infrastructure fill:#f3e5f5
+    
+    class USER_FILES,LOCAL_AI,BROWSER_STORAGE,CLIENT_APP client
+    class API_GATEWAY,USER_SERVICE,METADATA_SERVICE,RECOMMENDATION_SERVICE,ANALYTICS_SERVICE,DATABASE,REDIS,ML_SERVICE cloud  
+    class CDN,STATIC_HOST,CLOUD_BACKEND deploy
+    class LOCAL_DATA privacy_good
+    class CLOUD_DATA privacy_cloud

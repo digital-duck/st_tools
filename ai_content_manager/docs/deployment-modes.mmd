@@ -1,0 +1,78 @@
+graph TD
+    subgraph "🚀 Deployment Strategy"
+        subgraph "🏠 Local Mode (Default)"
+            LOCAL[Single HTML File<br/>ai_content_manager.html]
+            BROWSER[Any Modern Browser]
+            OFFLINE[100% Offline Capable]
+            PRIVACY[Complete Privacy<br/>Zero Data Transmission]
+            
+            LOCAL --> BROWSER
+            BROWSER --> OFFLINE
+            OFFLINE --> PRIVACY
+        end
+        
+        subgraph "☁️ Cloud-Enhanced Mode"
+            CLOUD_HTML[HTML File +<br/>Cloud API Integration]
+            BACKEND[Your Backend APIs<br/>Metadata Sync]
+            DATABASE[PostgreSQL<br/>User Prefs & Metadata]
+            RECOMMEND[Smart Recommendations<br/>Cross-Device Sync]
+            
+            CLOUD_HTML --> BACKEND
+            BACKEND --> DATABASE
+            DATABASE --> RECOMMEND
+        end
+        
+        subgraph "🏢 Enterprise Mode"
+            ENTERPRISE[Full Integration<br/>White-labeled]
+            TEAM_COLLAB[Team Collaboration<br/>Shared Libraries]
+            ADMIN[Admin Dashboard<br/>Analytics & Control]
+            AUDIT[Audit Logs<br/>Compliance Ready]
+            
+            ENTERPRISE --> TEAM_COLLAB
+            TEAM_COLLAB --> ADMIN
+            ADMIN --> AUDIT
+        end
+    end
+    
+    subgraph "📊 Scalability Matrix"
+        SCALE_LOCAL[Local: 1 User<br/>$0/month]
+        SCALE_CLOUD[Cloud: 1M Users<br/>$0 infrastructure]
+        SCALE_ENTERPRISE[Enterprise: Unlimited<br/>Custom pricing]
+        
+        SCALE_LOCAL --> SCALE_CLOUD
+        SCALE_CLOUD --> SCALE_ENTERPRISE
+    end
+    
+    subgraph "🔧 Deployment Options"
+        GITHUB[GitHub Pages<br/>Free hosting]
+        NETLIFY[Netlify/Vercel<br/>Auto-deploy]
+        SELF_HOST[Self-hosted<br/>Any web server]
+        CDN[Global CDN<br/>Instant worldwide]
+        
+        LOCAL --> GITHUB
+        LOCAL --> NETLIFY
+        LOCAL --> SELF_HOST
+        LOCAL --> CDN
+    end
+    
+    %% Evolution Path
+    LOCAL -.->|"Add Backend"| CLOUD_HTML
+    CLOUD_HTML -.->|"Add Enterprise Features"| ENTERPRISE
+    
+    %% Cost Benefits
+    LOCAL -.->|"$0 Forever"| SCALE_LOCAL
+    CLOUD_HTML -.->|"$0 Infrastructure"| SCALE_CLOUD
+    ENTERPRISE -.->|"ROI Focused"| SCALE_ENTERPRISE
+    
+    %% Styling
+    classDef local fill:#e8f5e8
+    classDef cloud fill:#e3f2fd  
+    classDef enterprise fill:#fff3e0
+    classDef scale fill:#f3e5f5
+    classDef deploy fill:#e8eaf6
+    
+    class LOCAL,BROWSER,OFFLINE,PRIVACY local
+    class CLOUD_HTML,BACKEND,DATABASE,RECOMMEND cloud
+    class ENTERPRISE,TEAM_COLLAB,ADMIN,AUDIT enterprise
+    class SCALE_LOCAL,SCALE_CLOUD,SCALE_ENTERPRISE scale
+    class GITHUB,NETLIFY,SELF_HOST,CDN deploy
