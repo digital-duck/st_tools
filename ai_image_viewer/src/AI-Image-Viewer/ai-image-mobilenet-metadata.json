@@ -1,0 +1,92 @@
+{
+  "version": "2.0",
+  "timestamp": "2025-08-11T04:35:03.285Z",
+  "appName": "AI Image - MobileNet v2",
+  "modelUsed": "MobileNet v2",
+  "totalImages": 6,
+  "aiEnabled": true,
+  "captions": {
+    "Coyote-animal-sentience-research.jpg": "animal wolf",
+    "african-american-family-1200x675-1.jpg": "happy family",
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": "giant tree",
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": "fancy car",
+    "bright-daylight-environment-forest-240040-1.webp": "woods",
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": "happy smiling young man"
+  },
+  "aiData": {
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": {
+      "tags": [
+        "class 457",
+        "car",
+        "person",
+        "person"
+      ],
+      "confidence": 0.5036961920559406,
+      "description": "This Class 457 contains car, person, person",
+      "detections": 3,
+      "classification": "Class_457",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.398Z"
+    },
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": {
+      "tags": [
+        "class 817",
+        "class 436",
+        "car"
+      ],
+      "confidence": 0.5365981881817182,
+      "description": "This Class 817 contains car",
+      "detections": 1,
+      "classification": "Class_817",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.507Z"
+    },
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": {
+      "tags": [
+        "class 984"
+      ],
+      "confidence": 0.7395821809768677,
+      "description": "This appears to be Class 984",
+      "detections": 0,
+      "classification": "Class_984",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.588Z"
+    },
+    "african-american-family-1200x675-1.jpg": {
+      "tags": [
+        "class 982",
+        "person",
+        "person",
+        "person",
+        "person"
+      ],
+      "confidence": 0.7324872255325318,
+      "description": "This Class 982 contains person, person, person",
+      "detections": 4,
+      "classification": "Class_982",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.667Z"
+    },
+    "bright-daylight-environment-forest-240040-1.webp": {
+      "tags": [],
+      "confidence": 0,
+      "description": "This appears to be Class 888",
+      "detections": 0,
+      "classification": "Class_888",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.764Z"
+    },
+    "Coyote-animal-sentience-research.jpg": {
+      "tags": [
+        "class 272",
+        "class 269"
+      ],
+      "confidence": 0.4306662976741791,
+      "description": "This appears to be Class 272",
+      "detections": 0,
+      "classification": "Class_272",
+      "modelUsed": "MobileNet v2",
+      "timestamp": "2025-08-11T04:26:09.849Z"
+    }
+  }
+}

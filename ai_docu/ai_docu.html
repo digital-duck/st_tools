@@ -1554,8 +1554,8 @@
                 return;
             }
             
-            if (Object.keys(aiData).length === 0) {
-                resultsContainer.innerHTML = '<p>No analyzed documents found. Please analyze documents first.</p>';
+            if (documents.length === 0) {
+                resultsContainer.innerHTML = '<p>No documents loaded. Please load documents first.</p>';
                 return;
             }
             
@@ -1568,46 +1568,83 @@
             
             documents.forEach(document => {
                 const data = aiData[document.name];
-                if (!data) return;
-                
                 let score = 0;
                 const queryTerms = query.split(' ').filter(term => term.length > 0);
                 
-                // Search in keywords
-                if (data.keywords) {
-                    queryTerms.forEach(term => {
-                        data.keywords.forEach(keyword => {
-                            if (keyword.word.toLowerCase().includes(term)) {
-                                score += keyword.score;
-                            }
-                        });
-                    });
-                }
-                
-                // Search in content
-                if (document.content) {
-                    queryTerms.forEach(term => {
-                        if (document.content.toLowerCase().includes(term)) {
-                            score += 0.8;
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = document.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
                         }
-                    });
-                }
+                    }
+                });
                 
-                // Search in summaries
+                // Search in summaries (high priority)
                 const summary = summaries[document.name];
                 if (summary) {
                     queryTerms.forEach(term => {
                         if (summary.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in document content (high priority)
+                if (document.content) {
+                    queryTerms.forEach(term => {
+                        if (document.content.toLowerCase().includes(term)) {
                             score += 0.9;
                         }
                     });
                 }
                 
+                // Search in AI keywords (if document analyzed)
+                if (data && data.keywords) {
+                    queryTerms.forEach(term => {
+                        data.keywords.forEach(keyword => {
+                            const keywordLower = keyword.word.toLowerCase();
+                            if (keywordLower === term) {
+                                // Exact keyword match gets high score
+                                score += keyword.score * 0.9;
+                            } else if (keywordLower.includes(term)) {
+                                // Partial keyword match gets medium score
+                                score += keyword.score * 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI categories/classifications
+                if (data && data.category) {
+                    queryTerms.forEach(term => {
+                        if (data.category.toLowerCase().includes(term)) {
+                            score += 0.8;
+                        }
+                    });
+                }
+                
+                // Search in AI topics
+                if (data && data.topics) {
+                    queryTerms.forEach(term => {
+                        data.topics.forEach(topic => {
+                            if (topic.toLowerCase().includes(term)) {
+                                score += 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
                 if (score > 0) {
                     results.push({
                         document: document,
                         score: score,
-                        data: data
+                        data: data || null
                     });
                 }
             });

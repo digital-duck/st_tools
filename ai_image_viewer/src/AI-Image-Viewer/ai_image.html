@@ -412,6 +412,13 @@
             background: white;
             border-radius: 8px;
             margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .search-result-item img {
@@ -591,6 +598,135 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Slideshow styles */
+        .slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            flex-direction: column;
+        }
+
+        .slideshow-container.active {
+            display: flex;
+        }
+
+        .slideshow-image {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .slideshow-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .slideshow-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .slideshow-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .slideshow-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slideshow-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .slideshow-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .slideshow-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Storage info styles */
+        .storage-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .storage-info h3 {
+            color: #2e7d32;
+            margin-bottom: 16px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .storage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .storage-grid div {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .storage-grid strong {
+            color: #1b5e20;
+        }
     </style>
 </head>
 <body>
@@ -620,6 +756,7 @@
                     <button onclick="openSearch()">🔍 AI Search</button>
                     <button onclick="exportMetadata()">💾 Export Metadata</button>
                     <button onclick="importMetadata()">📂 Import Metadata</button>
+                    <button onclick="startSlideshow()" id="slideshowBtn" disabled>▶️ Slideshow</button>
                 </div>
                 
                 <div class="header-stats">
@@ -667,6 +804,30 @@
             <div class="popup-close" onclick="closeImagePopup()">&times;</div>
             <img class="popup-image" id="popupImage" src="" alt="">
         </div>
+
+        <!-- Storage info footer -->
+        <div class="storage-info">
+            <h3>📁 Portable Storage System</h3>
+            <div class="storage-grid">
+                <div><strong>Auto-saves</strong> captions to "image-metadata.json" every 5 seconds</div>
+                <div><strong>Auto-loads</strong> existing metadata when you select a folder</div>
+                <div><strong>Share-ready:</strong> Zip your image folder (with metadata file) to share</div>
+                <div><strong>Cross-platform:</strong> Works on any device with the same folder structure</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slideshow Container -->
+    <div class="slideshow-container" id="slideshowContainer">
+        <span class="slideshow-close" id="slideshowClose">&times;</span>
+        <img class="slideshow-image" id="slideshowImage" src="" alt="">
+        <div class="slideshow-controls">
+            <button class="slideshow-btn" id="firstBtn">⏮️</button>
+            <button class="slideshow-btn" id="prevBtn">⏪</button>
+            <button class="slideshow-btn" id="nextBtn">⏩</button>
+            <button class="slideshow-btn" id="lastBtn">⏭️</button>
+        </div>
+        <div class="slideshow-info" id="slideshowInfo"></div>
     </div>
 
     <!-- Search Modal -->
@@ -675,14 +836,14 @@
             <span class="close-modal" onclick="closeSearch()">&times;</span>
             <h3>🔍 AI Search</h3>
             <div class="search-container">
-                <input type="text" class="search-box" id="searchInput" placeholder="Search images by content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search by filename, AI tags, captions, or content..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
                 <div class="search-suggestions">
-                    <span class="suggestion" onclick="searchImages('person smiling')">person smiling</span>
-                    <span class="suggestion" onclick="searchImages('outdoor scene')">outdoor scene</span>
-                    <span class="suggestion" onclick="searchImages('food and drinks')">food and drinks</span>
-                    <span class="suggestion" onclick="searchImages('vehicle')">vehicle</span>
-                    <span class="suggestion" onclick="searchImages('animals')">animals</span>
-                    <span class="suggestion" onclick="searchImages('architecture')">architecture</span>
+                    <span class="suggestion" onclick="searchImages('person')">person</span>
+                    <span class="suggestion" onclick="searchImages('car')">car</span>
+                    <span class="suggestion" onclick="searchImages('animal')">animal</span>
+                    <span class="suggestion" onclick="searchImages('family')">family</span>
+                    <span class="suggestion" onclick="searchImages('wolf')">wolf</span>
+                    <span class="suggestion" onclick="searchImages('.jpg')">jpg files</span>
                 </div>
                 <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Images</button>
             </div>
@@ -816,6 +977,86 @@
         function closeImagePopup() {
             const popup = document.getElementById('imagePopup');
             popup.classList.remove('active');
+        }
+
+        // Slideshow functionality
+        let currentSlideshowIndex = 0;
+
+        function startSlideshow() {
+            if (images.length === 0) {
+                alert('No images loaded. Please select images first.');
+                return;
+            }
+            currentSlideshowIndex = 0;
+            const slideshowContainer = document.getElementById('slideshowContainer');
+            slideshowContainer.classList.add('active');
+            showSlideshowImage();
+            setupSlideshowControls();
+        }
+
+        function closeSlideshow() {
+            const slideshowContainer = document.getElementById('slideshowContainer');
+            slideshowContainer.classList.remove('active');
+        }
+
+        function navigateSlideshow(index) {
+            if (index < 0) index = 0;
+            if (index >= images.length) index = images.length - 1;
+            currentSlideshowIndex = index;
+            showSlideshowImage();
+        }
+
+        function showSlideshowImage() {
+            const image = images[currentSlideshowIndex];
+            const slideshowImage = document.getElementById('slideshowImage');
+            const slideshowInfo = document.getElementById('slideshowInfo');
+            const firstBtn = document.getElementById('firstBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const lastBtn = document.getElementById('lastBtn');
+
+            slideshowImage.src = image.url;
+            slideshowInfo.textContent = `${currentSlideshowIndex + 1} / ${images.length} - ${image.name}`;
+
+            // Update button states
+            firstBtn.disabled = currentSlideshowIndex === 0;
+            prevBtn.disabled = currentSlideshowIndex === 0;
+            nextBtn.disabled = currentSlideshowIndex === images.length - 1;
+            lastBtn.disabled = currentSlideshowIndex === images.length - 1;
+        }
+
+        function setupSlideshowControls() {
+            const slideshowClose = document.getElementById('slideshowClose');
+            const firstBtn = document.getElementById('firstBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const lastBtn = document.getElementById('lastBtn');
+
+            // Remove existing listeners to prevent duplicates
+            slideshowClose.replaceWith(slideshowClose.cloneNode(true));
+            firstBtn.replaceWith(firstBtn.cloneNode(true));
+            prevBtn.replaceWith(prevBtn.cloneNode(true));
+            nextBtn.replaceWith(nextBtn.cloneNode(true));
+            lastBtn.replaceWith(lastBtn.cloneNode(true));
+
+            // Add new listeners
+            document.getElementById('slideshowClose').addEventListener('click', closeSlideshow);
+            document.getElementById('firstBtn').addEventListener('click', () => navigateSlideshow(0));
+            document.getElementById('prevBtn').addEventListener('click', () => navigateSlideshow(currentSlideshowIndex - 1));
+            document.getElementById('nextBtn').addEventListener('click', () => navigateSlideshow(currentSlideshowIndex + 1));
+            document.getElementById('lastBtn').addEventListener('click', () => navigateSlideshow(images.length - 1));
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                const slideshowContainer = document.getElementById('slideshowContainer');
+                if (slideshowContainer.classList.contains('active')) {
+                    if (e.key === 'ArrowLeft') navigateSlideshow(currentSlideshowIndex - 1);
+                    if (e.key === 'ArrowRight') navigateSlideshow(currentSlideshowIndex + 1);
+                    if (e.key === 'Escape') closeSlideshow();
+                    if (e.key === 'Home') navigateSlideshow(0);
+                    if (e.key === 'End') navigateSlideshow(images.length - 1);
+                }
+            });
         }
 
         function handleModelChange() {
@@ -1263,11 +1504,15 @@
         function updateStats() {
             const totalElement = document.getElementById('totalImages');
             const analyzedElement = document.getElementById('analyzedImages');
+            const slideshowBtn = document.getElementById('slideshowBtn');
             
             const analyzedCount = Object.keys(aiData).length;
             
             totalElement.textContent = images.length;
             analyzedElement.textContent = analyzedCount;
+            
+            // Enable slideshow button when images are loaded
+            slideshowBtn.disabled = images.length === 0;
         }
 
         function updateGridSize(value) {
@@ -1414,8 +1659,8 @@
                 return;
             }
             
-            if (Object.keys(aiData).length === 0) {
-                resultsContainer.innerHTML = '<p>No analyzed images found. Please analyze images first.</p>';
+            if (images.length === 0) {
+                resultsContainer.innerHTML = '<p>No images loaded. Please load images first.</p>';
                 return;
             }
             
@@ -1428,24 +1673,50 @@
             
             images.forEach(image => {
                 const data = aiData[image.name];
-                if (!data) return;
-                
                 let score = 0;
                 const queryTerms = query.split(' ').filter(term => term.length > 0);
                 
-                // Search in tags
-                if (data.tags) {
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = image.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
+                        }
+                    }
+                });
+                
+                // Search in captions (high priority)
+                const caption = captions[image.name];
+                if (caption) {
+                    queryTerms.forEach(term => {
+                        if (caption.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in AI classification tags (if image analyzed)
+                if (data && data.tags) {
                     queryTerms.forEach(term => {
                         data.tags.forEach(tag => {
-                            if (tag.toLowerCase().includes(term)) {
-                                score += 0.8;
+                            const tagLower = tag.toLowerCase();
+                            if (tagLower === term) {
+                                // Exact tag match gets high score
+                                score += 0.9;
+                            } else if (tagLower.includes(term)) {
+                                // Partial tag match gets medium score
+                                score += 0.7;
                             }
                         });
                     });
                 }
                 
-                // Search in description
-                if (data.description) {
+                // Search in AI description (if available)
+                if (data && data.description) {
                     queryTerms.forEach(term => {
                         if (data.description.toLowerCase().includes(term)) {
                             score += 0.6;
@@ -1453,21 +1724,21 @@
                     });
                 }
                 
-                // Search in captions
-                const caption = captions[image.name];
-                if (caption) {
+                // Search in AI classification classes (detected objects/classes)
+                if (data && data.class) {
                     queryTerms.forEach(term => {
-                        if (caption.toLowerCase().includes(term)) {
-                            score += 0.9;
+                        if (data.class.toLowerCase().includes(term)) {
+                            score += 0.8;
                         }
                     });
                 }
                 
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
                 if (score > 0) {
                     results.push({
                         image: image,
                         score: score,
-                        data: data
+                        data: data || null
                     });
                 }
             });
@@ -1481,20 +1752,33 @@
                 return;
             }
             
-            const html = results.map(result => `
-                <div class="search-result-item">
+            const html = results.map((result, index) => `
+                <div class="search-result-item" onclick="openSearchResultPopup(${index})" style="cursor: pointer;">
                     <img src="${result.image.url}" alt="${result.image.name}">
                     <div class="result-content">
                         <div class="result-title">${result.image.name}</div>
                         <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
                         <div style="font-size: 12px; color: #666; margin-top: 4px;">
-                            ${result.data.tags ? result.data.tags.slice(0, 3).join(', ') : 'No tags'}
+                            ${result.data && result.data.tags ? result.data.tags.slice(0, 3).join(', ') : 'No AI tags'}
                         </div>
                     </div>
                 </div>
             `).join('');
             
             container.innerHTML = `<h4>Found ${results.length} matching images:</h4>${html}`;
+            
+            // Store results globally for popup access
+            window.currentSearchResults = results;
+        }
+        
+        function openSearchResultPopup(resultIndex) {
+            const result = window.currentSearchResults[resultIndex];
+            if (result && result.image) {
+                // Close search modal first
+                closeSearch();
+                // Open image popup using existing function
+                showImagePopup(result.image.url, result.image.name);
+            }
         }
 
         // Close modal when clicking outside
