@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 AI Audio App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .main-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .model-selector label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .model-selector select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .model-selector select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+
+        .model-help {
+            position: relative;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        .model-help-icon {
+            background: #6c757d;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            user-select: none;
+        }
+
+        .model-help:hover .model-help-icon {
+            background: #495057;
+        }
+
+        .model-help-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 380px;
+            font-size: 13px;
+            line-height: 1.4;
+            z-index: 1000;
+            transition: opacity 0.2s, visibility 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .model-help:hover .model-help-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .model-help-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #2c3e50;
+        }
+
+        .model-option {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .model-option:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 2px;
+        }
+
+        .model-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .model-link {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 11px;
+            margin-top: 3px;
+            display: inline-block;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .model-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .ai-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .ai-button:hover {
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-number {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .grid-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .grid-slider {
+            width: 100px;
+        }
+
+        .drag-drop-area {
+            border: 3px dashed #ccc;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area.highlight {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .drag-drop-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .drag-drop-hint {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .video-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            min-height: 280px;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .video-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .video-type.mp4 { background: #e3f2fd; color: #1976d2; }
+        .video-type.avi { background: #f3e5f5; color: #7b1fa2; }
+        .video-type.mov { background: #e8f5e8; color: #388e3c; }
+        .video-type.wmv { background: #fff3e0; color: #f57c00; }
+        .video-type.mkv { background: #fce4ec; color: #c2185b; }
+        .video-type.webm { background: #e0f2f1; color: #00796b; }
+
+        .ai-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #28a745;
+            color: white;
+            display: none;
+        }
+
+        .video-content {
+            padding: 16px;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 120px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.02);
+        }
+
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-thumbnail .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .video-thumbnail:hover .play-icon {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-summary {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .video-summary:hover {
+            background: #e9ecef;
+        }
+
+        .video-tags {
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin: 2px 4px 2px 0;
+        }
+
+        .confidence-score {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .file-attributes {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .grid-1 { grid-template-columns: 1fr; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        @media (max-width: 1200px) {
+            .grid-6 { grid-template-columns: repeat(4, 1fr); }
+            .grid-5 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-6, .grid-5, .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-score {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        .popup-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .popup-file-info {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .popup-video-content {
+            text-align: center;
+        }
+
+        .popup-video-player {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #667eea;
+        }
+
+        .search-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .suggestion {
+            background: #e9ecef;
+            color: #495057;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .model-loading {
+            background: #ffc107 !important;
+            color: #212529 !important;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>🎵 AI Audio App</h1>
+            </div>
+            
+            <div class="controls-row">
+                <div class="main-controls">
+                    <div class="model-selector">
+                        <label for="aiModel">🎵 AI Model:</label>
+                        <select id="aiModel" onchange="handleModelChange()">
+                            <option value="audiobert">Audio-BERT (Fast Embedding)</option>
+                            <option value="musiccnn">MusicCNN (Music Analysis)</option>
+                            <option value="universal">Universal Audio (Advanced)</option>
+                        </select>
+                        <div class="model-help">
+                            <div class="model-help-icon">?</div>
+                            <div class="model-help-tooltip">
+                                <div class="model-option">
+                                    <div class="model-name">🎬 Video-BERT (Fast)</div>
+                                    <div class="model-desc">Best for: Quick video similarity search, content embedding, fast processing. Great for large video collections when speed matters.</div>
+                                    <a href="https://arxiv.org/abs/1904.02755" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🎥 VideoMAE (Balanced)</div>
+                                    <div class="model-desc">Best for: Scene detection, action recognition, content classification. Recommended for most users.</div>
+                                    <a href="https://github.com/MCG-NJU/VideoMAE" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🚀 Universal Video (Advanced)</div>
+                                    <div class="model-desc">Best for: Complex video understanding, detailed content analysis, research projects. Slower but most comprehensive.</div>
+                                    <a href="https://github.com/tensorflow/models/tree/master/research/video_prediction" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="selectFiles()">📁 Select Audio Files</button>
+                    <button onclick="selectFolder()">📂 Select Audio Folder</button>
+                    <button id="aiAnalyzeBtn" onclick="analyzeAudioFiles()" disabled class="ai-button">
+                        <span id="aiAnalyzeIcon">🎬</span>
+                        <span id="aiAnalyzeText">AI Analyze</span>
+                    </button>
+                    <button onclick="openSearch()">🔍 AI Search</button>
+                </div>
+                
+                <div class="header-stats">
+                    <button onclick="exportMetadata()">💾 Export Metadata</button>
+                    <button onclick="importMetadata()">📂 Import Metadata</button>
+                    
+                    <div class="stat-item">
+                        <span class="stat-number" id="videoCount">0</span>
+                        Videos
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="analyzedCount">0</span>
+                        Analyzed
+                    </div>
+                    
+                    <div class="grid-control">
+                        Grid Layout:
+                        <input type="range" id="gridSlider" class="grid-slider" min="1" max="6" value="3" onchange="updateGridSize(this.value)">
+                        <span id="gridValue">3 per row</span>
+                    </div>
+                    
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #666;">
+                        <input type="checkbox" id="showFileInfo" onchange="toggleFileInfo(this.checked)">
+                        Show file info
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Loading AI model...</div>
+        </div>
+
+        <!-- Drag & Drop Area -->
+        <div class="drag-drop-area" id="dragDropArea">
+            <div class="drag-drop-title">🎵 Drag & Drop Audio Files Here</div>
+            <div class="drag-drop-hint">Supports MP3, WAV, FLAC, AAC, OGG, M4A files</div>
+        </div>
+
+        <div class="video-grid" id="videoGrid">
+            <!-- Videos will be dynamically loaded here -->
+        </div>
+        
+        <!-- Video Popup -->
+        <div class="popup-overlay" id="videoPopup">
+            <div class="popup-close" onclick="closeVideoPopup()">&times;</div>
+            <div class="popup-content" id="popupContent">
+                <div class="popup-header">
+                    <h3 id="popupTitle">Video Title</h3>
+                    <div id="popupFileInfo" class="popup-file-info"></div>
+                </div>
+                <div id="popupVideoContent" class="popup-video-content">
+                    <video id="popupVideoPlayer" class="popup-video-player" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal" id="searchModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSearch()">&times;</span>
+            <h3>🔍 AI Audio Search</h3>
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search by filename, AI tags, genres, moods, instruments..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <div class="search-suggestions">
+                    <span class="suggestion" onclick="searchAudio('classical music')">classical music</span>
+                    <span class="suggestion" onclick="searchAudio('jazz songs')">jazz songs</span>
+                    <span class="suggestion" onclick="searchAudio('rock music')">rock music</span>
+                    <span class="suggestion" onclick="searchAudio('electronic beats')">electronic beats</span>
+                    <span class="suggestion" onclick="searchAudio('calm instrumental')">calm instrumental</span>
+                    <span class="suggestion" onclick="searchAudio('energetic vocals')">energetic vocals</span>
+                </div>
+                <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Audio Files</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <!-- TensorFlow.js and Video Processing -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+
+    <script>
+        // Global variables
+        let audioFiles = [];
+        let currentModel = null;
+        let modelType = 'audiobert';
+        let modelLoaded = false;
+        let aiData = {};
+        let summaries = {};
+
+        const modelConfigs = {
+            audiobert: {
+                name: 'Audio-BERT',
+                icon: '🎵',
+                description: 'Fast audio embedding and similarity search'
+            },
+            musiccnn: {
+                name: 'MusicCNN', 
+                icon: '🎼',
+                description: 'Music analysis and genre classification'
+            },
+            universal: {
+                name: 'Universal Audio',
+                icon: '🚀', 
+                description: 'Advanced audio understanding and analysis'
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateModelDisplay();
+            loadSelectedModel();
+            setupDragDrop();
+            updateStats();
+        });
+
+        function updateModelDisplay() {
+            const config = modelConfigs[modelType];
+            document.getElementById('aiAnalyzeIcon').textContent = config.icon;
+        }
+
+        function loadSelectedModel() {
+            showProgress('Loading AI model...', 0);
+            
+            // Simulate model loading
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    hideProgress();
+                    modelLoaded = true;
+                    updateAnalyzeButton();
+                    console.log(`${modelConfigs[modelType].name} model loaded successfully`);
+                }
+                showProgress(`Loading ${modelConfigs[modelType].name} model...`, progress);
+            }, 200);
+        }
+
+        function setupDragDrop() {
+            const dropArea = document.getElementById('dragDropArea');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+        }
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight() {
+            document.getElementById('dragDropArea').classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            document.getElementById('dragDropArea').classList.remove('highlight');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = Array.from(dt.files).filter(file => 
+                file.type.startsWith('audio/') || 
+                file.name.toLowerCase().match(/\.(mp3|wav|flac|aac|ogg|m4a)$/i)
+            );
+            if (files.length > 0) {
+                loadAudioFiles(files);
+            }
+        }
+
+        function toggleFileInfo(checked) {
+            const attrs = document.querySelectorAll('.file-attributes');
+            attrs.forEach(attr => {
+                attr.style.display = checked ? 'block' : 'none';
+            });
+            updateStats();
+        }
+        
+        // Audio viewer functionality  
+        function openAudioViewer(audioId) {
+            const audioData = audioFiles.find(audio => audio.id === audioId);
+            if (!audioData) return;
+            
+            // Create and play audio in a new popup/tab
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const audioDataUrl = e.target.result;
+                const fileName = audioData.name.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+                const fileSize = formatFileSize(audioData.file.size);
+                const fileFormat = audioData.type.toUpperCase();
+                const fileDate = new Date(audioData.file.lastModified).toLocaleDateString();
+                
+                let analysisHTML = '';
+                const analysis = aiData[audioData.name];
+                if (analysis) {
+                    analysisHTML = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">' +
+                        '<h3>🤖 AI Analysis</h3>' +
+                        '<p><strong>Tags:</strong> ' + (analysis.tags ? analysis.tags.map(t => t.word).join(', ') : 'None') + '</p>' +
+                        '<p><strong>Confidence:</strong> ' + (analysis.confidence ? (analysis.confidence * 100).toFixed(0) + '%' : 'N/A') + '</p>' +
+                        '<p><strong>Model:</strong> ' + (analysis.model || 'Unknown') + '</p>' +
+                    '</div>';
+                }
+                
+                const htmlContent = '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<title>' + fileName + '</title>' +
+                '<style>' +
+                'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0; padding: 40px; color: white; text-align: center; }' +
+                '.player-container { background: white; border-radius: 12px; padding: 30px; margin: 0 auto; max-width: 600px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); color: #333; }' +
+                'audio { width: 100%; margin: 20px 0; outline: none; }' +
+                'h1 { margin-bottom: 20px; color: #2d3748; word-wrap: break-word; font-size: 1.5em; }' +
+                '.info { text-align: left; background: #f7fafc; padding: 20px; border-radius: 8px; margin-top: 20px; }' +
+                '.info p { margin: 8px 0; }' +
+                '</style>' +
+                '</head>' +
+                '<body>' +
+                '<div class="player-container">' +
+                '<h1>🎵 ' + fileName + '</h1>' +
+                '<audio controls preload="metadata" autoplay>' +
+                '<source src="' + audioDataUrl + '" type="' + audioData.file.type + '">' +
+                'Your browser does not support the audio element.' +
+                '</audio>' +
+                '<div class="info">' +
+                '<p><strong>File Size:</strong> ' + fileSize + '</p>' +
+                '<p><strong>Format:</strong> ' + fileFormat + '</p>' +
+                '<p><strong>Last Modified:</strong> ' + fileDate + '</p>' +
+                '</div>' +
+                analysisHTML +
+                '</div>' +
+                '</body>' +
+                '</html>';
+                
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(htmlContent);
+                newWindow.document.close();
+            };
+            reader.readAsDataURL(audioData.file);
+        }
+        
+        // Video popup functionality
+        function openVideoViewer(videoId) {
+            const videoData = videos.find(video => video.id === videoId);
+            if (!videoData) return;
+            
+            const popup = document.getElementById('videoPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupVideoContent');
+            const popupFileInfo = document.getElementById('popupFileInfo');
+            const videoPlayer = document.getElementById('popupVideoPlayer');
+            
+            // Set title and file info
+            popupTitle.textContent = videoData.name;
+            popupFileInfo.innerHTML = `
+                <span class="video-type ${videoData.type}">${videoData.type.toUpperCase()}</span> • 
+                ${formatFileSize(videoData.file.size)} • 
+                Modified: ${formatDate(videoData.file.lastModified)}
+            `;
+            
+            // Set video source
+            const videoUrl = URL.createObjectURL(videoData.file);
+            videoPlayer.src = videoUrl;
+            
+            // Clean up URL when video ends or popup closes
+            videoPlayer.onended = () => URL.revokeObjectURL(videoUrl);
+            
+            popup.classList.add('active');
+        }
+        
+        function closeVideoPopup() {
+            const popup = document.getElementById('videoPopup');
+            const videoPlayer = document.getElementById('popupVideoPlayer');
+            
+            // Stop video and clean up
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            if (videoPlayer.src) {
+                URL.revokeObjectURL(videoPlayer.src);
+                videoPlayer.src = '';
+            }
+            
+            popup.classList.remove('active');
+        }
+
+        function handleModelChange() {
+            const select = document.getElementById('aiModel');
+            modelType = select.value;
+            modelLoaded = false;
+            updateModelDisplay();
+            updateAnalyzeButton();
+            loadSelectedModel();
+        }
+
+        function selectFiles() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = 'audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a';
+            input.onchange = (e) => loadAudioFiles(Array.from(e.target.files));
+            input.click();
+        }
+
+        function selectFolder() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.webkitdirectory = true;
+            input.multiple = true;
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files).filter(file => 
+                    file.type.startsWith('audio/') || 
+                    file.name.toLowerCase().match(/\.(mp3|wav|flac|aac|ogg|m4a)$/i)
+                );
+                loadAudioFiles(files);
+            };
+            input.click();
+        }
+
+        function loadAudioFiles(files) {
+            // Filter out duplicate files based on name and size
+            const newFiles = files.filter(file => {
+                return !audioFiles.some(existing => 
+                    existing.name === file.name && existing.file.size === file.size
+                );
+            });
+            
+            if (newFiles.length === 0) {
+                alert('All selected audio files are already loaded.');
+                return;
+            }
+            
+            // Append new audio files to existing array
+            const startingId = audioFiles.length;
+            const newAudioFiles = newFiles.map((file, index) => ({
+                id: startingId + index,
+                name: file.name,
+                file: file,
+                type: getFileType(file.name),
+                analyzed: false,
+                thumbnail: null
+            }));
+            
+            audioFiles.push(...newAudioFiles);
+            
+            renderAudioFiles();
+            updateStats();
+            
+            if (newFiles.length < files.length) {
+                const duplicates = files.length - newFiles.length;
+                alert(`Added ${newFiles.length} new audio files. ${duplicates} duplicate(s) were skipped.`);
+            }
+        }
+
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            switch(ext) {
+                case 'mp3': return 'mp3';
+                case 'wav': return 'wav';
+                case 'flac': return 'flac';
+                case 'aac': return 'aac';
+                case 'ogg': return 'ogg';
+                case 'm4a': return 'm4a';
+                default: return 'mp3';
+            }
+        }
+
+        function generateVideoThumbnail(videoData) {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.muted = true;
+            
+            video.onloadedmetadata = function() {
+                // Seek to 10% of video duration for thumbnail
+                video.currentTime = video.duration * 0.1;
+            };
+            
+            video.onseeked = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                videoData.thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+                
+                // Update the thumbnail in the grid if already rendered
+                const thumbnailElement = document.querySelector(`[data-video-id="${videoData.id}"] .video-thumbnail video`);
+                if (thumbnailElement && thumbnailElement.poster !== videoData.thumbnail) {
+                    thumbnailElement.poster = videoData.thumbnail;
+                }
+                
+                URL.revokeObjectURL(video.src);
+            };
+            
+            video.src = URL.createObjectURL(videoData.file);
+        }
+
+        function renderAudioFiles() {
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = '';
+            
+            audioFiles.forEach(audioFile => {
+                const card = createAudioCard(audioFile);
+                grid.appendChild(card);
+            });
+        }
+
+        function createAudioCard(audioData) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.setAttribute('data-video-id', audioData.id);
+            
+            card.innerHTML = `
+                <div class="video-header">
+                    <div class="video-type ${audioData.type}">${audioData.type.toUpperCase()}</div>
+                    <div class="ai-indicator" data-id="${audioData.id}">
+                        ${modelConfigs[modelType].icon} Analyzed
+                    </div>
+                </div>
+                <div class="video-content">
+                    <div class="video-title">${audioData.name}</div>
+                    <div class="file-attributes" data-id="${audioData.id}" style="display: none;">
+                        Size: ${formatFileSize(audioData.file.size)} | Modified: ${formatDate(audioData.file.lastModified)}
+                    </div>
+                    <div class="video-thumbnail" onclick="openAudioViewer(${audioData.id})" ondblclick="openAudioViewer(${audioData.id})">
+                        <audio controls>
+                            <source src="${URL.createObjectURL(audioData.file)}" type="${audioData.file.type}">
+                        </audio>
+                        <div class="play-icon">🎵</div>
+                    </div>
+                    <div class="video-summary" data-id="${audioData.id}" onclick="editSummary(${audioData.id})">
+                        ${summaries[audioData.name] || 'Click to add summary...'}
+                    </div>
+                    <div class="video-tags" data-id="${audioData.id}"></div>
+                    <div class="confidence-score" data-id="${audioData.id}"></div>
+                </div>
+            `;
+            
+            // Update if already analyzed
+            if (aiData[audioData.name]) {
+                updateVideoCard(audioData.id, aiData[audioData.name]);
+            }
+            
+            return card;
+        }
+
+        function editSummary(videoId) {
+            const summaryElement = document.querySelector(`[data-id="${videoId}"].video-summary`);
+            const currentSummary = summaryElement.textContent;
+            const isPlaceholder = currentSummary === 'Click to add summary...';
+            
+            summaryElement.contentEditable = true;
+            
+            // If it's placeholder text, clear it and position cursor
+            if (isPlaceholder) {
+                summaryElement.textContent = '';
+                summaryElement.focus();
+                // Set cursor to beginning
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(summaryElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                summaryElement.focus();
+                // Select all existing text for easy editing
+                document.execCommand('selectAll', false, null);
+            }
+            
+            summaryElement.onblur = () => {
+                summaryElement.contentEditable = false;
+                const newSummary = summaryElement.textContent.trim();
+                const videoName = videos[videoId].name;
+                
+                if (newSummary === '') {
+                    summaryElement.textContent = 'Click to add summary...';
+                    delete summaries[videoName];
+                } else {
+                    summaries[videoName] = newSummary;
+                }
+            };
+            
+            summaryElement.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    summaryElement.blur();
+                }
+            };
+        }
+
+        function updateVideoCard(videoId, data) {
+            const aiIndicator = document.querySelector(`[data-id="${videoId}"].ai-indicator`);
+            const tagsContainer = document.querySelector(`[data-id="${videoId}"].video-tags`);
+            const confidenceScore = document.querySelector(`[data-id="${videoId}"].confidence-score`);
+            
+            if (aiIndicator) {
+                aiIndicator.style.display = 'block';
+            }
+            
+            if (data.tags && tagsContainer) {
+                const tagsHtml = data.tags.slice(0, 5).map(tag => 
+                    `<span class="tag">${tag.word}</span>`
+                ).join('');
+                tagsContainer.innerHTML = tagsHtml;
+            }
+            
+            if (data.confidence && confidenceScore) {
+                confidenceScore.textContent = `${Math.round(data.confidence * 100)}% confidence • ${data.tags ? data.tags.length : 0} tags`;
+            }
+        }
+
+        function updateAnalyzeButton() {
+            const btn = document.getElementById('aiAnalyzeBtn');
+            btn.disabled = !modelLoaded || audioFiles.length === 0;
+            
+            if (!modelLoaded) {
+                btn.classList.add('model-loading');
+                document.getElementById('aiAnalyzeText').textContent = 'Loading Model...';
+            } else if (audioFiles.length === 0) {
+                btn.classList.remove('model-loading');
+                document.getElementById('aiAnalyzeText').textContent = 'No Audio Files';
+            } else {
+                btn.classList.remove('model-loading');
+                document.getElementById('aiAnalyzeText').textContent = 'AI Analyze';
+            }
+        }
+
+        function analyzeAudioFiles() {
+            if (!modelLoaded || audioFiles.length === 0) return;
+            
+            const unanalyzedAudioFiles = audioFiles.filter(audioFile => !aiData[audioFile.name]);
+            if (unanalyzedAudioFiles.length === 0) {
+                alert('All audio files have already been analyzed with the current model.');
+                return;
+            }
+            
+            showProgress('Analyzing audio files with AI...', 0);
+            
+            let processed = 0;
+            const total = unanalyzedAudioFiles.length;
+            
+            unanalyzedAudioFiles.forEach((audioFile, index) => {
+                setTimeout(() => {
+                    // Simulate AI analysis
+                    const mockAnalysis = generateMockAudioAnalysis(audioFile);
+                    aiData[audioFile.name] = mockAnalysis;
+                    updateVideoCard(audioFile.id, mockAnalysis);
+                    
+                    processed++;
+                    const progress = (processed / total) * 100;
+                    showProgress(`Analyzing audio files... (${processed}/${total})`, progress);
+                    
+                    if (processed === total) {
+                        hideProgress();
+                        updateStats();
+                        alert(`Analysis complete! Processed ${total} audio files with ${modelConfigs[modelType].name}.`);
+                    }
+                }, index * 1000 + Math.random() * 500);
+            });
+        }
+
+        function generateMockAudioAnalysis(audioFile) {
+            const genres = ['Classical', 'Jazz', 'Rock', 'Electronic', 'Folk', 'Hip-Hop', 'Pop', 'Blues', 'Country', 'Reggae'];
+            const moods = ['Energetic', 'Calm', 'Uplifting', 'Melancholic', 'Dramatic', 'Peaceful', 'Intense', 'Cheerful'];
+            const instruments = ['Piano', 'Guitar', 'Violin', 'Drums', 'Synthesizer', 'Vocals', 'Bass', 'Saxophone', 'Trumpet'];
+            
+            const tags = [];
+            
+            // Add genre tags
+            for (let i = 0; i < Math.floor(Math.random() * 2) + 1; i++) {
+                const genre = genres[Math.floor(Math.random() * genres.length)];
+                tags.push({
+                    word: genre,
+                    confidence: 0.8 + Math.random() * 0.2
+                });
+            }
+            
+            // Add mood tags
+            for (let i = 0; i < Math.floor(Math.random() * 2) + 1; i++) {
+                const mood = moods[Math.floor(Math.random() * moods.length)];
+                tags.push({
+                    word: mood,
+                    confidence: 0.7 + Math.random() * 0.3
+                });
+            }
+            
+            // Add instrument tags
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
+                const instrument = instruments[Math.floor(Math.random() * instruments.length)];
+                tags.push({
+                    word: instrument,
+                    confidence: 0.6 + Math.random() * 0.4
+                });
+            }
+            
+            return {
+                tags: tags.sort((a, b) => b.confidence - a.confidence),
+                confidence: 0.7 + Math.random() * 0.3,
+                model: modelType,
+                timestamp: Date.now()
+            };
+        }
+
+        function updateStats() {
+            document.getElementById('videoCount').textContent = audioFiles.length;
+            const analyzedCount = Object.keys(aiData).length;
+            document.getElementById('analyzedCount').textContent = analyzedCount;
+            updateAnalyzeButton();
+        }
+
+        function updateGridSize(value) {
+            const grid = document.getElementById('videoGrid');
+            const gridValue = document.getElementById('gridValue');
+            
+            grid.className = `video-grid grid-${value}`;
+            gridValue.textContent = `${value} per row`;
+        }
+
+        function showProgress(message, percent) {
+            const container = document.getElementById('progressContainer');
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            container.style.display = 'block';
+            fill.style.width = Math.min(percent, 100) + '%';
+            text.textContent = message;
+        }
+
+        function hideProgress() {
+            document.getElementById('progressContainer').style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(timestamp) {
+            return new Date(timestamp).toLocaleDateString();
+        }
+
+        function exportMetadata() {
+            if (audioFiles.length === 0) {
+                alert('No audio files to export metadata for.');
+                return;
+            }
+            
+            const metadata = {
+                model: modelType,
+                modelName: modelConfigs[modelType].name,
+                audioFiles: audioFiles.map(audioFile => ({
+                    name: audioFile.name,
+                    type: audioFile.type,
+                    size: audioFile.file.size,
+                    lastModified: audioFile.file.lastModified,
+                    aiData: aiData[audioFile.name],
+                    summary: summaries[audioFile.name]
+                })),
+                exportDate: new Date().toISOString(),
+                totalAudioFiles: audioFiles.length,
+                analyzedAudioFiles: Object.keys(aiData).length
+            };
+            
+            const blob = new Blob([JSON.stringify(metadata, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-audio-${modelType}-metadata.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importMetadata() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const metadata = JSON.parse(e.target.result);
+                        
+                        // Import AI data and summaries
+                        const audioMetadata = metadata.audioFiles || metadata.videos || []; // Support both formats
+                        audioMetadata.forEach(audioMeta => {
+                            if (audioMeta.aiData) {
+                                aiData[audioMeta.name] = audioMeta.aiData;
+                            }
+                            if (audioMeta.summary) {
+                                summaries[audioMeta.name] = audioMeta.summary;
+                            }
+                        });
+                        
+                        // Update UI
+                        renderAudioFiles();
+                        updateStats();
+                        
+                        const count = metadata.analyzedAudioFiles || metadata.analyzedVideos || 0;
+                        alert(`Imported metadata for ${count} audio files from ${metadata.modelName} model.`);
+                    } catch (error) {
+                        alert('Error importing metadata: Invalid file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Search functionality
+        function openSearch() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearch() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        function handleSearchInput() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query.length > 2) {
+                setTimeout(() => performSearch(), 300);
+            }
+        }
+
+        function handleSearchKeydown(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function searchAudio(query) {
+            document.getElementById('searchInput').value = query;
+            performSearch();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            if (audioFiles.length === 0) {
+                resultsContainer.innerHTML = '<p>No audio files loaded. Please load audio files first.</p>';
+                return;
+            }
+            
+            const results = searchInAudioFiles(query);
+            displaySearchResults(results, resultsContainer);
+        }
+
+        function searchInAudioFiles(query) {
+            const results = [];
+            
+            audioFiles.forEach(audioFile => {
+                const data = aiData[audioFile.name];
+                let score = 0;
+                const queryTerms = query.split(' ').filter(term => term.length > 0);
+                
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = audioFile.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
+                        }
+                    }
+                });
+                
+                // Search in summaries/captions (high priority)
+                const summary = summaries[audioFile.name];
+                if (summary) {
+                    queryTerms.forEach(term => {
+                        if (summary.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in AI tags/genres (if audio analyzed)
+                if (data && data.tags) {
+                    queryTerms.forEach(term => {
+                        data.tags.forEach(tag => {
+                            const tagLower = tag.word ? tag.word.toLowerCase() : tag.toLowerCase();
+                            if (tagLower === term) {
+                                // Exact tag match gets high score
+                                score += (tag.confidence || 0.8) * 0.9;
+                            } else if (tagLower.includes(term)) {
+                                // Partial tag match gets medium score
+                                score += (tag.confidence || 0.8) * 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI genres
+                if (data && data.genres) {
+                    queryTerms.forEach(term => {
+                        data.genres.forEach(genre => {
+                            if (genre.toLowerCase().includes(term)) {
+                                score += 0.8;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI moods
+                if (data && data.moods) {
+                    queryTerms.forEach(term => {
+                        data.moods.forEach(mood => {
+                            if (mood.toLowerCase().includes(term)) {
+                                score += 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI instruments
+                if (data && data.instruments) {
+                    queryTerms.forEach(term => {
+                        data.instruments.forEach(instrument => {
+                            if (instrument.toLowerCase().includes(term)) {
+                                score += 0.6;
+                            }
+                        });
+                    });
+                }
+                
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
+                if (score > 0) {
+                    results.push({
+                        audioFile: audioFile,
+                        data: data || null,
+                        score: Math.min(score, 2.0)
+                    });
+                }
+            });
+            
+            return results.sort((a, b) => b.score - a.score).slice(0, 20);
+        }
+
+        function displaySearchResults(results, container) {
+            if (results.length === 0) {
+                container.innerHTML = '<p>No matching audio files found.</p>';
+                return;
+            }
+            
+            const html = results.map((result, index) => `
+                <div class="search-result-item" onclick="openAudioFromSearch(${index})" style="cursor: pointer;">
+                    <div class="result-content">
+                        <div class="result-title">${result.audioFile.name} <span class="audio-type ${result.audioFile.type}">${result.audioFile.type.toUpperCase()}</span></div>
+                        <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                            ${result.data && result.data.tags ? result.data.tags.slice(0, 3).map(k => k.word || k).join(', ') : 'No AI tags'}
+                        </div>
+                    </div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to play audio</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `<h4>Found ${results.length} matching audio files:</h4>${html}`;
+            
+            // Store results globally for popup access
+            window.currentSearchResults = results;
+        }
+
+        function openAudioFromSearch(resultIndex) {
+            const result = window.currentSearchResults[resultIndex];
+            if (result && result.audioFile) {
+                // Close search modal first
+                closeSearch();
+                // Play the audio in a new tab (same as double-click behavior)
+                const audioUrl = URL.createObjectURL(result.audioFile.file);
+                window.open(audioUrl, '_blank');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('searchModal');
+            if (event.target === modal) {
+                closeSearch();
+            }
+            
+            const popup = document.getElementById('videoPopup');
+            if (event.target === popup) {
+                closeVideoPopup();
+            }
+        }
+    </script>
+</body>
+</html>

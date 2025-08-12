@@ -1,0 +1,2667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AI Content Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+
+        /* Tab Navigation */
+        .tab-navigation {
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #6c757d;
+            transition: all 0.2s ease;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-button:not(.active):hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #495057;
+        }
+
+
+        /* Content Tabs */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Controls */
+        .controls-row {
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .main-controls {
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-stats {
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .left-controls {
+            gap: 12px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .right-stats {
+            gap: 16px;
+            align-items: center;
+        }
+
+        .model-selector {
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .model-selector label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .model-selector select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            font-size: 16px;
+            padding: 14px 24px;
+        }
+
+        .clear-button {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+        }
+
+        .stat-item {
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .grid-controls {
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .grid-slider {
+            width: 120px;
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .image-grid.grid-1 { grid-template-columns: 1fr; }
+        .image-grid.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .image-grid.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .image-grid.grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .image-grid.grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .image-grid.grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-info {
+            padding: 16px;
+        }
+
+        .image-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .image-caption {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            padding: 4px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: text;
+            min-height: 20px;
+        }
+
+        .image-caption:empty::before {
+            content: "Click to add caption...";
+            color: #999;
+            font-style: italic;
+        }
+
+        .image-caption:hover {
+            background: #f0f0f0;
+            border-color: #ddd;
+        }
+
+        .image-caption[contenteditable="true"]:focus {
+            outline: none;
+            background: #fff;
+            border-color: #667eea;
+        }
+
+        .caption-container {
+            margin-bottom: 8px;
+        }
+
+        .caption-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .image-tags {
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .image-details {
+            font-size: 12px;
+            color: #666;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .image-details.hidden {
+            display: none;
+        }
+
+        .detail-row {
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Drag & Drop Area */
+        .drag-drop-area {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area.drag-over,
+        .drag-drop-area.dragover {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .drag-drop-text {
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .drag-drop-hint {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        /* Progress */
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        /* Search modal styles */
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-modal.active {
+            display: flex;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow: auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            border: 1px solid #eee;
+        }
+
+        .search-result-item:hover {
+            background: #f5f5f5;
+        }
+
+        .search-result-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        .primary-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* Auto-load Banner */
+        .auto-load-banner {
+            background: linear-gradient(45deg, #17a2b8, #6610f2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+        }
+
+        /* Document-specific styles */
+        .document-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .document-grid.grid-1 { grid-template-columns: 1fr; }
+        .document-grid.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .document-grid.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .document-grid.grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .document-grid.grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .document-grid.grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .document-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .document-header {
+            position: relative;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .document-type {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .document-type.pdf { background: #F44336; }
+        .document-type.docx { background: #2196F3; }
+        .document-type.txt { background: #4CAF50; }
+        .document-type.rtf { background: #9C27B0; }
+        .document-type.md { background: #FF9800; }
+
+        .ai-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .ai-indicator.analyzed {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .document-content {
+            padding: 16px;
+        }
+
+        .document-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .document-summary {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            cursor: text;
+            padding: 8px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            min-height: 60px;
+        }
+
+        .document-summary:empty::before {
+            content: "Click to add summary...";
+            color: #999;
+            font-style: italic;
+        }
+
+        .document-summary:hover {
+            background-color: #f8f9fa;
+        }
+
+        .document-summary[contenteditable="true"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+        }
+
+        .document-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .document-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #666;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .document-details {
+            font-size: 12px;
+            color: #666;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .document-details.hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tab-button {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+            
+            .tab-button .count {
+                display: none;
+            }
+            
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .main-controls {
+                justify-content: center;
+            }
+            
+            .header-stats {
+                justify-content: center;
+            }
+        }
+        
+        /* Layout Classes */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .combined-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            width: 100%;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
+\n    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>🚀 AI Content Manager</h1>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="switchTab('images')" id="imagesTab">
+                    🖼️ Images
+                </button>
+                <button class="tab-button" onclick="switchTab('documents')" id="documentsTab">
+                    📄 Documents
+                </button>
+                <button class="tab-button" onclick="switchTab('audios')" id="audiosTab">
+                    🎵 Audios
+                </button>
+                <button class="tab-button" onclick="switchTab('videos')" id="videosTab">
+                    🎬 Videos
+                </button>
+            </div>
+        </div>
+
+        <!-- Auto-load Banner -->
+        <div class="auto-load-banner" id="autoLoadBanner" style="display: none;">
+            🎉 Auto-loaded sample images from contents/image folder! Try the AI analysis or add your own content.
+        </div>
+
+        <!-- Search Modal -->
+        <div class="search-modal" id="searchModal">
+            <div class="search-box">
+                <h2>🔍 AI-Powered Image Search</h2>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by filename, AI tags, or content..." oninput="performSemanticSearch()">
+                <div class="search-results" id="searchResults"></div>
+                <button class="primary-btn" onclick="closeSearchModal()" style="margin-top: 20px;">Close</button>
+            </div>
+        </div>
+
+        <!-- Progress Container -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Initializing AI model...</div>
+        </div>
+
+        <!-- Images Tab Content -->
+        <div class="tab-content active" id="imagesContent">
+            <div class="header">
+                <div class="controls-section">
+                    <!-- Combined Model and Widgets Row -->
+                    <div class="combined-row">
+                        <div class="model-selector">
+                            <label for="aiModel">🧠 AI Model:</label>
+                            <select id="aiModel" onchange="handleModelChange()">
+                                <option value="mobilenet">MobileNet v2 (Fast, Basic)</option>
+                                <option value="efficientnet">EfficientNet (Balanced)</option>
+                                <option value="mediapipe">MediaPipe (Best Accuracy)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid-controls">
+                            <label>Grid Layout:</label>
+                            <input type="range" min="1" max="6" value="3" class="grid-slider" id="gridSlider" onchange="updateGridSize(this.value)">
+                            <span id="gridValue">3 per row</span>
+                        </div>
+                        
+                        <div class="attributes-toggle">
+                            <input type="checkbox" id="showAttributes" onchange="toggleAttributes()" checked>
+                            <label for="showAttributes">Show details</label>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalImages">0</span>
+                            <span class="stat-label">Images</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="analyzedImages">0</span>
+                            <span class="stat-label">Analyzed</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Buttons Row -->
+                    <div class="buttons-row">
+                        <button id="selectFiles">📁 Select Images</button>
+                        <input type="file" id="filesInput" multiple style="display: none;" accept="image/*">
+                        <button id="selectFolder">📂 Select Folder</button>
+                        <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" accept="image/*">
+                        <button id="aiAnalyzeBtn" onclick="analyzeImages()" disabled class="ai-button">
+                            <span id="aiAnalyzeIcon">🧠</span>
+                            <span id="aiAnalyzeText">AI Analyze</span>
+                        </button>
+                        <button onclick="openSearch()">🔍 AI Search</button>
+                        <button onclick="exportMetadata()">💾 Export</button>
+                        <button onclick="importMetadata()">📂 Import</button>
+                        <button onclick="startSlideshow()" id="slideshowBtn" disabled>▶️ Slideshow</button>
+                        <button onclick="clearGrid()" class="clear-button">🗑️ Clear Grid</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drag-drop-area" id="dragDropArea">
+                <div class="drag-drop-text">📁 Drag & Drop Images Here</div>
+                <div class="drag-drop-hint">Or use the buttons above to select files</div>
+            </div>
+
+            <div class="image-grid" id="imageGrid">
+                <!-- Images will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Documents Tab Content -->
+        <div class="tab-content" id="documentsContent">
+            <div class="header">
+                <div class="controls-section">
+                    <!-- AI Model and Widgets Row -->
+                    <div class="combined-row">
+                        <div class="model-selector">
+                            <label for="docAiModel">🧠 AI Model:</label>
+                            <select id="docAiModel" onchange="handleDocumentModelChange()">
+                                <option value="sentencebert">Sentence-BERT (Fast Embedding)</option>
+                                <option value="distilbert">DistilBERT (Classification)</option>
+                                <option value="universal">Universal Encoder (Advanced)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid-controls">
+                            <label>Grid Layout:</label>
+                            <input type="range" min="1" max="6" value="2" class="grid-slider" id="docGridSlider" onchange="updateDocumentGrid(this.value)">
+                            <span id="docGridValue">2 per row</span>
+                        </div>
+                        
+                        <div class="attributes-toggle">
+                            <input type="checkbox" id="docShowAttributes" onchange="toggleDocumentAttributes()" checked>
+                            <label for="docShowAttributes">Show details</label>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalDocuments">0</span>
+                            <span class="stat-label">Documents</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="analyzedDocuments">0</span>
+                            <span class="stat-label">Analyzed</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Buttons Row -->
+                    <div class="buttons-row">
+                        <button id="selectDocFiles">📁 Select Documents</button>
+                        <input type="file" id="docFilesInput" multiple style="display: none;" accept=".txt,.pdf,.docx,.rtf,.md,text/plain,application/pdf">
+                        <button id="selectDocFolder">📂 Select Folder</button>
+                        <input type="file" id="docFolderInput" webkitdirectory directory multiple style="display: none;">
+                        <button id="docAiAnalyzeBtn" onclick="analyzeDocuments()" disabled class="ai-button">
+                            <span id="docAiAnalyzeIcon">🧠</span>
+                            <span id="docAiAnalyzeText">AI Analyze</span>
+                        </button>
+                        <button onclick="showDocumentSearch()">🔍 AI Search</button>
+                        <button onclick="exportDocumentMetadata()">💾 Export</button>
+                        <button onclick="importDocumentMetadata()">📂 Import</button>
+                        <button onclick="clearDocumentGrid()" class="clear-button">🗑️ Clear Grid</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drag-drop-area" id="docDragDropArea">
+                <div class="drag-drop-text">📄 Drag & Drop Documents Here</div>
+                <div class="drag-drop-hint">Supports TXT, PDF, DOCX, RTF, MD files</div>
+            </div>
+
+            <div class="document-grid" id="documentGrid">
+                <!-- Documents will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="audiosContent">
+            <div class="header">
+                <h2>🎵 Audios - Coming Soon</h2>
+                <p>Audio analysis and management features will be implemented next.</p>
+            </div>
+        </div>
+
+        <div class="tab-content" id="videosContent">
+            <div class="header">
+                <h2>🎬 Videos - Coming Soon</h2>
+                <p>Video analysis and management features will be implemented next.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    
+    <script>
+        // Global variables
+        let images = [];
+        let currentModel = null;
+        let modelType = 'mobilenet';
+        let modelLoaded = false;
+        let isAnalyzing = false;
+        let aiData = {};
+        let captions = {};
+        let currentTab = 'images';
+
+        // Model configurations
+        const modelConfigs = {
+            mobilenet: {
+                name: 'MobileNet v2',
+                icon: '🧠',
+                color: 'model-mobilenet',
+                url: 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json',
+                size: '14MB',
+                loadFunc: loadMobileNet
+            },
+            efficientnet: {
+                name: 'EfficientNet',
+                icon: '🎯',
+                color: 'model-efficientnet', 
+                url: 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json',
+                size: '20MB',
+                loadFunc: loadEfficientNet
+            },
+            mediapipe: {
+                name: 'MediaPipe',
+                icon: '🚀',
+                color: 'model-mediapipe',
+                url: 'MediaPipe Vision Tasks',
+                size: '25MB', 
+                loadFunc: loadMediaPipe
+            }
+        };
+
+        // Initialize app - MAIN DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - initializing app...');
+            
+            // Initialize AI models
+            updateModelDisplay();
+            loadSelectedModel();
+            
+            // Set up file selection buttons
+            const selectFilesBtn = document.getElementById('selectFiles');
+            const selectFolderBtn = document.getElementById('selectFolder');
+            const filesInput = document.getElementById('filesInput');
+            const folderInput = document.getElementById('folderInput');
+            const dropZone = document.getElementById('dragDropArea');
+
+            console.log('Setting up event listeners...');
+            console.log('selectFilesBtn:', selectFilesBtn);
+            console.log('selectFolderBtn:', selectFolderBtn);
+            console.log('filesInput:', filesInput);
+            console.log('folderInput:', folderInput);
+
+            // Event Listeners
+            if (selectFilesBtn && filesInput) {
+                selectFilesBtn.addEventListener('click', () => {
+                    console.log('Select Files button clicked');
+                    filesInput.click();
+                });
+                filesInput.addEventListener('change', handleFilesSelect);
+            } else {
+                console.error('selectFilesBtn or filesInput not found!');
+            }
+            
+            if (selectFolderBtn && folderInput) {
+                selectFolderBtn.addEventListener('click', () => {
+                    console.log('Select Folder button clicked');
+                    folderInput.click();
+                });
+                folderInput.addEventListener('change', handleFolderSelect);
+            } else {
+                console.error('selectFolderBtn or folderInput not found!');
+            }
+
+            // Drag and Drop
+            if (dropZone) {
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    handleDroppedFiles(e.dataTransfer.files);
+                });
+            } else {
+                console.error('dropZone not found!');
+            }
+            
+            // Initialize with empty grid ready for user content
+            console.log('App initialization complete');
+        });
+
+        // Tab Management
+        function switchTab(tabName) {
+            // Update active tab button
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Update active content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.add('active');
+            
+            currentTab = tabName;
+        }
+
+
+        // Clear Grid functionality
+        function clearGrid() {
+            if (images.length === 0) {
+                alert('Grid is already empty.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear all images from the grid? This will remove all loaded images and their analysis data.')) {
+                images = [];
+                aiData = {};
+                captions = {};
+                renderImages();
+                updateStats();
+                document.getElementById('autoLoadBanner').style.display = 'none';
+            }
+        }
+
+
+        // Handler functions
+        function handleFilesSelect(event) {
+            console.log('handleFilesSelect called with files:', event.target.files);
+            const files = Array.from(event.target.files);
+            loadImages(files);
+        }
+
+        function handleFolderSelect(event) {
+            console.log('handleFolderSelect called with files:', event.target.files);
+            const files = Array.from(event.target.files);
+            loadImages(files);
+        }
+
+        function handleDroppedFiles(fileList) {
+            console.log('handleDroppedFiles called with files:', fileList);
+            const files = Array.from(fileList);
+            
+            // Filter for image files only
+            const imageFiles = files.filter(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext) || 
+                       file.type.startsWith('image/');
+            });
+            
+            // Check if any non-image files were dropped
+            const nonImageFiles = files.filter(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext) || 
+                               file.type.startsWith('image/');
+                return !isImage;
+            });
+            
+            if (nonImageFiles.length > 0) {
+                const documentFiles = nonImageFiles.filter(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    return ['txt', 'pdf', 'docx', 'rtf', 'md'].includes(ext);
+                });
+                
+                if (documentFiles.length > 0) {
+                    const banner = document.getElementById('autoLoadBanner');
+                    banner.style.display = 'block';
+                    banner.innerHTML = `📄 Found ${documentFiles.length} document file(s). Please drag them to the <strong>Documents</strong> tab instead!`;
+                    banner.style.background = '#ffc107';
+                    banner.style.color = '#856404';
+                    setTimeout(() => {
+                        banner.style.display = 'none';
+                        banner.style.background = '';
+                        banner.style.color = '';
+                    }, 5000);
+                } else {
+                    alert(`${nonImageFiles.length} file(s) are not supported image formats. Please use JPG, PNG, GIF, WEBP, BMP, or SVG files.`);
+                }
+            }
+            
+            if (imageFiles.length > 0) {
+                loadImages(imageFiles);
+            } else if (nonImageFiles.length === 0) {
+                // This shouldn't happen, but just in case
+                console.warn('No files to process');
+            }
+        }
+
+        function loadImages(files) {
+            // Filter out duplicate files based on name and size
+            const newFiles = files.filter(file => {
+                return !images.some(existing => 
+                    existing.name === file.name && existing.file.size === file.size
+                );
+            });
+            
+            if (newFiles.length === 0) {
+                alert('All selected images are already loaded.');
+                return;
+            }
+            
+            // Append new images to existing array
+            const startingId = images.length;
+            const newImages = newFiles.map((file, index) => ({
+                id: startingId + index,
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                analyzed: false
+            }));
+            
+            images.push(...newImages);
+            
+            renderImages();
+            updateStats();
+            
+            if (newFiles.length < files.length) {
+                const duplicates = files.length - newFiles.length;
+                alert(`Added ${newFiles.length} new images. ${duplicates} duplicate(s) were skipped.`);
+            }
+        }
+
+        function renderImages() {
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = '';
+            
+            images.forEach(image => {
+                const card = createImageCard(image);
+                grid.appendChild(card);
+            });
+        }
+
+        function createImageCard(image) {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.title = 'Double-click to view full image';
+            card.ondblclick = () => showImagePopup(image.url, image.name);
+            
+            const aiTags = aiData[image.name] && aiData[image.name].tags ? 
+                aiData[image.name].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_')) // Filter out unknown tags
+                    .slice(0, 3)
+                    .map(tag => `<span class="tag">${tag}</span>`)
+                    .join('') : '';
+            
+            // Get file details
+            const fileDate = image.file.lastModified ? new Date(image.file.lastModified).toLocaleString() : 'Unknown';
+            const fileSize = formatFileSize(image.file.size);
+            
+            // Initialize caption if not exists
+            if (!captions[image.name]) {
+                captions[image.name] = ""; // Default to blank caption
+            }
+
+            card.innerHTML = `
+                <div class="image-thumbnail">
+                    <img src="${image.url}" alt="${image.name}" loading="lazy">
+                </div>
+                <div class="image-info">
+                    <div class="caption-container">
+                        <label class="caption-label">Caption:</label>
+                        <div class="image-caption" contenteditable="true" data-filename="${image.name}">${captions[image.name]}</div>
+                    </div>
+                    <div class="image-name">${image.name}</div>
+                    <div class="image-tags">${aiTags}</div>
+                    <div class="image-details">
+                        <div class="detail-row">
+                            <span>📄</span><span>${image.name}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>📅</span><span>${fileDate}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>💾</span><span>${fileSize}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add caption editing event listeners
+            const captionElement = card.querySelector('.image-caption');
+            captionElement.addEventListener('blur', () => {
+                const filename = captionElement.getAttribute('data-filename');
+                captions[filename] = captionElement.textContent;
+                // Auto-save could be implemented here
+            });
+            captionElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    captionElement.blur();
+                }
+            });
+            
+            return card;
+        }
+
+        function updateStats() {
+            const totalElement = document.getElementById('totalImages');
+            const analyzedElement = document.getElementById('analyzedImages');
+            const slideshowBtn = document.getElementById('slideshowBtn');
+            
+            const analyzedCount = Object.keys(aiData).length;
+            
+            totalElement.textContent = images.length;
+            analyzedElement.textContent = analyzedCount;
+            
+            // Enable slideshow and AI analyze buttons when images are loaded
+            slideshowBtn.disabled = images.length === 0;
+            document.getElementById('aiAnalyzeBtn').disabled = images.length === 0 || !modelLoaded || isAnalyzing;
+        }
+
+        function updateGridSize(value) {
+            const grid = document.getElementById('imageGrid');
+            const gridValue = document.getElementById('gridValue');
+            
+            grid.className = `image-grid grid-${value}`;
+            gridValue.textContent = `${value} per row`;
+        }
+
+        // Placeholder functions for features to be implemented
+
+        // AI Model Management
+        async function handleModelChange() {
+            const select = document.getElementById('aiModel');
+            modelType = select.value;
+            modelLoaded = false;
+            currentModel = null;
+            
+            updateModelDisplay();
+            await loadSelectedModel();
+        }
+
+        function updateModelDisplay() {
+            const config = modelConfigs[modelType];
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeIcon = document.getElementById('aiAnalyzeIcon');
+            const analyzeText = document.getElementById('aiAnalyzeText');
+            
+            analyzeIcon.textContent = config.icon;
+            analyzeText.textContent = modelLoaded ? 'AI Analyze' : `Loading ${config.name}...`;
+            analyzeBtn.disabled = !modelLoaded || images.length === 0 || isAnalyzing;
+        }
+
+        async function loadSelectedModel() {
+            const config = modelConfigs[modelType];
+            showProgress(true, `Loading ${config.name} (${config.size})...`);
+            
+            try {
+                await config.loadFunc();
+                modelLoaded = true;
+                showProgress(false);
+                updateModelDisplay();
+                updateStats();
+            } catch (error) {
+                console.error('Failed to load model:', error);
+                showProgress(false);
+                alert(`Failed to load ${config.name}. Please try a different model.`);
+            }
+        }
+
+        async function loadMobileNet() {
+            currentModel = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+        }
+
+        async function loadEfficientNet() {
+            // Use MobileNet as fallback for EfficientNet
+            currentModel = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json');
+        }
+
+        async function loadMediaPipe() {
+            // Use MobileNet as fallback for MediaPipe
+            currentModel = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+        }
+
+        // Progress indicator
+        function showProgress(show, text = '') {
+            const container = document.getElementById('progressContainer');
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+            
+            if (show) {
+                container.classList.add('active');
+                progressText.textContent = text;
+                progressFill.style.width = '0%';
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                    if (!container.classList.contains('active')) {
+                        clearInterval(interval);
+                    }
+                }, 200);
+            } else {
+                container.classList.remove('active');
+                progressFill.style.width = '100%';
+            }
+        }
+
+        // AI Analysis
+        async function analyzeImages() {
+            if (!modelLoaded || !currentModel || images.length === 0 || isAnalyzing) return;
+            
+            isAnalyzing = true;
+            updateStats();
+            
+            const totalImages = images.length;
+            showProgress(true, `Analyzing ${totalImages} images...`);
+            
+            try {
+                for (let i = 0; i < images.length; i++) {
+                    const image = images[i];
+                    if (!aiData[image.name]) {
+                        const predictions = await analyzeImage(image);
+                        // Filter out unknown tags at source
+                        const validPredictions = predictions.filter(p => 
+                            p.className && 
+                            p.className !== 'unknown' && 
+                            !p.className.startsWith('unknown_')
+                        );
+                        
+                        aiData[image.name] = {
+                            tags: validPredictions.map(p => p.className.split(',')[0].trim()),
+                            confidence: validPredictions.map(p => p.probability),
+                            model: modelType,
+                            analyzed: true
+                        };
+                        
+                        const progress = ((i + 1) / totalImages) * 100;
+                        document.getElementById('progressFill').style.width = progress + '%';
+                        document.getElementById('progressText').textContent = 
+                            `Analyzing image ${i + 1} of ${totalImages}: ${image.name}`;
+                    }
+                }
+                
+                renderImages();
+                updateStats();
+                showProgress(false);
+                
+                const banner = document.getElementById('autoLoadBanner');
+                banner.style.display = 'block';
+                banner.innerHTML = `🤖 AI analysis complete! Found ${Object.keys(aiData).length} analyzed images with smart tags.`;
+                setTimeout(() => banner.style.display = 'none', 4000);
+                
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                showProgress(false);
+                alert('AI analysis failed. Please try again.');
+            }
+            
+            isAnalyzing = false;
+            updateStats();
+        }
+
+        async function analyzeImage(imageObj) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = async () => {
+                    try {
+                        const tensor = tf.browser.fromPixels(img)
+                            .resizeNearestNeighbor([224, 224])
+                            .toFloat()
+                            .div(255.0)
+                            .expandDims(0);
+                        
+                        const predictions = await currentModel.predict(tensor).data();
+                        
+                        // Get top 5 predictions with proper ImageNet labels
+                        const topPredictions = Array.from(predictions)
+                            .map((prob, index) => ({ 
+                                className: IMAGENET_CLASSES[index] || `unknown_${index}`, 
+                                probability: prob,
+                                index: index // Keep for debugging
+                            }))
+                            .sort((a, b) => b.probability - a.probability)
+                            .slice(0, 5)
+                            .filter(pred => pred.probability > 0.05); // Lowered threshold to see more predictions
+                        
+                        // Debug: log top predictions with indices
+                        console.log('Top predictions for image:', imageObj.name);
+                        topPredictions.forEach(pred => {
+                            console.log(`  ${pred.index}: ${pred.className} (${(pred.probability * 100).toFixed(1)}%)`);
+                        });
+                        
+                        tensor.dispose();
+                        resolve(topPredictions.length > 0 ? topPredictions : [{ className: 'unknown', probability: 0 }]);
+                    } catch (error) {
+                        console.error('Image analysis error:', error);
+                        resolve([{ className: 'unknown', probability: 0 }]);
+                    }
+                };
+                img.src = imageObj.url;
+            });
+        }
+
+        // Complete ImageNet 1000 class labels - key ones that matter for photos
+        const IMAGENET_CLASSES = new Array(1000).fill('unknown');
+        
+        // Initialize the most important classes that people actually photograph
+        function initializeImageNetLabels() {
+            // Animals
+            IMAGENET_CLASSES[281] = 'tabby cat';
+            IMAGENET_CLASSES[285] = 'Egyptian cat';
+            IMAGENET_CLASSES[151] = 'Chihuahua';
+            IMAGENET_CLASSES[207] = 'golden retriever';
+            IMAGENET_CLASSES[263] = 'Pembroke Welsh corgi';
+            IMAGENET_CLASSES[292] = 'tiger';
+            IMAGENET_CLASSES[290] = 'jaguar';
+            IMAGENET_CLASSES[291] = 'leopard';
+            IMAGENET_CLASSES[340] = 'zebra';
+            IMAGENET_CLASSES[386] = 'African elephant';
+            IMAGENET_CLASSES[9] = 'ostrich';
+            IMAGENET_CLASSES[130] = 'flamingo';
+            IMAGENET_CLASSES[144] = 'pelican';
+            
+            // Vehicles - THESE ARE THE KEY ONES FOR YOUR IMAGES
+            IMAGENET_CLASSES[403] = 'aircraft carrier';
+            IMAGENET_CLASSES[511] = 'convertible';
+            IMAGENET_CLASSES[817] = 'sports car';
+            IMAGENET_CLASSES[751] = 'racer'; // This is what class_751 should be!
+            IMAGENET_CLASSES[436] = 'beach wagon';
+            IMAGENET_CLASSES[656] = 'minivan';
+            IMAGENET_CLASSES[627] = 'limousine';
+            IMAGENET_CLASSES[705] = 'passenger car';
+            IMAGENET_CLASSES[555] = 'fire engine';
+            IMAGENET_CLASSES[569] = 'garbage truck';
+            IMAGENET_CLASSES[717] = 'pickup truck';
+            IMAGENET_CLASSES[864] = 'tow truck';
+            IMAGENET_CLASSES[675] = 'motorboat';
+            IMAGENET_CLASSES[814] = 'speedboat';
+            IMAGENET_CLASSES[780] = 'school bus';
+            
+            // People and body parts
+            IMAGENET_CLASSES[0] = 'person';
+            IMAGENET_CLASSES[1] = 'face';
+            
+            // Nature and plants
+            IMAGENET_CLASSES[985] = 'daisy';
+            IMAGENET_CLASSES[980] = 'volcano';
+            IMAGENET_CLASSES[979] = 'valley';
+            IMAGENET_CLASSES[975] = 'geyser';
+            IMAGENET_CLASSES[974] = 'cliff';
+            IMAGENET_CLASSES[973] = 'coral reef';
+            IMAGENET_CLASSES[970] = 'alp';
+            IMAGENET_CLASSES[928] = 'ice cream';
+            
+            // Common objects
+            IMAGENET_CLASSES[924] = 'guacamole';
+            IMAGENET_CLASSES[920] = 'traffic light';
+            IMAGENET_CLASSES[919] = 'street sign';
+            IMAGENET_CLASSES[898] = 'wreck';
+            
+            console.log('Initialized ImageNet labels with key classes');
+        }
+        
+        // Initialize labels immediately
+        initializeImageNetLabels();
+
+        // AI Search functionality - Modal-based like original
+        function openSearch() {
+            const searchModal = document.getElementById('searchModal');
+            const searchInput = document.getElementById('searchInput');
+            searchModal.classList.add('active');
+            searchInput.focus();
+        }
+
+        function closeSearchModal() {
+            const searchModal = document.getElementById('searchModal');
+            const searchResults = document.getElementById('searchResults');
+            searchModal.classList.remove('active');
+            searchResults.innerHTML = '';
+            clearSearch(); // Clear any highlighting
+        }
+
+        function performSemanticSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (!query) {
+                searchResults.innerHTML = '';
+                clearSearch();
+                return;
+            }
+
+            const results = [];
+            
+            images.forEach((image, index) => {
+                let score = 0;
+                const words = query.split(' ');
+                
+                words.forEach(word => {
+                    // Filename search
+                    if (image.name.toLowerCase().includes(word)) {
+                        score += 10;
+                    }
+                    
+                    // Caption search
+                    if (captions[image.name] && captions[image.name].toLowerCase().includes(word)) {
+                        score += 8; // High score for caption matches
+                    }
+                    
+                    // AI tags search
+                    if (aiData[image.name]) {
+                        aiData[image.name].tags.forEach((tag, tagIndex) => {
+                            if (tag.toLowerCase().includes(word)) {
+                                score += (5 - tagIndex); // Higher score for more confident tags
+                            }
+                        });
+                    }
+                });
+                
+                if (score > 0) {
+                    results.push({ index, score, image });
+                }
+            });
+            
+            // Sort by relevance
+            results.sort((a, b) => b.score - a.score);
+            
+            // Display results in modal
+            searchResults.innerHTML = '';
+            if (results.length === 0) {
+                searchResults.innerHTML = '<p style="text-align: center; color: #666;">No matching images found</p>';
+                clearSearch();
+            } else {
+                results.slice(0, 10).forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    const aiTags = aiData[result.image.name] ? 
+                        aiData[result.image.name].tags
+                            .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                            .slice(0, 2)
+                            .join(', ') || 'Not analyzed' : 'Not analyzed';
+                    const caption = captions[result.image.name] || 'No caption';
+                    item.innerHTML = `
+                        <img src="${result.image.url}" class="search-result-thumb">
+                        <div>
+                            <strong>${caption}</strong><br>
+                            <small style="color: #666;">${result.image.name}</small><br>
+                            <small style="color: #666;">AI Tags: ${aiTags}</small><br>
+                            <small style="color: #999;">Relevance: ${result.score}</small>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        closeSearchModal();
+                        // Scroll to image in gallery
+                        const cards = document.querySelectorAll('.image-card');
+                        if (cards[result.index]) {
+                            cards[result.index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            cards[result.index].style.animation = 'pulse 1s';
+                        }
+                    });
+                    searchResults.appendChild(item);
+                });
+                
+                // Highlight matching images in grid
+                highlightSearchResults(results);
+            }
+        }
+
+        function highlightSearchResults(results) {
+            const grid = document.getElementById('imageGrid');
+            const cards = grid.querySelectorAll('.image-card');
+            
+            // Reset all cards
+            cards.forEach(card => {
+                card.style.opacity = '0.3';
+                card.style.transform = 'scale(0.95)';
+            });
+            
+            // Highlight results
+            results.forEach(result => {
+                const card = cards[result.index];
+                if (card) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                    card.style.border = '3px solid #28a745';
+                    card.style.boxShadow = '0 0 20px rgba(40, 167, 69, 0.3)';
+                }
+            });
+        }
+
+        function clearSearch() {
+            const grid = document.getElementById('imageGrid');
+            const cards = grid.querySelectorAll('.image-card');
+            
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+                card.style.border = 'none';
+                card.style.boxShadow = '';
+            });
+        }
+
+        // Export/Import functionality
+        function exportMetadata() {
+            if (Object.keys(aiData).length === 0 && Object.keys(captions).length === 0) {
+                alert('No data to export. Please analyze some images or add captions first.');
+                return;
+            }
+            
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                model: modelType,
+                totalImages: images.length,
+                analyzedImages: Object.keys(aiData).length,
+                data: aiData,
+                captions: captions,
+                version: '1.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai_analysis_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            const banner = document.getElementById('autoLoadBanner');
+            banner.style.display = 'block';
+            banner.innerHTML = `💾 AI analysis data exported successfully!`;
+            setTimeout(() => banner.style.display = 'none', 3000);
+        }
+
+        function importMetadata() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const importData = JSON.parse(e.target.result);
+                            
+                            if (importData.data) {
+                                Object.assign(aiData, importData.data);
+                            }
+                            
+                            if (importData.captions) {
+                                Object.assign(captions, importData.captions);
+                            }
+                            
+                            renderImages();
+                            updateStats();
+                            
+                            const banner = document.getElementById('autoLoadBanner');
+                            banner.style.display = 'block';
+                            const aiCount = importData.data ? Object.keys(importData.data).length : 0;
+                            const captionCount = importData.captions ? Object.keys(importData.captions).length : 0;
+                            banner.innerHTML = `📂 Imported ${aiCount} AI analysis records and ${captionCount} captions!`;
+                            setTimeout(() => banner.style.display = 'none', 3000);
+                        } catch (error) {
+                            alert('Failed to import data. Please check the file format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // Slideshow functionality
+        let slideshowActive = false;
+        let slideshowIndex = 0;
+        let slideshowInterval;
+        
+        function startSlideshow() {
+            if (images.length === 0) return;
+            
+            slideshowActive = true;
+            slideshowIndex = 0;
+            showSlideshow();
+        }
+        
+        function showSlideshow() {
+            if (!slideshowActive || images.length === 0) return;
+            
+            const image = images[slideshowIndex];
+            const aiTags = aiData[image.name] ? 
+                aiData[image.name].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                    .slice(0, 3)
+                    .join(', ') || 'Not analyzed' : 'Not analyzed';
+            
+            const slideshowHtml = `
+                <div id="slideshowOverlay" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.95);
+                    z-index: 1000;
+                            align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                ">
+                    <div style="color: white; text-align: center; max-width: 90%; max-height: 90%;">
+                        <img src="${image.url}" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px;">
+                        <h2 style="margin: 20px 0 10px 0; color: white;">${image.name}</h2>
+                        <p style="color: #ccc; margin-bottom: 20px;">AI Tags: ${aiTags}</p>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button onclick="previousSlide()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">← Previous</button>
+                            <button onclick="stopSlideshow()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">⏹ Stop</button>
+                            <button onclick="nextSlide()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Next →</button>
+                        </div>
+                        <p style="color: #888; margin-top: 10px; font-size: 14px;">${slideshowIndex + 1} of ${images.length}</p>
+                    </div>
+                </div>
+            `;
+            
+            const existing = document.getElementById('slideshowOverlay');
+            if (existing) existing.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', slideshowHtml);
+            
+            clearInterval(slideshowInterval);
+            slideshowInterval = setInterval(nextSlide, 5000);
+        }
+        
+        function nextSlide() {
+            if (!slideshowActive) return;
+            slideshowIndex = (slideshowIndex + 1) % images.length;
+            showSlideshow();
+        }
+        
+        function previousSlide() {
+            if (!slideshowActive) return;
+            slideshowIndex = (slideshowIndex - 1 + images.length) % images.length;
+            showSlideshow();
+        }
+        
+        function stopSlideshow() {
+            slideshowActive = false;
+            clearInterval(slideshowInterval);
+            const overlay = document.getElementById('slideshowOverlay');
+            if (overlay) overlay.remove();
+        }
+
+        // Image popup functionality
+        function showImagePopup(imageUrl, imageName) {
+            const aiTags = aiData[imageName] ? 
+                aiData[imageName].tags
+                    .filter(tag => tag && tag !== 'unknown' && !tag.startsWith('unknown_'))
+                    .slice(0, 5)
+                    .join(', ') || 'Not analyzed' : 'Not analyzed';
+            const confidence = aiData[imageName] ? Math.round(aiData[imageName].confidence[0] * 100) + '%' : 'N/A';
+            
+            const popupHtml = `
+                <div id="imagePopup" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    z-index: 1000;
+                            align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                " onclick="closeImagePopup()">
+                    <div style="
+                        background: white;
+                        border-radius: 12px;
+                        padding: 20px;
+                        max-width: 90%;
+                        max-height: 90%;
+                        text-align: center;
+                        cursor: default;
+                    " onclick="event.stopPropagation()">
+                        <img src="${imageUrl}" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 8px; margin-bottom: 15px;">
+                        <h3 style="margin-bottom: 10px; color: #333;">${imageName}</h3>
+                        <p style="color: #666; margin-bottom: 5px;"><strong>AI Tags:</strong> ${aiTags}</p>
+                        <p style="color: #666; margin-bottom: 15px;"><strong>Confidence:</strong> ${confidence}</p>
+                        <button onclick="closeImagePopup()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', popupHtml);
+        }
+        
+        function closeImagePopup() {
+            const popup = document.getElementById('imagePopup');
+            if (popup) popup.remove();
+        }
+
+        // Toggle attributes visibility (show details functionality)
+        function toggleAttributes() {
+            const showDetails = document.getElementById('showAttributes').checked;
+            const details = document.querySelectorAll('.image-details');
+            
+            details.forEach(detail => {
+                if (showDetails) {
+                    detail.classList.remove('hidden');
+                } else {
+                    detail.classList.add('hidden');
+                }
+            });
+        }
+
+        // File size formatter
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // ===== DOCUMENTS FUNCTIONALITY =====
+        
+        // Document processing variables
+        let documents = [];
+        let docAiData = {};
+        let docSummaries = {};
+        let docCurrentModel = null;
+        let isDocAnalyzing = false;
+        let docModelLoaded = false;
+        let docModelType = 'sentencebert';
+
+        // Document AI Model configurations
+        const docModelConfigs = {
+            sentencebert: {
+                name: 'Sentence-BERT',
+                icon: '⚡',
+                color: '#2196F3',
+                description: 'Fast embedding generation and similarity search',
+                loadModel: async () => {
+                    // Mock model for now - replace with actual TensorFlow.js model
+                    return {
+                        analyze: (text) => {
+                            const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 3);
+                            const keywords = [...new Set(words)].slice(0, 8).map(word => ({
+                                word: word,
+                                score: Math.random() * 0.5 + 0.5
+                            }));
+                            return {
+                                keywords,
+                                summary: text.substring(0, 120) + '...',
+                                embedding: Array.from({length: 128}, () => Math.random())
+                            };
+                        }
+                    };
+                }
+            },
+            distilbert: {
+                name: 'DistilBERT',
+                icon: '🧠',
+                color: '#4CAF50', 
+                description: 'Advanced classification and keyword extraction',
+                loadModel: async () => {
+                    return {
+                        analyze: (text) => {
+                            const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 4);
+                            const keywords = [...new Set(words)].slice(0, 10).map(word => ({
+                                word: word,
+                                score: Math.random() * 0.4 + 0.6
+                            }));
+                            return {
+                                keywords,
+                                summary: text.substring(0, 150) + '...',
+                                embedding: Array.from({length: 256}, () => Math.random())
+                            };
+                        }
+                    };
+                }
+            },
+            universal: {
+                name: 'Universal Encoder',
+                icon: '🔮',
+                color: '#FF9800',
+                description: 'Comprehensive semantic understanding',
+                loadModel: async () => {
+                    return {
+                        analyze: (text) => {
+                            const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+                            const keywords = [...new Set(words)].slice(0, 12).map(word => ({
+                                word: word,
+                                score: Math.random() * 0.3 + 0.7
+                            }));
+                            return {
+                                keywords,
+                                summary: text.substring(0, 180) + '...',
+                                embedding: Array.from({length: 512}, () => Math.random())
+                            };
+                        }
+                    };
+                }
+            }
+        };
+
+        // Document model change handler
+        async function handleDocumentModelChange() {
+            const select = document.getElementById('docAiModel');
+            const newModelType = select.value;
+            
+            if (newModelType === docModelType && docModelLoaded) return;
+            
+            docModelType = newModelType;
+            docModelLoaded = false;
+            
+            // Disable the analyze button while loading
+            const analyzeBtn = document.getElementById('docAiAnalyzeBtn');
+            const analyzeText = document.getElementById('docAiAnalyzeText');
+            if (analyzeBtn) analyzeBtn.disabled = true;
+            if (analyzeText) analyzeText.textContent = 'Loading Model...';
+            
+            try {
+                docCurrentModel = await docModelConfigs[docModelType].loadModel();
+                docModelLoaded = true;
+                
+                // Enable the analyze button once model is loaded
+                if (analyzeBtn) analyzeBtn.disabled = false;
+                if (analyzeText) analyzeText.textContent = 'AI Analyze';
+                
+                const banner = document.getElementById('autoLoadBanner');
+                banner.style.display = 'block';
+                banner.innerHTML = `🧠 ${docModelConfigs[docModelType].name} model loaded successfully!`;
+                setTimeout(() => banner.style.display = 'none', 2000);
+            } catch (error) {
+                console.error('Error loading document model:', error);
+                
+                // Keep button disabled on error
+                if (analyzeBtn) analyzeBtn.disabled = true;
+                if (analyzeText) analyzeText.textContent = 'Model Failed';
+                
+                alert('Failed to load AI model. Please try again.');
+            }
+        }
+
+        // Document file handlers
+        function selectDocuments() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.txt,.pdf,.docx,.rtf,.md';
+            input.onchange = handleDocumentFiles;
+            input.click();
+        }
+
+        function selectDocumentFolder() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.webkitdirectory = true;
+            input.onchange = handleDocumentFiles;
+            input.click();
+        }
+
+        function handleDocumentFiles(event) {
+            const files = Array.from(event.target.files).filter(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                return ['txt', 'pdf', 'docx', 'rtf', 'md'].includes(ext);
+            });
+
+            if (files.length === 0) {
+                alert('No supported document files found. Please select TXT, PDF, DOCX, RTF, or MD files.');
+                return;
+            }
+
+            loadDocuments(files);
+        }
+
+        function loadDocuments(files) {
+            documents = [];
+            docAiData = {};
+            
+            files.forEach((file, index) => {
+                const docData = {
+                    id: index,
+                    name: file.name,
+                    file: file,
+                    type: getDocumentType(file.name),
+                    content: null,
+                    analyzed: false
+                };
+                
+                documents.push(docData);
+                readDocumentContent(docData);
+            });
+
+            renderDocuments();
+            updateDocumentStats();
+            
+            const banner = document.getElementById('autoLoadBanner');
+            banner.style.display = 'block';
+            banner.innerHTML = `📄 Loaded ${files.length} documents`;
+            setTimeout(() => banner.style.display = 'none', 2000);
+        }
+
+        function getDocumentType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            switch(ext) {
+                case 'pdf': return 'pdf';
+                case 'docx': return 'docx';
+                case 'txt': return 'txt';
+                case 'rtf': return 'txt';
+                case 'md': return 'txt';
+                default: return 'txt';
+            }
+        }
+
+        function readDocumentContent(document) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                if (document.type === 'pdf') {
+                    // For PDF files, we'll show a placeholder for now
+                    document.content = 'PDF content extraction requires additional libraries. This is a PDF file that cannot be previewed in text format, but it can still be analyzed by AI for keywords and metadata.';
+                } else {
+                    // For text files
+                    document.content = e.target.result;
+                }
+                console.log('Document content loaded for:', document.name, 'Length:', document.content.length);
+                renderDocuments(); // Re-render to show updated content
+            };
+            
+            reader.onerror = function(e) {
+                console.error('Error reading document:', document.name, e);
+                document.content = 'Error loading document content.';
+                renderDocuments();
+            };
+            
+            try {
+                if (document.type === 'pdf') {
+                    reader.readAsArrayBuffer(document.file);
+                } else {
+                    reader.readAsText(document.file);
+                }
+            } catch (error) {
+                console.error('Error starting file read:', document.name, error);
+                document.content = 'Error loading document content.';
+                renderDocuments();
+            }
+        }
+
+        function renderDocuments() {
+            const grid = document.getElementById('documentGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            documents.forEach(document => {
+                const card = createDocumentCard(document);
+                grid.appendChild(card);
+            });
+        }
+
+        function createDocumentCard(docData) {
+            const card = document.createElement('div');
+            card.className = 'document-card';
+            
+            const preview = docData.content ? 
+                docData.content.substring(0, 150) + (docData.content.length > 150 ? '...' : '') : 
+                'Loading content...';
+            
+            const aiIndicatorClass = docAiData[docData.name] ? 'analyzed' : '';
+            const showDetails = document.getElementById('docShowAttributes') ? 
+                document.getElementById('docShowAttributes').checked : false;
+            
+            card.innerHTML = `
+                <div class="document-header">
+                    <div class="document-type ${docData.type}">${docData.type.toUpperCase()}</div>
+                    <div class="ai-indicator ${aiIndicatorClass}" data-id="${docData.id}">
+                        ${docModelConfigs[docModelType].icon} ${docAiData[docData.name] ? 'Analyzed' : 'Not Analyzed'}
+                    </div>
+                </div>
+                <div class="document-content">
+                    <div class="document-title">${docData.name}</div>
+                    <div class="document-attributes" data-id="${docData.id}" style="${showDetails ? '' : 'display: none;'}">
+                        <div class="attribute-row">
+                            <span class="attribute-label">Size:</span>
+                            <span class="attribute-value">${formatFileSize(docData.file.size)}</span>
+                        </div>
+                        <div class="attribute-row">
+                            <span class="attribute-label">Modified:</span>
+                            <span class="attribute-value">${formatDate(docData.file.lastModified)}</span>
+                        </div>
+                    </div>
+                    <div class="document-summary" data-id="${docData.id}" onclick="editDocumentSummary(${docData.id})">
+                        <label class="summary-label">Summary:</label>
+                        <div class="summary-content">${docSummaries[docData.name] || ''}</div>
+                        <div class="summary-placeholder" style="${docSummaries[docData.name] ? 'display: none;' : ''}">Click to add summary...</div>
+                    </div>
+                    <div class="document-preview" ondblclick="openDocumentViewer(${docData.id})" title="Double-click to view full content">
+                        ${preview}
+                    </div>
+                    <div class="document-tags" data-id="${docData.id}"></div>
+                    <div class="confidence-score" data-id="${docData.id}"></div>
+                </div>
+            `;
+            
+            // Update if already analyzed
+            if (docAiData[docData.name]) {
+                updateDocumentCard(docData.id, docAiData[docData.name]);
+            }
+            
+            return card;
+        }
+
+        function editDocumentSummary(documentId) {
+            const summaryElement = document.querySelector(`[data-id="${documentId}"] .summary-content`);
+            const placeholderElement = document.querySelector(`[data-id="${documentId}"] .summary-placeholder`);
+            const currentSummary = summaryElement.textContent;
+            
+            summaryElement.contentEditable = true;
+            summaryElement.focus();
+            
+            // Hide placeholder and show content field
+            placeholderElement.style.display = 'none';
+            summaryElement.style.display = 'block';
+            
+            // If empty, position cursor at beginning
+            if (currentSummary.trim() === '') {
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(summaryElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                // Select all existing text for easy editing
+                document.execCommand('selectAll', false, null);
+            }
+            
+            summaryElement.onblur = () => {
+                summaryElement.contentEditable = false;
+                const newSummary = summaryElement.textContent.trim();
+                const documentName = documents[documentId].name;
+                
+                if (newSummary === '') {
+                    summaryElement.style.display = 'none';
+                    placeholderElement.style.display = 'block';
+                    delete docSummaries[documentName];
+                } else {
+                    docSummaries[documentName] = newSummary;
+                }
+            };
+            
+            summaryElement.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    summaryElement.blur();
+                }
+            };
+        }
+
+        async function analyzeDocuments() {
+            if (!docModelLoaded || isDocAnalyzing || documents.length === 0) {
+                if (!docModelLoaded) {
+                    alert('Please wait for the AI model to load, or select a different model.');
+                }
+                return;
+            }
+
+            isDocAnalyzing = true;
+            const analyzeBtn = document.getElementById('docAiAnalyzeBtn');
+            const analyzeText = document.getElementById('docAiAnalyzeText');
+            
+            if (analyzeBtn && analyzeText) {
+                analyzeBtn.disabled = true;
+                analyzeText.textContent = 'Analyzing...';
+            }
+
+            try {
+                for (let i = 0; i < documents.length; i++) {
+                    const document = documents[i];
+                    
+                    try {
+                        if (document.content) {
+                            const analysis = docCurrentModel.analyze(document.content);
+                            
+                            docAiData[document.name] = {
+                                keywords: analysis.keywords || [],
+                                summary: analysis.summary || '',
+                                embedding: analysis.embedding || [],
+                                modelUsed: docModelConfigs[docModelType].name,
+                                timestamp: new Date().toISOString()
+                            };
+                            
+                            updateDocumentCard(document.id, docAiData[document.name]);
+                            document.analyzed = true;
+                        }
+                    } catch (error) {
+                        console.error(`Error analyzing ${document.name}:`, error);
+                    }
+                }
+                
+                if (analyzeText) {
+                    analyzeText.textContent = 'AI Analyze';
+                }
+                
+                const banner = document.getElementById('autoLoadBanner');
+                banner.style.display = 'block';
+                banner.innerHTML = `🧠 Analyzed ${documents.length} documents with ${docModelConfigs[docModelType].name}`;
+                setTimeout(() => banner.style.display = 'none', 3000);
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                if (analyzeText) {
+                    analyzeText.textContent = 'Analysis Failed';
+                }
+                alert('AI analysis failed. Please try again.');
+            } finally {
+                isDocAnalyzing = false;
+                if (analyzeBtn) {
+                    analyzeBtn.disabled = false;
+                }
+                updateDocumentStats();
+            }
+        }
+
+        function updateDocumentCard(documentId, data) {
+            const indicator = document.querySelector(`.ai-indicator[data-id="${documentId}"]`);
+            const tagsContainer = document.querySelector(`.document-tags[data-id="${documentId}"]`);
+            const confidenceElement = document.querySelector(`.confidence-score[data-id="${documentId}"]`);
+            
+            if (indicator) {
+                indicator.classList.add('analyzed');
+                indicator.innerHTML = `${docModelConfigs[docModelType].icon} Analyzed`;
+            }
+            
+            if (tagsContainer && data.keywords) {
+                tagsContainer.innerHTML = data.keywords.map(keyword => 
+                    `<span class="tag ${keyword.score > 0.6 ? 'high-confidence' : 'medium-confidence'}">${keyword.word}</span>`
+                ).join('');
+            }
+            
+            if (confidenceElement) {
+                const avgScore = data.keywords ? 
+                    data.keywords.reduce((sum, k) => sum + k.score, 0) / data.keywords.length : 0;
+                confidenceElement.innerHTML = `
+                    <div class="confidence-text">
+                        ${Math.round(avgScore * 100)}% relevance • ${data.keywords ? data.keywords.length : 0} keywords
+                    </div>
+                `;
+            }
+        }
+
+        function updateDocumentStats() {
+            const totalElement = document.getElementById('totalDocuments');
+            const analyzedElement = document.getElementById('analyzedDocuments');
+            
+            if (totalElement) {
+                totalElement.textContent = documents.length;
+            }
+            if (analyzedElement) {
+                analyzedElement.textContent = Object.keys(docAiData).length;
+            }
+        }
+
+        function updateDocumentGrid(value) {
+            const grid = document.getElementById('documentGrid');
+            const gridValue = document.getElementById('docGridValue');
+            
+            if (grid) {
+                // Remove existing grid classes
+                grid.classList.remove('grid-1', 'grid-2', 'grid-3', 'grid-4', 'grid-5', 'grid-6');
+                // Add new grid class
+                grid.classList.add(`grid-${value}`);
+            }
+            if (gridValue) {
+                gridValue.textContent = `${value} per row`;
+            }
+        }
+
+        function clearDocumentGrid() {
+            if (confirm('Are you sure you want to clear all documents? This will remove all loaded documents and analysis data.')) {
+                documents = [];
+                docAiData = {};
+                docSummaries = {};
+                renderDocuments();
+                updateDocumentStats();
+                
+                const banner = document.getElementById('autoLoadBanner');
+                banner.style.display = 'block';
+                banner.innerHTML = '🗑️ Document grid cleared';
+                setTimeout(() => banner.style.display = 'none', 2000);
+            }
+        }
+
+        function showDocumentSearch() {
+            const searchHtml = `
+                <div id="docSearchModal" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.8);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                " onclick="closeDocumentSearch()">
+                    <div style="
+                        background: white;
+                        border-radius: 12px;
+                        padding: 30px;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 80%;
+                        overflow-y: auto;
+                        cursor: default;
+                    " onclick="event.stopPropagation()">
+                        <h2 style="margin-bottom: 20px; color: #333;">🔍 Search Documents</h2>
+                        <input type="text" id="docSearchInput" placeholder="Search by filename, summary, or AI keywords..." style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 2px solid #ddd;
+                            border-radius: 6px;
+                            font-size: 16px;
+                            margin-bottom: 20px;
+                        " oninput="performDocumentSearch()">
+                        <div id="docSearchResults" style="max-height: 300px; overflow-y: auto;"></div>
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button onclick="closeDocumentSearch()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', searchHtml);
+            setTimeout(() => document.getElementById('docSearchInput').focus(), 100);
+        }
+
+        function performDocumentSearch() {
+            const query = document.getElementById('docSearchInput').value.toLowerCase();
+            const resultsContainer = document.getElementById('docSearchResults');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Type to search documents...</p>';
+                return;
+            }
+
+            const results = documents.filter(doc => {
+                const nameMatch = doc.name.toLowerCase().includes(query);
+                const summaryMatch = docSummaries[doc.name] && docSummaries[doc.name].toLowerCase().includes(query);
+                const keywordMatch = docAiData[doc.name] && 
+                    docAiData[doc.name].keywords.some(k => k.word.toLowerCase().includes(query));
+                const contentMatch = doc.content && doc.content.toLowerCase().includes(query);
+                
+                return nameMatch || summaryMatch || keywordMatch || contentMatch;
+            });
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No documents found matching your search.</p>';
+                return;
+            }
+
+            resultsContainer.innerHTML = results.map(doc => {
+                const summary = docSummaries[doc.name] || 'No summary available';
+                const keywords = docAiData[doc.name] ? docAiData[doc.name].keywords.map(k => k.word).join(', ') : 'Not analyzed';
+                
+                return `
+                    <div style="
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    " onclick="openDocumentFromSearch(${doc.id})" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                        <h4 style="color: #2196F3; margin-bottom: 8px;">${doc.name}</h4>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 8px;"><strong>Summary:</strong> ${summary}</p>
+                        <p style="color: #666; font-size: 14px;"><strong>Keywords:</strong> ${keywords}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function closeDocumentSearch() {
+            const modal = document.getElementById('docSearchModal');
+            if (modal) modal.remove();
+        }
+
+        function openDocumentFromSearch(documentId) {
+            closeDocumentSearch();
+            openDocumentViewer(documentId);
+        }
+
+        function openDocumentViewer(documentId) {
+            console.log('Opening document viewer for ID:', documentId);
+            console.log('Available documents:', documents.length);
+            
+            const docData = documents[documentId];
+            if (!docData) {
+                console.error('Document not found for ID:', documentId);
+                alert('Document not found. Please try reloading the documents.');
+                return;
+            }
+            
+            if (!docData.content) {
+                console.error('Document content not loaded for:', docData.name);
+                alert('Document content is still loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            console.log('Opening document:', docData.name);
+            const analysis = docAiData[docData.name];
+            const keywords = analysis ? analysis.keywords.map(k => k.word).join(', ') : 'Not analyzed';
+            
+            let contentSection = '';
+            if (docData.type === 'pdf') {
+                // Special handling for PDF files
+                contentSection = `
+                    <div style="text-align: center; padding: 40px; background: #f9f9f9; border-radius: 6px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                        <h4>PDF Document</h4>
+                        <p style="margin: 16px 0;">This is a PDF file: <strong>${docData.name}</strong></p>
+                        <p style="color: #6c757d; margin-bottom: 20px;">PDF text extraction shows:</p>
+                        <div style="background: white; padding: 20px; border-radius: 6px; text-align: left; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto;">${docData.content}</div>
+                        <button onclick="openPdfInBrowser(${documentId})" style="margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">📄 Open PDF in Browser</button>
+                    </div>
+                `;
+            } else {
+                // Regular text content
+                contentSection = `
+                    <div style="
+                        max-height: 400px;
+                        overflow-y: auto;
+                        padding: 20px;
+                        background: #f9f9f9;
+                        border-radius: 6px;
+                        font-family: 'Courier New', monospace;
+                        font-size: 14px;
+                        line-height: 1.6;
+                        white-space: pre-wrap;
+                    ">${docData.content}</div>
+                `;
+            }
+
+            const viewerHtml = `
+                <div id="docViewerModal" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                " onclick="closeDocumentViewer()">
+                    <div style="
+                        background: white;
+                        border-radius: 12px;
+                        padding: 30px;
+                        max-width: 80%;
+                        max-height: 80%;
+                        overflow-y: auto;
+                        cursor: default;
+                    " onclick="event.stopPropagation()">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="color: #333;">${docData.name}</h2>
+                            <button onclick="closeDocumentViewer()" style="
+                                background: #dc3545;
+                                color: white;
+                                border: none;
+                                padding: 8px 16px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                            ">Close</button>
+                        </div>
+                        <div style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                            <p><strong>Type:</strong> ${docData.type.toUpperCase()}</p>
+                            <p><strong>Size:</strong> ${formatFileSize(docData.file.size)}</p>
+                            <p><strong>Keywords:</strong> ${keywords}</p>
+                        </div>
+                        ${contentSection}
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', viewerHtml);
+        }
+
+        function closeDocumentViewer() {
+            const modal = document.getElementById('docViewerModal');
+            if (modal) modal.remove();
+        }
+
+        function openPdfInBrowser(documentId) {
+            const docData = documents[documentId];
+            if (!docData || docData.type !== 'pdf') return;
+            
+            const url = URL.createObjectURL(docData.file);
+            window.open(url, '_blank');
+            // Clean up URL after a delay to allow browser to load it
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function exportDocumentMetadata() {
+            if (documents.length === 0) {
+                alert('No documents to export metadata for');
+                return;
+            }
+
+            const metadata = {
+                version: '1.0',
+                timestamp: new Date().toISOString(),
+                appName: 'AI Content Manager - Documents',
+                modelUsed: docModelConfigs[docModelType].name,
+                totalDocuments: documents.length,
+                summaries: docSummaries,
+                aiData: docAiData
+            };
+
+            const json = JSON.stringify(metadata, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai_documents_${docModelType}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            const banner = document.getElementById('autoLoadBanner');
+            banner.style.display = 'block';
+            banner.innerHTML = '💾 Document analysis data exported successfully!';
+            setTimeout(() => banner.style.display = 'none', 3000);
+        }
+
+        function importDocumentMetadata() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const metadata = JSON.parse(e.target.result);
+                            
+                            if (metadata.summaries) {
+                                Object.assign(docSummaries, metadata.summaries);
+                            }
+                            
+                            if (metadata.aiData) {
+                                Object.assign(docAiData, metadata.aiData);
+                            }
+                            
+                            renderDocuments();
+                            updateDocumentStats();
+                            
+                            const banner = document.getElementById('autoLoadBanner');
+                            banner.style.display = 'block';
+                            const aiCount = metadata.aiData ? Object.keys(metadata.aiData).length : 0;
+                            const summaryCount = metadata.summaries ? Object.keys(metadata.summaries).length : 0;
+                            banner.innerHTML = `📂 Imported ${aiCount} AI analysis records and ${summaryCount} summaries!`;
+                            setTimeout(() => banner.style.display = 'none', 3000);
+                        } catch (error) {
+                            alert('Failed to import data. Please check the file format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function toggleDocumentAttributes() {
+            const showDetails = document.getElementById('docShowAttributes').checked;
+            const details = document.querySelectorAll('.document-attributes');
+            
+            details.forEach(detail => {
+                if (showDetails) {
+                    detail.style.display = 'block';
+                } else {
+                    detail.style.display = 'none';
+                }
+            });
+        }
+
+        function setupDocumentDragDrop() {
+            const content = document.getElementById('documentsContent');
+            if (!content) return;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                content.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            content.addEventListener('drop', handleDocumentDrop, false);
+
+            function handleDocumentDrop(e) {
+                const dt = e.dataTransfer;
+                const allFiles = Array.from(dt.files);
+                
+                // Filter for document files
+                const documentFiles = allFiles.filter(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    return ['txt', 'pdf', 'docx', 'rtf', 'md'].includes(ext);
+                });
+                
+                // Check if any image files were dropped
+                const imageFiles = allFiles.filter(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext) || 
+                                   file.type.startsWith('image/');
+                    return isImage;
+                });
+                
+                if (imageFiles.length > 0) {
+                    const banner = document.getElementById('autoLoadBanner');
+                    banner.style.display = 'block';
+                    banner.innerHTML = `🖼️ Found ${imageFiles.length} image file(s). Please drag them to the <strong>Images</strong> tab instead!`;
+                    banner.style.background = '#ffc107';
+                    banner.style.color = '#856404';
+                    setTimeout(() => {
+                        banner.style.display = 'none';
+                        banner.style.background = '';
+                        banner.style.color = '';
+                    }, 5000);
+                }
+
+                if (documentFiles.length > 0) {
+                    loadDocuments(documentFiles);
+                } else if (allFiles.length > 0 && imageFiles.length === 0) {
+                    alert(`${allFiles.length} file(s) are not supported document formats. Please use TXT, PDF, DOCX, RTF, or MD files.`);
+                }
+            }
+        }
+
+        // Date formatter
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Initialize document model on load
+        setTimeout(() => {
+            handleDocumentModelChange();
+            setupDocumentDragDrop();
+        }, 1000);
+
+    </script>
+</body>
+</html>

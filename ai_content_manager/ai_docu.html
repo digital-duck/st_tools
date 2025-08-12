@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Docu App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .docu-badge {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .main-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .model-selector label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .model-selector select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .model-selector select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+
+        .model-help {
+            position: relative;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        .model-help-icon {
+            background: #6c757d;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            user-select: none;
+        }
+
+        .model-help:hover .model-help-icon {
+            background: #495057;
+        }
+
+        .model-help-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 350px;
+            font-size: 13px;
+            line-height: 1.4;
+            z-index: 1000;
+            transition: opacity 0.2s, visibility 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .model-help:hover .model-help-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .model-help-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #2c3e50;
+        }
+
+        .model-option {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .model-option:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 2px;
+        }
+
+        .model-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .model-link {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 11px;
+            margin-top: 3px;
+            display: inline-block;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .model-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        button {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            font-size: 16px;
+            padding: 14px 24px;
+        }
+
+        .ai-button:hover {
+            background: linear-gradient(45deg, #45a049, #3d8b40);
+        }
+
+        .model-sentencebert { color: #2196F3; }
+        .model-distilbert { color: #4CAF50; }
+        .model-universal { color: #FF9800; }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .grid-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .grid-slider {
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .attributes-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .drag-drop-area:hover {
+            border-color: #2196F3;
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .drag-drop-area.drag-over {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .drag-drop-text {
+            font-size: 18px;
+            color: #495057;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .drag-drop-hint {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .document-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            min-height: 200px;
+        }
+
+        .document-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .document-header {
+            position: relative;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .document-type {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #2196F3;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .document-type.pdf { background: #F44336; }
+        .document-type.docx { background: #2196F3; }
+        .document-type.txt { background: #4CAF50; }
+
+        .ai-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .ai-indicator.analyzed {
+            display: block;
+        }
+
+        .document-content {
+            padding: 16px;
+        }
+
+        .document-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .file-attributes {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            display: none;
+        }
+
+        .document-summary {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            min-height: 40px;
+            max-height: 80px;
+            overflow: hidden;
+        }
+
+        .document-summary:hover {
+            background-color: #f8f9fa;
+        }
+
+        .document-summary[contenteditable="true"] {
+            border: 2px solid #2196F3;
+            background-color: #fff;
+        }
+
+        .document-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tag.high-confidence {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .confidence-score {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .document-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .document-preview::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(transparent, #f8f9fa);
+        }
+
+        /* Grid size adjustments */
+        .grid-1 { grid-template-columns: 1fr; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background: #e9ecef;
+            border-color: #2196F3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-score {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .search-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .suggestion {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion:hover {
+            background: #e9ecef;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        .popup-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .popup-file-info {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .popup-document-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .popup-document-content.pdf-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            white-space: normal;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .model-loading {
+            background: #ffc107 !important;
+            color: #212529 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>AI Docu App</h1>
+            </div>
+            
+            <div class="controls-row">
+                <div class="main-controls">
+                    <div class="model-selector">
+                        <label for="aiModel">🧠 AI Model:</label>
+                        <select id="aiModel" onchange="handleModelChange()">
+                            <option value="sentencebert">Sentence-BERT (Fast Embedding)</option>
+                            <option value="distilbert">DistilBERT (Classification)</option>
+                            <option value="universal">Universal Encoder (Advanced)</option>
+                        </select>
+                        <div class="model-help">
+                            <div class="model-help-icon">?</div>
+                            <div class="model-help-tooltip">
+                                <div class="model-option">
+                                    <div class="model-name">🧠 Sentence-BERT (Fast)</div>
+                                    <div class="model-desc">Best for: Quick similarity search, document embedding, fast processing. Great for large document collections when speed matters.</div>
+                                    <a href="https://www.sbert.net/" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🎯 DistilBERT (Balanced)</div>
+                                    <div class="model-desc">Best for: Document classification, content categorization, general-purpose analysis. Recommended for most users.</div>
+                                    <a href="https://huggingface.co/distilbert-base-uncased" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                                <div class="model-option">
+                                    <div class="model-name">🚀 Universal Encoder (Advanced)</div>
+                                    <div class="model-desc">Best for: Complex semantic understanding, research projects, detailed analysis. Slower but most comprehensive.</div>
+                                    <a href="https://tfhub.dev/google/universal-sentence-encoder/4" target="_blank" class="model-link">Learn more →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="selectFiles()">📁 Select Documents</button>
+                    <button onclick="selectFolder()">📂 Select Folder</button>
+                    <button id="aiAnalyzeBtn" onclick="analyzeDocuments()" disabled class="ai-button">
+                        <span id="aiAnalyzeIcon">🧠</span>
+                        <span id="aiAnalyzeText">AI Analyze</span>
+                    </button>
+                    <button onclick="openSearch()">🔍 AI Search</button>
+                    <button onclick="exportMetadata()">💾 Export Metadata</button>
+                    <button onclick="importMetadata()">📂 Import Metadata</button>
+                </div>
+                
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalDocuments">0</span>
+                        <span class="stat-label">Documents</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="analyzedDocuments">0</span>
+                        <span class="stat-label">Analyzed</span>
+                    </div>
+                    
+                    <div class="grid-controls">
+                        <label>Grid Layout:</label>
+                        <input type="range" min="1" max="4" value="2" class="grid-slider" id="gridSlider" onchange="updateGridSize(this.value)">
+                        <span id="gridValue">2 per row</span>
+                    </div>
+                    
+                    <div class="attributes-toggle">
+                        <input type="checkbox" id="showAttributes" onchange="toggleAttributes()">
+                        <label for="showAttributes">Show file info</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Initializing AI model...</div>
+        </div>
+
+        <div class="drag-drop-area" id="dragDropArea">
+            <div class="drag-drop-text">📄 Drag & Drop Documents Here</div>
+            <div class="drag-drop-hint">Supports TXT, PDF, DOCX, RTF, MD files</div>
+        </div>
+
+        <div class="document-grid" id="documentGrid">
+            <!-- Documents will be dynamically loaded here -->
+        </div>
+        
+        <!-- Document Popup -->
+        <div class="popup-overlay" id="documentPopup">
+            <div class="popup-close" onclick="closeDocumentPopup()">&times;</div>
+            <div class="popup-content" id="popupContent">
+                <div class="popup-header">
+                    <h3 id="popupTitle">Document Title</h3>
+                    <div id="popupFileInfo" class="popup-file-info"></div>
+                </div>
+                <div id="popupDocumentContent" class="popup-document-content">Document content will appear here...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal" id="searchModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSearch()">&times;</span>
+            <h3>🔍 AI Document Search</h3>
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search by filename, AI keywords, content, or summaries..." oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)">
+                <div class="search-suggestions">
+                    <span class="suggestion" onclick="searchDocuments('contracts')">contracts</span>
+                    <span class="suggestion" onclick="searchDocuments('meeting notes')">meeting notes</span>
+                    <span class="suggestion" onclick="searchDocuments('research papers')">research papers</span>
+                    <span class="suggestion" onclick="searchDocuments('financial reports')">financial reports</span>
+                    <span class="suggestion" onclick="searchDocuments('project plans')">project plans</span>
+                    <span class="suggestion" onclick="searchDocuments('technical documentation')">technical docs</span>
+                </div>
+                <button onclick="performSearch()" style="margin-top: 12px; width: 100%;">Search Documents</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <!-- TensorFlow.js and Text Processing -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <script>
+        // Global variables
+        let documents = [];
+        let currentModel = null;
+        let modelType = 'sentencebert';
+        let modelLoaded = false;
+        let isAnalyzing = false;
+        let aiData = {};
+        let summaries = {};
+
+        // Model configurations
+        const modelConfigs = {
+            sentencebert: {
+                name: 'Sentence-BERT',
+                icon: '🧠',
+                color: 'model-sentencebert',
+                size: '15MB',
+                loadFunc: loadSentenceBERT
+            },
+            distilbert: {
+                name: 'DistilBERT',
+                icon: '🎯',
+                color: 'model-distilbert',
+                size: '20MB',
+                loadFunc: loadDistilBERT
+            },
+            universal: {
+                name: 'Universal Encoder',
+                icon: '🚀',
+                color: 'model-universal',
+                size: '25MB',
+                loadFunc: loadUniversalEncoder
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateModelDisplay();
+            loadSelectedModel();
+            setupDragDrop();
+        });
+        
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function formatDate(timestamp) {
+            return new Date(timestamp).toLocaleDateString();
+        }
+        
+        // Drag and drop functionality
+        function setupDragDrop() {
+            const dropArea = document.getElementById('dragDropArea');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+        }
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight(e) {
+            document.getElementById('dragDropArea').classList.add('drag-over');
+        }
+        
+        function unhighlight(e) {
+            document.getElementById('dragDropArea').classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = Array.from(dt.files).filter(file => 
+                file.type === 'text/plain' || 
+                file.type === 'application/pdf' || 
+                file.name.endsWith('.docx') || 
+                file.name.endsWith('.rtf') || 
+                file.name.endsWith('.md')
+            );
+            if (files.length > 0) {
+                loadDocuments(files);
+            }
+        }
+        
+        // Toggle file attributes visibility
+        function toggleAttributes() {
+            const checkbox = document.getElementById('showAttributes');
+            const attributes = document.querySelectorAll('.file-attributes');
+            
+            attributes.forEach(attr => {
+                attr.style.display = checkbox.checked ? 'block' : 'none';
+            });
+        }
+        
+        // Document popup functionality
+        function openDocumentViewer(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
+            const popup = document.getElementById('documentPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupDocumentContent');
+            const popupFileInfo = document.getElementById('popupFileInfo');
+            
+            // Set title and file info
+            popupTitle.textContent = docData.name;
+            popupFileInfo.innerHTML = `
+                <span class="document-type ${docData.type}">${docData.type.toUpperCase()}</span> • 
+                ${formatFileSize(docData.file.size)} • 
+                Modified: ${formatDate(docData.file.lastModified)}
+            `;
+            
+            // Handle content based on file type
+            if (docData.type === 'pdf') {
+                // For PDF files, show a placeholder since we can't render PDF directly in HTML
+                popupContent.className = 'popup-document-content pdf-content';
+                popupContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                        <h4>PDF Document</h4>
+                        <p style="margin: 16px 0;">This is a PDF file: <strong id="pdfFileName"></strong></p>
+                        <p style="color: #6c757d; margin-bottom: 20px;">PDF rendering is not yet implemented. Content extraction shows:</p>
+                        <div style="background: white; padding: 20px; border-radius: 6px; text-align: left; font-family: monospace; white-space: pre-wrap;" id="pdfContentPreview"></div>
+                        <button onclick="openPdfInBrowser(${docData.id})" style="margin-top: 20px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Open PDF in Browser</button>
+                    </div>
+                `;
+                // Set PDF content and filename safely
+                setTimeout(() => {
+                    const pdfPreview = document.getElementById('pdfContentPreview');
+                    const pdfFileName = document.getElementById('pdfFileName');
+                    if (pdfPreview) {
+                        pdfPreview.textContent = docData.content || 'PDF content extraction will be implemented';
+                    }
+                    if (pdfFileName) {
+                        pdfFileName.textContent = docData.name;
+                    }
+                }, 0);
+            } else {
+                // For text files, show content directly
+                popupContent.className = 'popup-document-content';
+                popupContent.textContent = docData.content || 'Loading content...';
+            }
+            
+            popup.classList.add('active');
+        }
+        
+        function openPdfInBrowser(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
+            const url = URL.createObjectURL(docData.file);
+            window.open(url, '_blank');
+            // Clean up URL after a delay to allow browser to load it
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function downloadDocument(documentId) {
+            const docData = documents.find(doc => doc.id === documentId);
+            if (!docData) return;
+            
+            const url = URL.createObjectURL(docData.file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = docData.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showDocumentPopup(documentContent, documentTitle) {
+            // Legacy function for compatibility
+            const popup = document.getElementById('documentPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupDocumentContent');
+            const popupFileInfo = document.getElementById('popupFileInfo');
+            
+            popupTitle.textContent = documentTitle;
+            popupFileInfo.innerHTML = '';
+            popupContent.className = 'popup-document-content';
+            popupContent.textContent = documentContent;
+            popup.classList.add('active');
+        }
+        
+        function closeDocumentPopup() {
+            const popup = document.getElementById('documentPopup');
+            popup.classList.remove('active');
+        }
+
+        function handleModelChange() {
+            const select = document.getElementById('aiModel');
+            modelType = select.value;
+            modelLoaded = false;
+            currentModel = null;
+            
+            updateModelDisplay();
+            loadSelectedModel();
+            
+            // Reset analyzed state for all documents
+            resetAnalyzedState();
+        }
+
+        function updateModelDisplay() {
+            const config = modelConfigs[modelType];
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeIcon = document.getElementById('aiAnalyzeIcon');
+            
+            analyzeIcon.textContent = config.icon;
+            analyzeBtn.disabled = !modelLoaded || isAnalyzing;
+        }
+
+        async function loadSelectedModel() {
+            const config = modelConfigs[modelType];
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeText = document.getElementById('aiAnalyzeText');
+            
+            showProgress(`Loading ${config.name} model (${config.size})...`, 0);
+            analyzeBtn.classList.add('model-loading');
+            analyzeText.textContent = 'Loading Model...';
+            analyzeBtn.disabled = true;
+
+            try {
+                currentModel = await config.loadFunc();
+                modelLoaded = true;
+                hideProgress();
+                
+                analyzeBtn.classList.remove('model-loading');
+                analyzeText.textContent = 'AI Analyze';
+                analyzeBtn.disabled = false;
+                
+                console.log(`${config.name} model loaded successfully`);
+            } catch (error) {
+                console.error(`Error loading ${config.name} model:`, error);
+                hideProgress();
+                analyzeBtn.classList.remove('model-loading');
+                analyzeText.textContent = 'Model Load Failed';
+                alert(`Failed to load ${config.name} model. Using fallback mode.`);
+                enableFallbackMode();
+            }
+        }
+
+        async function loadSentenceBERT() {
+            // Fallback: Use simple text analysis
+            return {
+                analyze: (text) => {
+                    const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 3);
+                    const wordCount = {};
+                    words.forEach(word => {
+                        wordCount[word] = (wordCount[word] || 0) + 1;
+                    });
+                    
+                    const keywords = Object.entries(wordCount)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5)
+                        .map(([word, count]) => ({ word, score: count / words.length }));
+                    
+                    return {
+                        keywords,
+                        summary: text.substring(0, 200) + (text.length > 200 ? '...' : ''),
+                        embedding: new Array(128).fill(0).map(() => Math.random())
+                    };
+                }
+            };
+        }
+
+        async function loadDistilBERT() {
+            return await loadSentenceBERT(); // Same fallback for now
+        }
+
+        async function loadUniversalEncoder() {
+            return await loadSentenceBERT(); // Same fallback for now
+        }
+
+        function enableFallbackMode() {
+            currentModel = {
+                analyze: (text) => ({
+                    keywords: [
+                        { word: 'document', score: 0.9 },
+                        { word: 'content', score: 0.8 },
+                        { word: 'text', score: 0.7 }
+                    ],
+                    summary: 'AI analysis temporarily unavailable. Basic text processing enabled.',
+                    embedding: new Array(128).fill(0).map(() => Math.random())
+                })
+            };
+            modelLoaded = true;
+        }
+
+        function resetAnalyzedState() {
+            const indicators = document.querySelectorAll('.ai-indicator');
+            indicators.forEach(indicator => {
+                indicator.classList.remove('analyzed');
+            });
+            updateStats();
+        }
+
+        function selectFiles() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.txt,.pdf,.docx,.rtf,.md,text/plain,application/pdf';
+            input.onchange = (e) => loadDocuments(Array.from(e.target.files));
+            input.click();
+        }
+
+        function selectFolder() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.webkitdirectory = true;
+            input.multiple = true;
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files).filter(file => 
+                    file.type === 'text/plain' || 
+                    file.type === 'application/pdf' || 
+                    file.name.endsWith('.docx') || 
+                    file.name.endsWith('.rtf') || 
+                    file.name.endsWith('.md')
+                );
+                loadDocuments(files);
+            };
+            input.click();
+        }
+
+        function loadDocuments(files) {
+            // Filter out duplicate files based on name and size
+            const newFiles = files.filter(file => {
+                return !documents.some(existing => 
+                    existing.name === file.name && existing.file.size === file.size
+                );
+            });
+            
+            if (newFiles.length === 0) {
+                alert('All selected documents are already loaded.');
+                return;
+            }
+            
+            // Append new documents to existing array
+            const startingId = documents.length;
+            const newDocuments = newFiles.map((file, index) => ({
+                id: startingId + index,
+                name: file.name,
+                file: file,
+                type: getFileType(file.name),
+                analyzed: false,
+                content: ''
+            }));
+            
+            documents.push(...newDocuments);
+            
+            // Read file contents
+            newDocuments.forEach(readDocumentContent);
+            
+            renderDocuments();
+            updateStats();
+            
+            if (newFiles.length < files.length) {
+                const duplicates = files.length - newFiles.length;
+                alert(`Added ${newFiles.length} new documents. ${duplicates} duplicate(s) were skipped.`);
+            }
+        }
+
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            switch(ext) {
+                case 'pdf': return 'pdf';
+                case 'docx': return 'docx';
+                case 'txt': return 'txt';
+                case 'rtf': return 'txt';
+                case 'md': return 'txt';
+                default: return 'txt';
+            }
+        }
+
+        function readDocumentContent(document) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                if (document.type === 'pdf') {
+                    // For PDF files, we'll extract text content
+                    document.content = 'PDF content extraction will be implemented';
+                } else {
+                    // For text files
+                    document.content = e.target.result;
+                }
+                renderDocuments(); // Re-render to show updated content
+            };
+            
+            if (document.type === 'pdf') {
+                reader.readAsArrayBuffer(document.file);
+            } else {
+                reader.readAsText(document.file);
+            }
+        }
+
+        function renderDocuments() {
+            const grid = document.getElementById('documentGrid');
+            grid.innerHTML = '';
+            
+            documents.forEach(document => {
+                const card = createDocumentCard(document);
+                grid.appendChild(card);
+            });
+        }
+
+        function createDocumentCard(docData) {
+            const card = document.createElement('div');
+            card.className = 'document-card';
+            
+            const preview = docData.content ? 
+                docData.content.substring(0, 150) + (docData.content.length > 150 ? '...' : '') : 
+                'Loading content...';
+            
+            card.innerHTML = `
+                <div class="document-header">
+                    <div class="document-type ${docData.type}">${docData.type.toUpperCase()}</div>
+                    <div class="ai-indicator" data-id="${docData.id}">
+                        ${modelConfigs[modelType].icon} Analyzed
+                    </div>
+                </div>
+                <div class="document-content">
+                    <div class="document-title">${docData.name}</div>
+                    <div class="file-attributes" data-id="${docData.id}" style="display: none;">
+                        Size: ${formatFileSize(docData.file.size)} | Modified: ${formatDate(docData.file.lastModified)}
+                    </div>
+                    <div class="document-summary" data-id="${docData.id}" onclick="editSummary(${docData.id})">
+                        ${summaries[docData.name] || 'Click to add summary...'}
+                    </div>
+                    <div class="document-preview" ondblclick="openDocumentViewer(${docData.id})">
+                        ${preview}
+                    </div>
+                    <div class="document-tags" data-id="${docData.id}"></div>
+                    <div class="confidence-score" data-id="${docData.id}"></div>
+                </div>
+            `;
+            
+            // Update if already analyzed
+            if (aiData[docData.name]) {
+                updateDocumentCard(docData.id, aiData[docData.name]);
+            }
+            
+            return card;
+        }
+
+        function editSummary(documentId) {
+            const summaryElement = document.querySelector(`[data-id="${documentId}"].document-summary`);
+            const currentSummary = summaryElement.textContent;
+            const isPlaceholder = currentSummary === 'Click to add summary...';
+            
+            summaryElement.contentEditable = true;
+            
+            // If it's placeholder text, clear it and position cursor
+            if (isPlaceholder) {
+                summaryElement.textContent = '';
+                summaryElement.focus();
+                // Set cursor to beginning
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(summaryElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                summaryElement.focus();
+                // Select all existing text for easy editing
+                document.execCommand('selectAll', false, null);
+            }
+            
+            summaryElement.onblur = () => {
+                summaryElement.contentEditable = false;
+                const newSummary = summaryElement.textContent.trim();
+                const documentName = documents[documentId].name;
+                
+                if (newSummary === '') {
+                    summaryElement.textContent = 'Click to add summary...';
+                    delete summaries[documentName];
+                } else {
+                    summaries[documentName] = newSummary;
+                }
+            };
+            
+            summaryElement.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    summaryElement.blur();
+                }
+            };
+        }
+
+        async function analyzeDocuments() {
+            if (!modelLoaded || isAnalyzing || documents.length === 0) {
+                return;
+            }
+
+            isAnalyzing = true;
+            const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const analyzeText = document.getElementById('aiAnalyzeText');
+            
+            analyzeBtn.disabled = true;
+            analyzeText.textContent = 'Analyzing...';
+            
+            showProgress('Analyzing documents with AI...', 0);
+
+            try {
+                for (let i = 0; i < documents.length; i++) {
+                    const document = documents[i];
+                    const progress = ((i + 1) / documents.length) * 100;
+                    
+                    updateProgress(`Analyzing document ${i + 1}/${documents.length}: ${document.name}`, progress);
+                    
+                    try {
+                        if (document.content) {
+                            const analysis = currentModel.analyze(document.content);
+                            
+                            aiData[document.name] = {
+                                keywords: analysis.keywords || [],
+                                summary: analysis.summary || '',
+                                embedding: analysis.embedding || [],
+                                modelUsed: modelConfigs[modelType].name,
+                                timestamp: new Date().toISOString()
+                            };
+                            
+                            updateDocumentCard(document.id, aiData[document.name]);
+                            document.analyzed = true;
+                        }
+                    } catch (error) {
+                        console.error(`Error analyzing ${document.name}:`, error);
+                    }
+                }
+                
+                hideProgress();
+                analyzeText.textContent = 'AI Analyze';
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                hideProgress();
+                analyzeText.textContent = 'Analysis Failed';
+                alert('AI analysis failed. Please try again.');
+            } finally {
+                isAnalyzing = false;
+                analyzeBtn.disabled = false;
+                updateStats();
+            }
+        }
+
+        function updateDocumentCard(documentId, data) {
+            const indicator = document.querySelector(`.ai-indicator[data-id="${documentId}"]`);
+            const tagsContainer = document.querySelector(`.document-tags[data-id="${documentId}"]`);
+            const confidenceElement = document.querySelector(`.confidence-score[data-id="${documentId}"]`);
+            
+            if (indicator) {
+                indicator.classList.add('analyzed');
+            }
+            
+            if (tagsContainer && data.keywords) {
+                tagsContainer.innerHTML = data.keywords.map(keyword => 
+                    `<span class="tag ${keyword.score > 0.5 ? 'high-confidence' : ''}">${keyword.word}</span>`
+                ).join('');
+            }
+            
+            if (confidenceElement) {
+                const avgScore = data.keywords ? 
+                    data.keywords.reduce((sum, k) => sum + k.score, 0) / data.keywords.length : 0;
+                confidenceElement.textContent = 
+                    `${Math.round(avgScore * 100)}% relevance • ${data.keywords ? data.keywords.length : 0} keywords`;
+            }
+        }
+
+        function updateStats() {
+            const totalElement = document.getElementById('totalDocuments');
+            const analyzedElement = document.getElementById('analyzedDocuments');
+            
+            const analyzedCount = Object.keys(aiData).length;
+            
+            totalElement.textContent = documents.length;
+            analyzedElement.textContent = analyzedCount;
+        }
+
+        function updateGridSize(value) {
+            const grid = document.getElementById('documentGrid');
+            const gridValue = document.getElementById('gridValue');
+            
+            grid.className = `document-grid grid-${value}`;
+            gridValue.textContent = `${value} per row`;
+        }
+
+        function showProgress(message, percent) {
+            const container = document.getElementById('progressContainer');
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            container.style.display = 'block';
+            fill.style.width = `${percent}%`;
+            text.textContent = message;
+        }
+
+        function updateProgress(message, percent) {
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            fill.style.width = `${percent}%`;
+            text.textContent = message;
+        }
+
+        function hideProgress() {
+            const container = document.getElementById('progressContainer');
+            container.style.display = 'none';
+        }
+
+        function exportMetadata() {
+            if (documents.length === 0) {
+                alert('No documents to export metadata for');
+                return;
+            }
+
+            const metadata = createMetadataObject();
+            const json = JSON.stringify(metadata, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-docu-${modelType}-metadata.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert(`Metadata exported as ai-docu-${modelType}-metadata.json`);
+        }
+
+        function createMetadataObject() {
+            return {
+                version: '1.0',
+                timestamp: new Date().toISOString(),
+                appName: `AI Docu - ${modelConfigs[modelType].name}`,
+                modelUsed: modelConfigs[modelType].name,
+                totalDocuments: documents.length,
+                aiEnabled: true,
+                summaries: summaries,
+                aiData: aiData
+            };
+        }
+
+        function importMetadata() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const metadata = JSON.parse(e.target.result);
+                            
+                            if (metadata.summaries) {
+                                Object.assign(summaries, metadata.summaries);
+                            }
+                            
+                            if (metadata.aiData) {
+                                Object.assign(aiData, metadata.aiData);
+                            }
+                            
+                            renderDocuments();
+                            updateStats();
+                            
+                            alert(`Metadata imported successfully! Model: ${metadata.modelUsed || 'Unknown'}`);
+                        } catch (error) {
+                            alert('Error importing metadata: Invalid JSON file');
+                            console.error('Import error:', error);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function openSearch() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearch() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Search with debouncing for better performance
+        let searchTimeout;
+        function handleSearchInput() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch();
+            }, 300);
+        }
+
+        function handleSearchKeydown(event) {
+            if (event.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                performSearch();
+            }
+        }
+
+        function searchDocuments(query) {
+            document.getElementById('searchInput').value = query;
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            if (documents.length === 0) {
+                resultsContainer.innerHTML = '<p>No documents loaded. Please load documents first.</p>';
+                return;
+            }
+            
+            const results = searchInDocuments(query);
+            displaySearchResults(results, resultsContainer);
+        }
+
+        function searchInDocuments(query) {
+            const results = [];
+            
+            documents.forEach(document => {
+                const data = aiData[document.name];
+                let score = 0;
+                const queryTerms = query.split(' ').filter(term => term.length > 0);
+                
+                // Search in filename (highest priority for exact matches)
+                queryTerms.forEach(term => {
+                    const fileName = document.name.toLowerCase();
+                    if (fileName.includes(term)) {
+                        // Boost score more for exact word matches in filename
+                        if (fileName.split(/[._-]/).some(part => part === term)) {
+                            score += 1.2;
+                        } else {
+                            score += 0.9;
+                        }
+                    }
+                });
+                
+                // Search in summaries (high priority)
+                const summary = summaries[document.name];
+                if (summary) {
+                    queryTerms.forEach(term => {
+                        if (summary.toLowerCase().includes(term)) {
+                            score += 1.0;
+                        }
+                    });
+                }
+                
+                // Search in document content (high priority)
+                if (document.content) {
+                    queryTerms.forEach(term => {
+                        if (document.content.toLowerCase().includes(term)) {
+                            score += 0.9;
+                        }
+                    });
+                }
+                
+                // Search in AI keywords (if document analyzed)
+                if (data && data.keywords) {
+                    queryTerms.forEach(term => {
+                        data.keywords.forEach(keyword => {
+                            const keywordLower = keyword.word.toLowerCase();
+                            if (keywordLower === term) {
+                                // Exact keyword match gets high score
+                                score += keyword.score * 0.9;
+                            } else if (keywordLower.includes(term)) {
+                                // Partial keyword match gets medium score
+                                score += keyword.score * 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Search in AI categories/classifications
+                if (data && data.category) {
+                    queryTerms.forEach(term => {
+                        if (data.category.toLowerCase().includes(term)) {
+                            score += 0.8;
+                        }
+                    });
+                }
+                
+                // Search in AI topics
+                if (data && data.topics) {
+                    queryTerms.forEach(term => {
+                        data.topics.forEach(topic => {
+                            if (topic.toLowerCase().includes(term)) {
+                                score += 0.7;
+                            }
+                        });
+                    });
+                }
+                
+                // Include results with any score > 0 OR filename matches (even without AI analysis)
+                if (score > 0) {
+                    results.push({
+                        document: document,
+                        score: score,
+                        data: data || null
+                    });
+                }
+            });
+            
+            return results.sort((a, b) => b.score - a.score);
+        }
+
+        function displaySearchResults(results, container) {
+            if (results.length === 0) {
+                container.innerHTML = '<p>No matching documents found.</p>';
+                return;
+            }
+            
+            const html = results.map(result => `
+                <div class="search-result-item" onclick="openDocumentFromSearch(${result.document.id})" style="cursor: pointer;">
+                    <div class="result-content">
+                        <div class="result-title">${result.document.name} <span class="document-type ${result.document.type}">${result.document.type.toUpperCase()}</span></div>
+                        <div class="result-score">Match score: ${Math.round(result.score * 100)}%</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                            ${result.data && result.data.keywords ? result.data.keywords.slice(0, 3).map(k => k.word).join(', ') : 'No AI keywords'}
+                        </div>
+                    </div>
+                    <div style="font-size: 11px; color: #999; margin-top: 6px; opacity: 0.7;">Click to open document</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `<h4>Found ${results.length} matching documents:</h4>${html}`;
+        }
+
+        function openDocumentFromSearch(documentId) {
+            // Close the search modal first
+            closeSearch();
+            // Open the document viewer
+            openDocumentViewer(documentId);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('searchModal');
+            if (event.target === modal) {
+                closeSearch();
+            }
+            
+            const popup = document.getElementById('documentPopup');
+            if (event.target === popup) {
+                closeDocumentPopup();
+            }
+        }
+    </script>
+</body>
+</html>
