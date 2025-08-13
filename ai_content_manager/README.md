@@ -448,17 +448,112 @@ const FUTURE_AI_FEATURES = {
 - 🔄 Cross-content type search
 - 🔄 Unified data management
 
-### 🌟 **Phase 3: Advanced Features**
-- 📋 Smart content recommendations
-- 📋 Duplicate detection across content types
-- 📋 Advanced batch operations
-- 📋 Custom AI model training interface
+### 🌟 **Phase 3: Enhanced AI & Backend Integration**
+- 🚨 **Critical: Replace Mock AI Models with Real TensorFlow.js Implementations**
+  - Implement actual MobileNet v2 image classification
+  - Add real EfficientNet with proper preprocessing  
+  - Integrate MediaPipe for advanced computer vision
+  - Fix image preprocessing (resize, normalize pixel values)
+  - Map prediction indices to actual ImageNet class labels
+- 💾 **Two-Tier Architecture Strategy**
+  
+  **📱 Tier 1: Client-Only Mode (Current)**
+  - Single HTML file with temporary AI analysis
+  - Perfect for quick content review and testing
+  - No persistence, no backend required
+  
+  **🚀 Tier 2: Full Content Library Mode**
+  - **Import Workflow**: Bulk import from standard OS folders:
+    - `~/Pictures` → Image content library
+    - `~/Documents` → Document content library  
+    - `~/Music` → Audio content library
+    - `~/Videos` → Video content library
+  - **DuckDB Backend**: Single portable `.duckdb` file contains entire digital library
+  - **FastAPI Integration**: Frontend ↔ Backend communication for persistence
+  - **Semantic Search**: Vector embeddings + HNSW indexing for intelligent content discovery
+  
+  **🎯 Core Value Proposition:**
+  - **No Backend = No Semantic Search** (clear upgrade incentive)
+  - **With Backend = Unified Digital Content Library** across all media types
+  - **One File = Everything** (entire library in portable `.duckdb` file)
+  
+  **🔧 Technical Architecture:**
+  - **Database**: DuckDB with VSS extension for vector embeddings
+  - **Vector Search**: `array_cosine_similarity()` for semantic content search  
+  - **File Storage**: Original files stay in place, metadata + thumbnails in DuckDB
+  - **API Layer**: FastAPI backend with WebSocket support for real-time analysis
+  - **Portability**: Single `.duckdb` file = backup/share entire library
+  
+  **📦 Deployment Benefits:**
+  - **Easy Backup**: Copy one `.duckdb` file
+  - **Easy Sharing**: Send `.duckdb` file to friends/colleagues
+  - **Easy Migration**: Move library between computers effortlessly
+  - **Privacy First**: Everything stays local, no cloud dependency
 
-### 🎨 **Phase 4: Polish & Scale**
-- 📋 Professional UI/UX refinements
-- 📋 Performance optimizations
-- 📋 Advanced accessibility features
-- 📋 Multi-language support
+### 🔧 **DuckDB Backend Implementation Plan**
+```sql
+-- Core schema design
+CREATE TABLE content_library (
+    id UUID PRIMARY KEY,
+    filename VARCHAR NOT NULL,
+    content_type VARCHAR CHECK (content_type IN ('image', 'document', 'audio', 'video')),
+    file_path VARCHAR,        -- Cloud storage path or local path
+    file_size BIGINT,
+    mime_type VARCHAR,
+    thumbnail BLOB,           -- Small preview thumbnails
+    embedding FLOAT[1536],    -- AI-generated embeddings for semantic search
+    ai_tags VARCHAR[],        -- Array of AI-generated tags
+    ai_model_used VARCHAR,    -- Which AI model generated the analysis
+    confidence_score FLOAT,   -- AI analysis confidence
+    user_caption TEXT,        -- User-added captions/notes
+    metadata JSON,            -- Flexible metadata (EXIF, duration, etc.)
+    created_at TIMESTAMP DEFAULT NOW(),
+    analyzed_at TIMESTAMP
+);
+
+-- Create HNSW index for fast vector similarity search
+CREATE INDEX embedding_hnsw_idx ON content_library 
+USING HNSW (embedding) WITH (metric = 'cosine');
+
+-- Semantic search query examples
+-- Find similar content across all types
+SELECT filename, content_type, 
+       array_cosine_similarity(embedding, ?) AS similarity
+FROM content_library 
+WHERE embedding IS NOT NULL
+ORDER BY similarity DESC 
+LIMIT 20;
+
+-- Find similar images only
+SELECT filename, ai_tags,
+       array_cosine_similarity(embedding, ?) AS similarity  
+FROM content_library 
+WHERE content_type = 'image' AND embedding IS NOT NULL
+ORDER BY similarity DESC 
+LIMIT 10;
+```
+
+**🚀 API Architecture:**
+- **FastAPI/Express** backend with DuckDB connection
+- **TensorFlow.js integration** for generating embeddings server-side
+- **Multipart upload** for large files to blob storage
+- **Real-time WebSocket** updates for analysis progress
+- **RESTful endpoints** for CRUD operations + semantic search
+
+### 🎯 **Phase 4: Advanced Features**
+- 📋 Smart content recommendations across all media types
+- 📋 Duplicate detection using AI similarity matching
+- 📋 Advanced batch operations and bulk processing
+- 📋 Custom AI model training interface for specialized domains
+- 📋 Real-time collaborative content management
+
+### 🎨 **Phase 5: Polish & Scale**
+- 📋 Professional UI/UX refinements and animations
+- 📋 Performance optimizations for large datasets
+- 📋 Advanced accessibility features (WCAG compliance)
+- 📋 Multi-language support and internationalization
+- 📋 Mobile app versions (React Native/Flutter)
+- 📋 Enterprise features and white-labeling options
 
 ---
 
@@ -512,6 +607,14 @@ const FUTURE_AI_FEATURES = {
 - **Performance Optimization**: Implementing lazy loading and chunked processing
 - **Mobile Support**: Optimizing AI models for mobile devices
 - **Cross-Platform Testing**: Comprehensive testing across all major platforms
+
+### 🚨 **Critical Issues**
+- **AI Model Implementation**: Replace mock/fake AI models with actual TensorFlow.js implementations
+  - Current models (MobileNet, EfficientNet, MediaPipe) are generating random tags instead of real AI analysis
+  - Need to implement proper image preprocessing (resize, normalize pixel values)
+  - Implement real `model.predict()` calls with preprocessed images
+  - Map prediction indices to actual ImageNet class labels
+  - This is causing completely incorrect image classifications (e.g., person → automobile, car → architecture)
 
 ### 💡 **Community Solutions Welcome**
 Know a better workaround for Ubuntu folder selection? Please contribute via GitHub Issues!

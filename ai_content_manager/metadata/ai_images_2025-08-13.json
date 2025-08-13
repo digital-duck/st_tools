@@ -1,0 +1,293 @@
+{
+  "timestamp": "2025-08-13T03:34:17.004Z",
+  "model": "mobilenet",
+  "totalImages": 14,
+  "analyzedImages": 14,
+  "data": {
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": {
+      "tags": [
+        "street",
+        "restaurant",
+        "kitchen",
+        "cooking"
+      ],
+      "confidence": [
+        0.9254789058070684,
+        0.7343369755652309,
+        0.793530702296905,
+        0.9119438129485274
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": {
+      "tags": [
+        "building",
+        "cat",
+        "nature",
+        "reading",
+        "walking"
+      ],
+      "confidence": [
+        0.9079077520529963,
+        0.9171604845202836,
+        0.8897725922058084,
+        0.9971637989632128,
+        0.6600067796626921
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": {
+      "tags": [
+        "house",
+        "person",
+        "cat",
+        "food",
+        "home",
+        "city",
+        "walking",
+        "reading"
+      ],
+      "confidence": [
+        0.6432524484521058,
+        0.9915035579321322,
+        0.8313444832678216,
+        0.802970740087054,
+        0.9579689951500143,
+        0.900223858069163,
+        0.8750146667003582,
+        0.7572415909870475
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "african-american-family-1200x675-1.jpg": {
+      "tags": [
+        "food",
+        "building",
+        "person",
+        "nature",
+        "outdoor",
+        "sitting",
+        "reading"
+      ],
+      "confidence": [
+        0.8931367948589893,
+        0.8879977865858957,
+        0.8627189479607082,
+        0.8123194976827698,
+        0.7102717118943912,
+        0.8429249931186515,
+        0.652384089757684
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "AI-Docu-App-screenshot.png": {
+      "tags": [
+        "building",
+        "car",
+        "office",
+        "cooking"
+      ],
+      "confidence": [
+        0.7947974558938498,
+        0.7518175821536555,
+        0.9320426838498146,
+        0.9443752009058735
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "bright-daylight-environment-forest-240040-1.webp": {
+      "tags": [
+        "car",
+        "dog",
+        "home",
+        "outdoor",
+        "playing"
+      ],
+      "confidence": [
+        0.7172140520718081,
+        0.8335020442390104,
+        0.7423207531458336,
+        0.7492131980327843,
+        0.7510431000498293
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "Coyote-animal-sentience-research.jpg": {
+      "tags": [
+        "cat",
+        "food",
+        "street",
+        "computer",
+        "office",
+        "city",
+        "reading",
+        "eating"
+      ],
+      "confidence": [
+        0.9215949774390835,
+        0.6947675699051886,
+        0.9449407185833651,
+        0.7911534596607582,
+        0.9075381938883736,
+        0.7041358940538756,
+        0.7275062963224278,
+        0.6164473581546529
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "do-babies-grow-in-their-sleep-scaled.jpeg": {
+      "tags": [
+        "street",
+        "computer",
+        "office",
+        "walking"
+      ],
+      "confidence": [
+        0.8327477949154394,
+        0.8274442047859099,
+        0.6808471305011594,
+        0.843214236483534
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": {
+      "tags": [
+        "computer",
+        "house",
+        "outdoor",
+        "reading"
+      ],
+      "confidence": [
+        0.721921626570011,
+        0.9703975663944373,
+        0.8459396478580788,
+        0.6653957534009555
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "Giant_Panda_2004-03-2.jpg": {
+      "tags": [
+        "cat",
+        "house",
+        "office",
+        "home",
+        "eating",
+        "working"
+      ],
+      "confidence": [
+        0.7997048794530619,
+        0.7758930582525816,
+        0.7546642030835677,
+        0.8591799124249491,
+        0.6472954678062922,
+        0.7446667148167955
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "images.jpeg": {
+      "tags": [
+        "food",
+        "kitchen",
+        "walking",
+        "eating"
+      ],
+      "confidence": [
+        0.8478296026187123,
+        0.6622612496872484,
+        0.7309545477003199,
+        0.8789946449172599
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "maxresdefault.jpg": {
+      "tags": [
+        "cat",
+        "dog",
+        "car",
+        "nature",
+        "office",
+        "reading"
+      ],
+      "confidence": [
+        0.9778863964928146,
+        0.6776287542825667,
+        0.8043508653986506,
+        0.9416991430871695,
+        0.7500293359886374,
+        0.7948854338504372
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "maxresdefault (1).jpg": {
+      "tags": [
+        "food",
+        "car",
+        "tree",
+        "computer",
+        "indoor",
+        "home",
+        "playing",
+        "sitting"
+      ],
+      "confidence": [
+        0.7453884058528704,
+        0.8246279867553451,
+        0.6053098592288676,
+        0.821758604290026,
+        0.8402869267867655,
+        0.6213881540259654,
+        0.7775551747256313,
+        0.9559128582203892
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    },
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": {
+      "tags": [
+        "person",
+        "building",
+        "restaurant",
+        "indoor",
+        "cooking"
+      ],
+      "confidence": [
+        0.8655246335760596,
+        0.9756716915404318,
+        0.7169021642424418,
+        0.7978211768234023,
+        0.6498054585728816
+      ],
+      "model": "mobilenet",
+      "analyzed": true
+    }
+  },
+  "captions": {
+    "360_F_396167959_aAhZiGlJoeXOBHivMvaO0Aloxvhg3eVT.jpg": "young man / person smiling happy",
+    "2024-EQE350-4M-SEDAN-AVP-DR.webp": "car",
+    "ad46dbb447cd0e9a6aeecd64cc2bd332b0cbcb79.jpeg": "giant tree",
+    "african-american-family-1200x675-1.jpg": "family photos smiling happy 3",
+    "AI-Docu-App-screenshot.png": "screenshot of AI Document App",
+    "bright-daylight-environment-forest-240040-1.webp": "tree, woods, forest, sun shine",
+    "Coyote-animal-sentience-research.jpg": "animal wolf",
+    "do-babies-grow-in-their-sleep-scaled.jpeg": "cute baby",
+    "DRRR202208_DroughtResponse_004_370218_reduced.jpg": "animal zebra",
+    "Giant_Panda_2004-03-2.jpg": "animal bear panda cute",
+    "images.jpeg": "flower lotus buddhism",
+    "maxresdefault.jpg": "tree blossom spring",
+    "maxresdefault (1).jpg": "train",
+    "people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg": "smiling beautiful lady person woman"
+  },
+  "version": "1.0"
+}

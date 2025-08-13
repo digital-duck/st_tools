@@ -771,6 +771,14 @@
             overflow: hidden;
             position: relative;
         }
+        
+        /* Proportional thumbnail heights based on grid size */
+        .video-grid.grid-1 .video-thumbnail { height: 500px; }
+        .video-grid.grid-2 .video-thumbnail { height: 400px; }
+        .video-grid.grid-3 .video-thumbnail { height: 250px; }
+        .video-grid.grid-4 .video-thumbnail { height: 160px; }
+        .video-grid.grid-5 .video-thumbnail { height: 140px; }
+        .video-grid.grid-6 .video-thumbnail { height: 120px; }
 
         .video-thumbnail:hover {
             transform: scale(1.02);
@@ -2325,7 +2333,8 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ai_analysis_${new Date().toISOString().split('T')[0]}.json`;
+            const modelName = modelType.toLowerCase().replace(/\s+/g, '-');
+            a.download = `ai_images_${modelName}-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -4907,7 +4916,8 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `video-metadata-${new Date().toISOString().split('T')[0]}.json`;
+            const modelName = videoModelType.toLowerCase().replace(/\s+/g, '-');
+            a.download = `ai_video_${modelName}-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
